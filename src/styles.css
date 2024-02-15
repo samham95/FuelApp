@@ -1,0 +1,115 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+/* Centering the form */
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Styling the form container */
+.container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+
+/* Styling labels */
+.label {
+    margin-bottom: 5px;
+    display: block;
+    font-weight: bold;
+}
+
+/* Styling input fields */
+input[type='text'],
+input[type='password'] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Styling the submit button */
+button[type='submit'] {
+    width: 100%;
+    background-color: rgb(15, 15, 238);
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button[type='submit']:hover {
+    background-color: rgb(62, 62, 224);
+}
+
+/* Styling links */
+h2 {
+    font-size: 0.7rem;
+}
+
+h2 a {
+    color: blue;
+    text-decoration: none;
+}
+
+h2 a:hover {
+    text-decoration: underline;
+}
+
+/* Additional styling for the login title */
+.h1 {
+    color: #333;
+}
+
+/* Styling for "Remember me" checkbox */
+input[type='checkbox'] {
+    margin: 10px 0;
+}
+
+.navButton {
+    color: white;
+    text-decoration: none;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+
+.navButton:hover {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    background-color: transparent;
+}
+
+.flash-message {
+    color: green;
+    background-color: #ebffeb;
+    border: 1px solid green;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.my-navbar-dark {
+    background-color: #000000
+}
+
+.navbar.bg-dark {
+    background-color: #000000
+}
