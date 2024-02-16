@@ -65,7 +65,7 @@ const apiHandles = [
             }
         }), */
 
-    http.post('/login', async ({ request, params, cookies }) => {
+    http.post('/api/login', async ({ request, params, cookies }) => {
         const { username, password, isChecked } = await request.json();
         if (validateUser(username, password)) {
             const token = generateToken(username);
@@ -93,10 +93,35 @@ const apiHandles = [
         )
     }),
 
-    http.get('/profile/:username', async ({ request, params, cookies }) => {
+    http.post('/api/auth', async ({ request, params, cookies }) => {
+        const { username, token } = await request.json();
+        if (authenticateUser(username, token)) {
+            return HttpResponse.json(
+                {
+                    isAuthorized: true
+                },
+                {
+                    status: 202
+                }
+            )
+        }
+        else {
+            return HttpResponse.json(
+                {
+                    isAuthorized: false
+                },
+                {
+                    status: 403
+                }
+            )
+        }
+
+    }),
+
+    http.get('/api/profile/:username', async ({ request, params, cookies }) => {
         const username = params.username;
         const token = request.headers.get('Authorization').split(' ')[1];
-        console.log(authenticateUser(username, token));
+        console.log(sessions);
         if (authenticateUser(username, token)) {
             const { fullname, email, street1, street2, city, state, zip } = users.get(username);
             const profileData = { fullname, email, street1, street2, city, state, zip };
@@ -124,7 +149,7 @@ const apiHandles = [
         }
     }),
 
-    http.post('/profile/:username/edit', async ({ request, params, cookies }) => {
+    http.post('/api/profile/:username/edit', async ({ request, params, cookies }) => {
         const profileData = await request.json();
         const username = params.username;
         const token = request.headers.get('Authorization').split(' ')[1];
@@ -148,7 +173,7 @@ const apiHandles = [
 
     }),
 
-    http.post('/logout', async ({ request, params, cookies }) => {
+    http.post('/api/logout', async ({ request, params, cookies }) => {
         const { username } = await request.json();
         const { token } = request.headers.get('Authorization').split(' ')[1];
         if (authenticateUser(username, token)) {
@@ -170,7 +195,7 @@ const apiHandles = [
         }
     }),
 
-    http.post('/register', async ({ request, params, cookies }) => {
+    http.post('/api/register', async ({ request, params, cookies }) => {
         const { username, password } = await request.json();
         if (username && password) {
             try {

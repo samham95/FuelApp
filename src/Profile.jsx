@@ -21,39 +21,37 @@ const ProfileData = () => {
 
 
     useEffect(() => {
-        if (!token) {
-            localStorage.clear();
-            navigate('/login');
-        } else {
-            const fetchData = async () => {
-                try {
+        const checkAuthorizationAndFetchData = async () => {
+            try {
+                const res = await authClient(token).post('/auth', { username, token });
+                const auth = res.data.isAuthorized;
+
+                if (!auth) {
+                    throw new Error('Not authorized');
+                }
+
+                // Check if we need to fetch data or if it was loaded from cache
+                if (!localStorage.getItem('profileData')) {
                     const response = await authClient(token).get(`/profile/${username}`);
                     setProfileData(response.data);
-                    // Cache the fetched data in localStorage
                     localStorage.setItem('profileData', JSON.stringify(response.data));
-                } catch (err) {
-                    const status = err.response ? err.response.status : 500;
-                    if (status === 403) {
-                        alert('Forbidden! Authentication Failed');
-                        navigate('/login');
-                    }
-                    console.error("Failed to fetch profile data:", err);
                 }
-            };
-
-            // Check if we need to fetch data or if it was loaded from cache
-            if (!localStorage.getItem('profileData')) {
-                fetchData();
+            } catch (err) {
+                console.error("Authorization check failed or failed to fetch profile data:", err);
+                localStorage.clear();
+                navigate('/login');
             }
-        }
+        };
+
+        checkAuthorizationAndFetchData();
     }, [navigate, token, username]);
 
     return (
         <>
             <br />
-            <center>
-                <h1 className='h1'>PROFILE</h1>
-            </center>
+            <h1 className='header'>Welcome, {profileData.fullname}</h1>
+            <br />
+            <br />
             <div className='container'>
                 <label className='label' htmlFor='fullname'>Full Name:</label>
                 <input name='fullname' type='text' value={profileData.fullname || ''} readOnly={true} />

@@ -1,4 +1,3 @@
-//import './App.css'
 import { RouterProvider, Route, createBrowserRouter, createRoutesFromElements, Outlet, Link } from 'react-router-dom'
 import Login from './Login.jsx'
 import Navbar from './Navbar.jsx'

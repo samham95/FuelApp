@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { authClient } from './apiClient';
 
@@ -9,7 +9,30 @@ const EditProfile = () => {
     const username = localStorage.getItem('username');
     const token = localStorage.getItem('token');
 
-    // Load existing profile data from localStorage or initialize with default values
+    useEffect(() => {
+        const checkAuthorizationAndFetchData = async () => {
+            try {
+                const authRes = await authClient(token).post('/auth', { username, token });
+                const isAuthorized = authRes.data.isAuthorized;
+
+                if (!isAuthorized) {
+                    throw new Error('Not authorized');
+                }
+
+                if (!localStorage.getItem('profileData')) {
+                    const response = await authClient(token).get(`/profile/${username}`);
+                    setProfileData(response.data);
+                    localStorage.setItem('profileData', JSON.stringify(response.data));
+                }
+            } catch (err) {
+                console.error("Authorization failed or failed to fetch profile data:", err);
+                localStorage.clear();
+                navigate('/login');
+            }
+        };
+
+        checkAuthorizationAndFetchData();
+    }, [navigate, token, username])
     const { needToCompleteProfile } = location.state || {};
 
     const initialProfileData = JSON.parse(localStorage.getItem('profileData')) || {
@@ -71,8 +94,8 @@ const EditProfile = () => {
                     <br />
                     <label htmlFor='state'>State:</label>
                     <br />
-                    <select name='state' onChange={handleChange} required>
-                        <option value='' selected></option>
+                    <select name='state' defaultValue={profileData.state} onChange={handleChange} required>
+                        <option value='' ></option>
                         <option value='AL'>AL</option>
                         <option value='AK'>AK</option>
                         <option value='AR'>AR</option>

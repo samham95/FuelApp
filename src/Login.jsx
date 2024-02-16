@@ -1,4 +1,4 @@
-import { React, useState } from 'react'
+import { React, useState, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { client } from './apiClient'
 import './styles.css'
@@ -14,8 +14,14 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [isChecked, setIsChecked] = useState(false);
 
-
     const token = localStorage.getItem('token');
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/profile');
+        }
+    }, []);
 
     const updateUsername = (e) => {
         setUsername(e.target.value)
@@ -53,13 +59,8 @@ const Login = () => {
                 const status = err.response.status
                 if (status === 400) {
                     alert('Login failed - incorrect credentials!')
-                    navigate('/login')
                 }
             })
-    }
-
-    if (token) {
-        navigate('/profile')
     }
 
     return (
