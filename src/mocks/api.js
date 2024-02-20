@@ -3,7 +3,8 @@ const JWT_SECRET = 'secretkeyhehehe';
 
 let users = new Map();
 let sessions = new Map();
-let revokedTokens = new Map();
+//let revokedTokens = new Map();
+let quoteHistory = new Map();
 users.set('samham', {
     fullname: 'Sammy Hamdi',
     password: 'abc123',
@@ -94,7 +95,8 @@ const apiHandles = [
     }),
 
     http.post('/api/auth', async ({ request, params, cookies }) => {
-        const { username, token } = await request.json();
+        const { username } = await request.json();
+        const token = request.headers.get('Authorization').split(' ')[1];
         if (authenticateUser(username, token)) {
             return HttpResponse.json(
                 {
@@ -157,6 +159,9 @@ const apiHandles = [
             users.set(username, profileData);
             return HttpResponse.json(
                 {
+                    message: "success"
+                },
+                {
                     status: 202,
                     statusText: "Mocked successful update of data"
                 }
@@ -164,6 +169,10 @@ const apiHandles = [
         }
         else {
             return HttpResponse.json(
+                {
+                    message: "failure"
+                },
+
                 {
                     status: 400,
                     statusText: "Mocked unsuccessful update of data"
@@ -222,6 +231,68 @@ const apiHandles = [
                 )
             }
 
+        }
+
+    }),
+
+    http.get('api/quote/:username/:gallonsRequested', async ({ request, params, cookies }) => {
+        const username = params.username;
+        const gallons = params.gallonsRequested;
+        const token = request.headers.get('Authorization').split(' ')[1];
+        console.log(token)
+        if (authenticateUser(username, token)) {
+            const pricePerGallon = 2.5;
+            return HttpResponse.json(
+                {
+                    pricePerGallon
+                },
+                {
+                    status: 200,
+                    statusText: "Successfully mocked get quote"
+                }
+            )
+        }
+        else {
+            return HttpResponse.json(
+                {
+
+                },
+                {
+                    status: 400,
+                    statusText: "Successfully mocked get quote failure"
+                }
+            )
+        }
+
+    }),
+
+    http.post('/quote', async ({ request, params, cookies }) => {
+        const { username, street, city, state, zip, deliveryDate, gallonsRequested, suggestedPricePerGallon, totalDue } = await request.json();
+        try {
+            if (!quoteHistory.get(username)) quoteHistory.set(username, []);
+            const newQuote = {
+                username,
+                address: { street, city, state, zip },
+                deliveryDate,
+                gallonsRequested,
+                suggestedPricePerGallon,
+                totalDue
+            };
+            const userQuoteHistory = quoteHistory.get(username);
+            userQuoteHistory.push(newQuote);
+            return HttpResponse.json(
+                {
+                    status: 200,
+                    statusText: "Sucessfully mocked update quote history"
+                }
+            )
+        } catch (err) {
+            return HttpResponse.json(
+                {
+                    status: 400,
+                    statusText: "Successfully mocked unable to submit quote history"
+                }
+            )
         }
 
     })

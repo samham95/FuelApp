@@ -23,7 +23,7 @@ const ProfileData = () => {
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
             try {
-                const res = await authClient(token).post('/auth', { username, token });
+                const res = await authClient(token).post('/auth', { username });
                 const auth = res.data.isAuthorized;
 
                 if (!auth) {
@@ -50,27 +50,38 @@ const ProfileData = () => {
         <>
             <br />
             <h1 className='header'>Welcome, {profileData.fullname}</h1>
-            <br />
-            <br />
-            <div className='container'>
-                <label className='label' htmlFor='fullname'>Full Name:</label>
-                <input name='fullname' type='text' value={profileData.fullname || ''} readOnly={true} />
-                <br />
-                <label className='label' htmlFor='street1'>Street Address:</label>
-                <input name='street1' type='text' value={profileData.street1 || ''} readOnly={true} />
-                <label className='label' htmlFor='street2'>Alternate Street Address:</label>
-                <input name='street2' type='text' value={profileData.street2 || ''} readOnly={true} />
-                <label className='label' htmlFor='city'>City:</label>
-                <input name='city' type='text' value={profileData.city || ''} readOnly={true} />
-                <label className='label' htmlFor='state'>State:</label>
-                <input name='state' type='text' value={profileData.state || ''} readOnly={true} />
-                <label className='label' htmlFor='zipcode'>Zip Code:</label>
-                <input name='zipcode' type='text' value={profileData.zip || ''} readOnly={true} />
-                <h4>
-                    <center>
-                        <Link to='/profile/edit'>Edit Profile</Link>
-                    </center>
-                </h4>
+
+            <div className="container mt-5">
+                {/*<h1 className='header text-center mb-4'>Profile Data </h1>*/}
+
+                <div className='form-group'>
+                    <label htmlFor='fullname'>Full Name:</label>
+                    <input name='fullname' type='text' className="form-control" value={profileData.fullname || ''} readOnly />
+                </div>
+                <div className='form-group'>
+                    <label htmlFor='street1'>Street Address:</label>
+                    <input name='street1' type='text' className="form-control" value={profileData.street1 || ''} readOnly />
+                </div>
+                <div className='form-group'>
+                    <label htmlFor='street2'>Alternate Street Address:</label>
+                    <input name='street2' type='text' className="form-control" value={profileData.street2 || ''} readOnly />
+                </div>
+                <div className='form-group'>
+                    <label htmlFor='city'>City:</label>
+                    <input name='city' type='text' className="form-control" value={profileData.city || ''} readOnly />
+                </div>
+                <div className='form-group'>
+                    <label htmlFor='state'>State:</label>
+                    <input name='state' type='text' className="form-control" value={profileData.state || ''} readOnly />
+                </div>
+                <div className='form-group'>
+                    <label htmlFor='zipcode'>Zip Code:</label>
+                    <input name='zipcode' type='text' className="form-control" value={profileData.zip || ''} readOnly />
+                </div>
+
+                <div className="text-center mt-4">
+                    <Link to='/profile/edit' className="btn btn-primary">Edit Profile</Link>
+                </div>
             </div>
         </>
     );

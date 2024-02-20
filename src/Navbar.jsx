@@ -26,7 +26,6 @@ const Navbar = () => {
                         <li className="nav-item active">
                             <Link className="nav-link navLink" to="/">Home <span className="sr-only">(current)</span></Link>
                         </li>
-                        {/* Ternary operator to display links based on activeSession */}
                         {activeSession ? (
                             <>
                                 <li className="nav-item active">
@@ -39,7 +38,7 @@ const Navbar = () => {
                                     <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <Link className="dropdown-item navLink" to="/profile">My Profile</Link>
                                         <div className="dropdown-divider"></div>
-                                        <Link className="dropdown-item navLink" to="/">New Fuel Quote</Link>
+                                        <Link className="dropdown-item navLink" to="/quote">New Fuel Quote</Link>
                                         <Link className="dropdown-item navLink" to="/">Quote History</Link>
                                     </div>
                                 </li>
@@ -55,7 +54,6 @@ const Navbar = () => {
                             </>
                         )}
                     </ul>
-                    {/* Conditional rendering for Logout based on activeSession */}
                     {activeSession && (
                         <div className="ml-auto">
                             <Logout />

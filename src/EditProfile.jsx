@@ -12,7 +12,7 @@ const EditProfile = () => {
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
             try {
-                const authRes = await authClient(token).post('/auth', { username, token });
+                const authRes = await authClient(token).post('/auth', { username });
                 const isAuthorized = authRes.data.isAuthorized;
 
                 if (!isAuthorized) {
