@@ -6,8 +6,7 @@ import './styles.css';
 const Navbar = () => {
     let location = useLocation()
     const token = localStorage.getItem('token');
-    const initState = token === 'null';
-    const [activeSession, setActiveSession] = useState(initState)
+    const [activeSession, setActiveSession] = useState(token)
     useEffect(() => {
         let currState = localStorage.getItem('token');
         if (currState) setActiveSession(true)
