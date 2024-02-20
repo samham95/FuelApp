@@ -8,6 +8,8 @@ const FuelQuoteForm = () => {
     const navigate = useNavigate();
     const username = localStorage.getItem('username')
     const token = localStorage.getItem('token');
+    // today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
     const [gallonsRequested, setGallonsRequested] = useState('');
     const [deliveryDate, setDeliveryDate] = useState('');
     const [suggestedPricePerGallon, setSuggestedPricePerGallon] = useState(NaN);
@@ -58,7 +60,6 @@ const FuelQuoteForm = () => {
             const res = await authClient(token).get(`/quote/${username}/${gallonsRequested}`);
             if (res.status === 400) throw new Error("Unable to get quote");
             const { pricePerGallon } = res.data;
-            console.log(res.data)
             setSuggestedPricePerGallon(parseFloat(pricePerGallon));
             setTotalDue(pricePerGallon * gallonsRequested);
         } catch (err) {
@@ -123,6 +124,7 @@ const FuelQuoteForm = () => {
                             id="gallonsRequested"
                             required
                             value={gallonsRequested}
+                            min={1}
                             onChange={e => setGallonsRequested(e.target.value)}
                         />
                     </div>
@@ -132,6 +134,7 @@ const FuelQuoteForm = () => {
                             type="date"
                             className="form-control"
                             id="deliveryDate"
+                            min={today}
                             value={deliveryDate}
                             onChange={e => setDeliveryDate(e.target.value)}
                         />
