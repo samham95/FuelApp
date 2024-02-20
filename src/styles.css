@@ -129,5 +129,9 @@ input[type='checkbox'] {
 
 .container label {
     font-weight: bold;
-    /* or use 700 as a numeric value */
+}
+
+.border-dashed.custom-border-color {
+    border-top-color: #333333 !important;
+    border-top-style: dashed !important;
 }

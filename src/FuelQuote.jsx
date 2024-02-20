@@ -141,7 +141,7 @@ const FuelQuoteForm = () => {
                     </div>
                     <button type="submit" className="btn btn-primary" onClick={handleQuote}>GENERATE QUOTE</button>
                     <br />
-                    <div className="my-3 border-top border-dashed"></div>
+                    <div className="my-3 border-top border-dashed custom-border-color"></div>
                     <br />
                     <div className="form-group">
                         <label htmlFor="suggestedPrice">Suggested Price / gallon</label>
