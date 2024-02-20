@@ -11,7 +11,6 @@ const Logout = () => {
         const token = localStorage.getItem('token')
 
         const response = await authClient(token).post('/logout', { username });
-        //console.log(response.status)
         localStorage.clear()
         navigate('/')
     }

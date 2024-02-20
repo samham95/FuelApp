@@ -23,18 +23,6 @@ const Login = () => {
         }
     }, []);
 
-    const updateUsername = (e) => {
-        setUsername(e.target.value)
-    }
-
-    const updatePassword = (e) => {
-        setPassword(e.target.value)
-    }
-
-    const updateCheckbox = (e) => {
-        setIsChecked(e.target.checked);
-    };
-
     const loginSucess = (token) => {
         localStorage.clear()
         localStorage.setItem('token', token)
@@ -84,7 +72,7 @@ const Login = () => {
                             id='user'
                             name='user'
                             placeholder='Username'
-                            onChange={updateUsername}
+                            onChange={(e) => setUsername(e.target.value)}
                             required
                         />
                         <br />
@@ -96,7 +84,7 @@ const Login = () => {
                             id='password'
                             name='password'
                             placeholder='Password'
-                            onChange={updatePassword}
+                            onChange={(e) => setPassword(e.target.value)}
                             required
                         />
 
@@ -104,7 +92,7 @@ const Login = () => {
                         <input
                             type='checkbox'
                             id='checked'
-                            onChange={updateCheckbox}
+                            onChange={(e) => setIsChecked(e.target.value)}
                             checked={isChecked} />
                         Remember me
                         <br />

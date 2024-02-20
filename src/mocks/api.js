@@ -267,7 +267,16 @@ const apiHandles = [
     }),
 
     http.post('/quote', async ({ request, params, cookies }) => {
-        const { username, street, city, state, zip, deliveryDate, gallonsRequested, suggestedPricePerGallon, totalDue } = await request.json();
+        const {
+            username,
+            street,
+            city,
+            state,
+            zip,
+            deliveryDate,
+            gallonsRequested,
+            suggestedPricePerGallon,
+            totalDue } = await request.json();
         try {
             if (!quoteHistory.get(username)) quoteHistory.set(username, []);
             const newQuote = {
