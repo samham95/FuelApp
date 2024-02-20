@@ -20,7 +20,7 @@ const Navbar = () => {
                     <img src="/fuel_logo.png" width="40" height="40" alt="" />
                 </Link>
 
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                <div className="collapse navbar-collapse" id="collapseNavbar">
                     <ul className="navbar-nav mr-auto">
                         <li className="nav-item active">
                             <Link className="nav-link navLink" to="/">Home <span className="sr-only">(current)</span></Link>
