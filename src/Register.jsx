@@ -54,7 +54,7 @@ const Register = () => {
                 <h1>Register Here</h1>
                 <form onSubmit={submitRegister}>
                     <div className='container'>
-                        {errorMessage && <p className="error-message">{errorMessage}</p>}
+                        {errorMessage && <p className="error-message" style={{ color: "red" }}>{errorMessage}</p>}
                         <label className='label' htmlFor='user'>
                             Username:
                         </label>
@@ -101,7 +101,7 @@ const Register = () => {
                         </h4>
                     </div>
                 </form>
-            </center>
+            </center >
         </>
     );
 };
