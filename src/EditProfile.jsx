@@ -94,7 +94,7 @@ const EditProfile = () => {
                     <br />
                     <label htmlFor='state'>State:</label>
                     <br />
-                    <select name='state' defaultValue={profileData.state} onChange={handleChange} required>
+                    <select name='state' value={profileData.state} onChange={handleChange} required>
                         <option value='' ></option>
                         <option value='AL'>AL</option>
                         <option value='AK'>AK</option>

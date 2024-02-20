@@ -107,11 +107,11 @@ input[type='checkbox'] {
 }
 
 .my-navbar-dark {
-    background-color: #000000
+    background-color: #000000 !important;
 }
 
 .navbar.bg-dark {
-    background-color: #000000
+    background-color: #000000 !important;
 }
 
 .header {
