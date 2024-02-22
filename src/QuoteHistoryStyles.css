@@ -1,0 +1,58 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    margin: auto;
+    padding: 50px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    background-color: #000000;
+}
+
+.fuelTable {
+    border-collapse: collapse;
+
+}
+
+caption {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.fuelHistory {
+    display: block;
+    top: 50px;
+    width: 80%;
+    margin: auto;
+    table-layout: fixed;
+    overflow-y: auto;
+    height: 500px;
+}
+
+.fuelHistory thead th {
+    position: sticky;
+    top: 0;
+}
+
+.tableHistory thead tr {
+    display: block;
+}
+
+th {
+    background-color: #b7bdeb;
+    padding: 20px;
+}
+
+td {
+    text-align: center;
+    padding: 32px;
+}
+
+tr:nth-child(even) {
+    background-color: #d2e3ed;
+    padding: 15px;
+}

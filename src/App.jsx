@@ -6,7 +6,7 @@ import Profile from './Profile.jsx'
 import EditProfile from './EditProfile.jsx'
 import Register from './Register.jsx'
 import FuelQuote from './FuelQuote.jsx'
-import FuelHistory from './FuelHistory.jsx'
+import FuelQuoteHistory from './FuelQuoteHistory.jsx'
 
 
 
@@ -28,7 +28,7 @@ const appRouter = createBrowserRouter(
       <Route path='/profile/edit' element={<EditProfile />} />
       <Route path='/register' element={<Register />} />
       <Route path='/quote' element={<FuelQuote />} />
-      <Route path='/quote/history' element={<FuelHistory />} />
+      <Route path='/quote/history' element={<FuelQuoteHistory />} />
     </Route>
   )
 );
