@@ -235,7 +235,7 @@ const apiHandles = [
 
     }),
 
-    http.get('api/quote/:username/:gallonsRequested', async ({ request, params, cookies }) => {
+    http.get('/api/quote/:username/:gallonsRequested', async ({ request, params, cookies }) => {
         const username = params.username;
         const gallons = params.gallonsRequested;
         const token = request.headers.get('Authorization').split(' ')[1];
