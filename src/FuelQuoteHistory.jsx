@@ -1,6 +1,25 @@
 import './QuoteHistoryStyles.css'
+import { React, useState, useEffect } from 'react'
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { authClient } from './apiClient';
 
 const FuelQuoteHistory = () => {
+    const username = localStorage.getItem('username');
+    const token = localStorage.getItem('token');
+
+    const [quotes, SetQuotes] = useState([]);
+    useEffect( () => {
+        async function getQuotes() {
+            try {
+                const res = authClient(token).get('/quote/history/:username');
+                SetQuotes(res.data.quotes);
+            } catch(err) {
+                alert("Unable to get quotes");
+            }
+        }
+        getQuotes();
+    });
+
     return (
         <>
             <div className="pageTitle">

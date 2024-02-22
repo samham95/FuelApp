@@ -304,8 +304,33 @@ const apiHandles = [
             )
         }
 
-    })
+    }),
 
+    http.get('/quote/history/:username', async ({ request, params, cookies }) => {
+        const username = params.username;
+        const token = request.headers.get('Authorization').split(' ')[1];
+        if(authenticateUser(username, token)) {
+            try {
+                const quotes = quoteHistory.get(username);
+                return HttpResponse.json(
+                    {
+                        quotes
+                    },
+                    {
+                        status: 200,
+                        statusText: "Successfully mocked update quote history"
+                    }
+                ) 
+            } catch(err) {
+                return HttpResponse.json(
+                    {
+                        status: 400,
+                        statusText: "Successfully mocked unable to submit quote history"
+                    }
+                )
+            }
+        }
+    })
 ];
 
 export default apiHandles;
