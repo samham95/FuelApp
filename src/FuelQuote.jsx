@@ -83,7 +83,7 @@ const FuelQuoteForm = () => {
             });
             if (res.status === 400) throw new Error("Unable to save quote")
             alert("Successfully save your new quote!")
-            //navigate('/history')
+            navigate('/-quote-history')
         } catch (err) {
             alert("Unable to save quote. Please try again later");
         }
