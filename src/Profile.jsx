@@ -80,7 +80,7 @@ const ProfileData = () => {
                 </div>
 
                 <div className="text-center mt-4">
-                    <Link to='/profile/edit' className="btn btn-primary">Edit Profile</Link>
+                    <Link to='/profile/edit'><button type="submit" className="btn btn-primary">Edit Profile</button></Link>
                 </div>
             </div>
         </>

@@ -153,7 +153,7 @@ const EditProfile = () => {
                     <label htmlFor='zip'>Zip Code:</label>
                     <input name='zip' type='text' value={profileData.zip} onChange={handleChange} required minLength={5} maxLength={9} />
                     <br />
-                    <button type='submit'>Save Changes</button>
+                    <button type='submit'>Save</button>
                 </form>
             </div>
         </>

@@ -95,7 +95,7 @@ const FuelQuoteForm = () => {
                 <h1>Fuel Quote Form</h1>
             </center>
             <div className="container mt-3">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleQuote}>
                     <div className="form-group">
                         <label htmlFor="clientName">Client Name</label>
                         <input
@@ -136,13 +136,16 @@ const FuelQuoteForm = () => {
                             id="deliveryDate"
                             min={today}
                             value={deliveryDate}
+                            required
                             onChange={e => setDeliveryDate(e.target.value)}
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary" onClick={handleQuote}>GENERATE QUOTE</button>
+                    <button type="submit" className="btn btn-primary">GENERATE QUOTE</button>
                     <br />
-                    <div className="my-3 border-top border-dashed custom-border-color"></div>
-                    <br />
+                </form>
+                <div className="my-3 border-top border-dashed custom-border-color"></div>
+                <br />
+                <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="suggestedPrice">Suggested Price / gallon</label>
                         <input
