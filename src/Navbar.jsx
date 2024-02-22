@@ -38,7 +38,7 @@ const Navbar = () => {
                                         <Link className="dropdown-item navLink" to="/profile">My Profile</Link>
                                         <div className="dropdown-divider"></div>
                                         <Link className="dropdown-item navLink" to="/quote">New Fuel Quote</Link>
-                                        <Link className="dropdown-item navLink" to="/-quote-history">Quote History</Link>
+                                        <Link className="dropdown-item navLink" to="/quote/history">Quote History</Link>
                                     </div>
                                 </li>
                             </>
