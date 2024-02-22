@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { client } from './apiClient'
+import { authClient, client } from './apiClient'
 import './styles.css'
 
 const Login = () => {
@@ -14,13 +14,18 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [isChecked, setIsChecked] = useState(false);
 
-    const token = localStorage.getItem('token');
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (token) {
-            navigate('/profile');
-        }
+        const username = localStorage.getItem('username');
+        authClient(token).post('/auth', { username })
+            .then((res) => {
+                const auth = res.data.isAuthorized;
+                if (auth) navigate('/profile');
+            })
+            .catch((err) => {
+                return;
+            })
     }, []);
 
     const loginSucess = (token) => {

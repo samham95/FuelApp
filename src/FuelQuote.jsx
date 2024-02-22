@@ -82,7 +82,7 @@ const FuelQuoteForm = () => {
                 totalDue
             });
             if (res.status === 400) throw new Error("Unable to save quote")
-            alert("Successfully save your new quote!")
+            alert("Successfully saved your new quote!")
             navigate('/quote/history')
         } catch (err) {
             alert("Unable to save quote. Please try again later");

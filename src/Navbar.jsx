@@ -2,16 +2,25 @@ import { React, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Logout from './Logout';
 import './styles.css';
+import { authClient } from './apiClient';
 
 const Navbar = () => {
     let location = useLocation()
-    const token = localStorage.getItem('token');
-    const [activeSession, setActiveSession] = useState(token)
+    const [activeSession, setActiveSession] = useState(false)
+
     useEffect(() => {
-        let currState = localStorage.getItem('token');
-        if (currState) setActiveSession(true)
-        else setActiveSession(false)
-    }, [location])
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+        authClient(token).post('/auth', { username })
+            .then((res) => {
+                const auth = res.data.isAuthorized;
+                if (auth) setActiveSession(true);
+                else throw new Error;
+            })
+            .catch(() => {
+                setActiveSession(false);
+            })
+    }, [location]);
 
     return (
         <div>

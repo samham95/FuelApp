@@ -266,7 +266,7 @@ const apiHandles = [
 
     }),
 
-    http.post('/quote', async ({ request, params, cookies }) => {
+    http.post('/api/quote', async ({ request, params, cookies }) => {
         const {
             username,
             street,
@@ -306,11 +306,11 @@ const apiHandles = [
 
     }),
 
-    http.get('/quote/history/:username', async ({ request, params, cookies }) => {
+    http.get('/api/history/:username', async ({ request, params, cookies }) => {
         const username = params.username;
         const token = request.headers.get('Authorization').split(' ')[1];
-        if(authenticateUser(username, token)) {
-            try {
+        try {
+            if (authenticateUser(username, token)) {
                 const quotes = quoteHistory.get(username);
                 return HttpResponse.json(
                     {
@@ -320,15 +320,25 @@ const apiHandles = [
                         status: 200,
                         statusText: "Successfully mocked update quote history"
                     }
-                ) 
-            } catch(err) {
+                )
+            }
+            else {
                 return HttpResponse.json(
                     {
-                        status: 400,
-                        statusText: "Successfully mocked unable to submit quote history"
+                        message: "Not authorized"
+                    },
+                    {
+                        status: 403
                     }
                 )
             }
+        } catch (err) {
+            return HttpResponse.json(
+                {
+                    status: 500,
+                    statusText: "Successfully mocked unable to submit quote history"
+                }
+            )
         }
     })
 ];

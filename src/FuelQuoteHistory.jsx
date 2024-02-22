@@ -8,74 +8,76 @@ const FuelQuoteHistory = () => {
     const token = localStorage.getItem('token');
 
     const [quotes, SetQuotes] = useState([]);
-    useEffect( () => {
-        async function getQuotes() {
+    useEffect(() => {
+        const checkAuthorizationAndFetchData = async () => {
             try {
-                const res = authClient(token).get('/quote/history/:username');
-                SetQuotes(res.data.quotes);
-            } catch(err) {
-                alert("Unable to get quotes");
+                const res = await authClient(token).post('/auth', { username });
+                const auth = res.data.isAuthorized;
+
+                if (!auth) {
+                    throw new Error('Not authorized');
+                }
+
+                const response = await authClient(token).get(`/history/${username}`);
+                const quoteHistory = response.data.quotes;
+                SetQuotes(quoteHistory);
+            } catch (err) {
+                if (err.response.status === 500) {
+                    alert('Unable to get quotes')
+                    navigate('/profile')
+                }
+                else if (err.response.status === 403) {
+                    localStorage.clear();
+                    navigate('/login');
+                }
+
             }
-        }
-        getQuotes();
-    });
+        };
+        checkAuthorizationAndFetchData();
+    }, []);
 
     return (
         <>
-            <div className="pageTitle">
-                <h1 className="header1">Fuel History</h1>
-            </div>
-            <div className="fuelHistory">
-                <table className="fuelTable">
-                    <caption>Previous Fuel Quotes</caption>
-                    <thead>
-                        <tr>
-                            <th>Gallons Requested</th>
-                            <th>Delivery Address</th>
-                            <th>Delivery Date</th>
-                            <th>Suggested Price (per gallon)</th>
-                            <th>Total Due</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>100</td>
-                            <td>4300 Martin Luther King Blvd, Houston, TX 77204</td>
-                            <td>10/12/23</td>
-                            <td>$2.88</td>
-                            <td>$288</td>
-                        </tr>
-                        <tr>
-                            <td>88</td>
-                            <td>4300 Martin Luther King Blvd, Houston, TX 77204</td>
-                            <td>11/12/23</td>
-                            <td>$2.51</td>
-                            <td>$220.88</td>
-                        </tr>
-                        <tr>
-                            <td>92</td>
-                            <td>4300 Martin Luther King Blvd, Houston, TX 77204</td>
-                            <td>12/12/23</td>
-                            <td>$2.45</td>
-                            <td>$225.4</td>
-                        </tr>
-                        <tr>
-                            <td>150</td>
-                            <td>4300 Martin Luther King Blvd, Houston, TX 77204</td>
-                            <td>01/12/24</td>
-                            <td>$2.65</td>
-                            <td>$397.5</td>
-                        </tr>
-                        <tr>
-                            <td>125</td>
-                            <td>4300 Martin Luther King Blvd, Houston, TX 77204</td>
-                            <td>02/12/24</td>
-                            <td>$2.87</td>
-                            <td>$358.75</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <center>
+                <div className="pageTitle">
+                    <h1 className="header1">Fuel Quote History</h1>
+                </div>
+                <div className="fuelHistory">
+                    <table className="fuelTable">
+                        <thead>
+                            <tr>
+                                <th>Gallons Requested</th>
+                                <th>Delivery Address</th>
+                                <th>Delivery Date</th>
+                                <th>Suggested Price (per gallon)</th>
+                                <th>Total Due</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                quotes !== undefined && quotes.length > 0 ? (
+                                    quotes.map((q, indx) => {
+                                        const address = `${q.address.street}, ${q.address.city}, ${q.address.state}, ${q.address.zip}`;
+                                        return (
+                                            <tr key={indx}>
+                                                <td>{q.gallonsRequested}</td>
+                                                <td>{address}</td>
+                                                <td>{q.deliveryDate}</td>
+                                                <td>{`$${q.suggestedPricePerGallon.toFixed(2)}`}</td>
+                                                <td>{`$${q.totalDue.toFixed(2)}`}</td>
+                                            </tr>
+                                        );
+                                    })
+                                ) : (
+                                    <tr><td colSpan="5">No quotes available</td></tr>
+                                )
+                            }
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </center>
         </>
     );
 }
