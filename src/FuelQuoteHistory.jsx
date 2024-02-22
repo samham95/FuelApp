@@ -4,7 +4,7 @@ const FuelQuoteHistory = () => {
     return (
         <>
             <div className="pageTitle">
-                <h1>Fuel History</h1>
+                <h1 className="header1">Fuel History</h1>
             </div>
             <div className="fuelHistory">
                 <table className="fuelTable">

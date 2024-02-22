@@ -5,12 +5,11 @@ body {
     padding: 0;
 }
 
-h1 {
+.header1 {
     margin: auto;
     padding: 50px;
     text-align: center;
-    color: rgb(255, 255, 255);
-    background-color: #000000;
+    color: rgb(0, 0, 0);
 }
 
 .fuelTable {
