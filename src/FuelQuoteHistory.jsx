@@ -46,11 +46,11 @@ const FuelQuoteHistory = () => {
                     <table className="fuelTable">
                         <thead>
                             <tr>
-                                <th>Gallons Requested</th>
-                                <th>Delivery Address</th>
-                                <th>Delivery Date</th>
-                                <th>Suggested Price (per gallon)</th>
-                                <th>Total Due</th>
+                                <th class="text-center">Gallons Requested</th>
+                                <th class="text-center">Delivery Address</th>
+                                <th class="text-center">Delivery Date</th>
+                                <th class="text-center">Suggested Price (per gallon)</th>
+                                <th class="text-center">Total Due</th>
                             </tr>
                         </thead>
                         <tbody>
