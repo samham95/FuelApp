@@ -4,24 +4,12 @@ import { client } from './apiClient';
 import './styles.css';
 
 const Register = () => {
-    const navigate = useNavigate();
 
+    const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-
-    const updateUsername = (e) => {
-        setUsername(e.target.value);
-    };
-
-    const updatePassword = (e) => {
-        setPassword(e.target.value);
-    };
-
-    const updateConfirmPassword = (e) => {
-        setConfirmPassword(e.target.value);
-    };
 
     const submitRegister = async (e) => {
         e.preventDefault();
@@ -54,7 +42,7 @@ const Register = () => {
                 <h1>Register Here</h1>
                 <form onSubmit={submitRegister}>
                     <div className='container'>
-                        {errorMessage && <p className="error-message">{errorMessage}</p>}
+                        {errorMessage && <p className="error-message" style={{ color: "red" }}>{errorMessage}</p>}
                         <label className='label' htmlFor='user'>
                             Username:
                         </label>
@@ -63,7 +51,7 @@ const Register = () => {
                             id='user'
                             name='user'
                             placeholder='Username'
-                            onChange={updateUsername}
+                            onChange={(e) => setUsername(e.target.value)}
                             required
                         />
                         <br />
@@ -75,7 +63,7 @@ const Register = () => {
                             id='password'
                             name='password'
                             placeholder='Password'
-                            onChange={updatePassword}
+                            onChange={(e) => setPassword(e.target.value)}
                             required
                         />
                         <br />
@@ -87,7 +75,7 @@ const Register = () => {
                             id='confirmPassword'
                             name='confirmPassword'
                             placeholder='Confirm Password'
-                            onChange={updateConfirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                             required
                         />
                         <br />
@@ -101,7 +89,7 @@ const Register = () => {
                         </h4>
                     </div>
                 </form>
-            </center>
+            </center >
         </>
     );
 };
