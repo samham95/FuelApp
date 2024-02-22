@@ -19,7 +19,7 @@ const Navbar = () => {
             <div>
                 <nav className="navbar navbar-expand-lg navbar-dark bg-dark my-navbar-dark">
                     <Link className="navbar-brand" to="/">
-                        <img src="/fuel_logo.png" width="40" height="40" alt="" />
+                        <img src="/fuel_logo2.png" width="40" height="40" alt="" />
                     </Link>
 
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -55,7 +55,7 @@ const Navbar = () => {
             <div>
                 <nav className="navbar navbar-expand-lg navbar-dark bg-dark my-navbar-dark">
                     <Link className="navbar-brand" to="/">
-                        <img src="/fuel_logo.png" width="40" height="40" alt="" />
+                        <img src="/fuel_logo2.png" width="40" height="40" alt="" />
                     </Link>
 
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
