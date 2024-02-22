@@ -12,7 +12,7 @@ users.set('samham', {
     street1: '9222 Memorial Dr.',
     street2: '1215 Main Street',
     city: 'Houston',
-    state: 'Texas',
+    state: 'TX',
     zip: '77379',
 });
 
@@ -197,7 +197,7 @@ const apiHandles = [
         else {
             return HttpResponse.json(
                 {
-                    status: 500,
+                    status: 400,
                     statusText: 'Mocked unsuccessfully session termination'
                 }
             )
