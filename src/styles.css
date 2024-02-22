@@ -58,6 +58,22 @@ button[type='submit']:hover {
     background-color: rgb(62, 62, 224);
 }
 
+/* Styling landing page button */
+button[type='request'] {
+    width: 25%;
+    background-color: #0400ff;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 100px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button[type='request']:hover {
+    background-color: rgb(62, 62, 224);
+}
+
 /* Styling links */
 h2 {
     font-size: 0.7rem;
@@ -76,6 +92,41 @@ h2 a:hover {
 .h1 {
     color: #333;
 }
+
+/* Styling for Landing Page title*/
+.heading{
+    padding-top: 250px;
+    padding-left: 25px;
+}
+.v{
+    border-left: 8px solid #202ddd;
+    margin-left: 65px;
+    height:60px;
+}
+.hA{
+    color:#202ddd;
+    margin-left: 15px;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.hB {
+    line-height: 75%;
+    margin-left: 50px;
+    margin-bottom: 2rem;
+    font-size: 150px;
+    font-weight: bold;
+    background: -webkit-linear-gradient(#0400ff, #ffffff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;   
+}
+.hC{
+    color:#8882be;
+    margin-left: 70px;
+    font-size: 25px;
+    font-weight: bold;
+}
+
 
 /* Styling for "Remember me" checkbox */
 input[type='checkbox'] {

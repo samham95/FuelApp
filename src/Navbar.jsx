@@ -13,12 +13,13 @@ const Navbar = () => {
         else setActiveSession(false)
     }, [location])
 
-    return (
-        <div>
-            <nav className="navbar navbar-expand-lg navbar-dark bg-dark my-navbar-dark">
-                <Link className="navbar-brand" to="/">
-                    <img src="/fuel_logo.png" width="40" height="40" alt="" />
-                </Link>
+    if (activeSession) {
+        return (
+            <div>
+                <nav className="navbar navbar-expand-lg navbar-dark bg-dark my-navbar-dark">
+                    <Link className="navbar-brand" to="/">
+                        <img src="/fuel_logo2.png" width="40" height="40" alt="" />
+                    </Link>
 
                 <div className="collapse navbar-collapse" id="collapseNavbar">
                     <ul className="navbar-nav mr-auto">
