@@ -32,6 +32,10 @@ const Navbar = () => {
                         <li className="nav-item active">
                             <Link className="nav-link navLink" to="/">Home <span className="sr-only">(current)</span></Link>
                         </li>
+                        <li className='nav-item active'>
+                            <a className='nav-link navLink' href='#containers'>About Us</a>
+                        </li>
+
                         {activeSession ? (
                             <>
                                 <li className="nav-item active">

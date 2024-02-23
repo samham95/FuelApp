@@ -95,7 +95,7 @@ h2 a:hover {
 
 /* Styling for Landing Page title*/
 .heading {
-    padding-top: 400px;
+    padding-top: 150px;
     padding-left: 25px;
 }
 
@@ -132,22 +132,21 @@ h2 a:hover {
 
 /* Styling for landing about section */
 .column {
-    column-gap: normal;
-    width: 20%;
-    padding: 500px 10px;
-    display: flex;
-    float: left;
+    flex: 1;
+    min-width: 250px;
+    margin-bottom: 20px;
+    margin-top: 600px;
 }
 
 .card {
-    height: 375px;
-    width: 350px;
+    height: 325px;
+    width: 325px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
     border-radius: 10px;
     position: absolute;
-    margin-left: 200px;
-    bottom: 40px;
+    margin-left: 50px;
+    bottom: 100px;
 
 }
 
@@ -190,10 +189,14 @@ h2 a:hover {
 }
 
 #containers {
-    margin-top: -30%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 20px;
+    margin-top: 2rem;
     position: relative;
-
 }
+
 
 
 /* Styling for "Remember me" checkbox */
