@@ -145,13 +145,13 @@ h2 a:hover {
     transition: 0.3s;
     border-radius: 10px;
     position: absolute;
-    margin-left: 50px;
+    margin-left: 30px;
     bottom: 100px;
 
 }
 
 .card h2 {
-    font-size: 25px;
+    font-size: 20px;
     color: #0400ff;
 }
 

@@ -33,14 +33,11 @@ const Navbar = () => {
                             <Link className="nav-link navLink" to="/">Home <span className="sr-only">(current)</span></Link>
                         </li>
                         <li className='nav-item active'>
-                            <a className='nav-link navLink' href='#containers'>About Us</a>
+                            <a className='nav-link navLink' href='/#containers'>About</a>
                         </li>
 
                         {activeSession ? (
                             <>
-                                <li className="nav-item active">
-                                    <Link className="nav-link navLink" to="/">About</Link>
-                                </li>
                                 <li className="nav-item dropdown active">
                                     <a className="nav-link dropdown-toggle navLink" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Profile
@@ -58,6 +55,7 @@ const Navbar = () => {
                                 <li className="nav-item active">
                                     <Link className="nav-link navLink" to="/login">Login</Link>
                                 </li>
+
                                 <li className="nav-item active">
                                     <Link className="nav-link navLink" to="/register">Register</Link>
                                 </li>
