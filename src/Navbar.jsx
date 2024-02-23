@@ -1,13 +1,12 @@
 import { React, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Logout from './Logout';
-import './styles.css';
 import { authClient } from './apiClient';
+import './styles.css';
 
 const Navbar = () => {
     let location = useLocation()
     const [activeSession, setActiveSession] = useState(false)
-
     useEffect(() => {
         const token = localStorage.getItem('token');
         const username = localStorage.getItem('username');
@@ -28,7 +27,6 @@ const Navbar = () => {
                 <Link className="navbar-brand" to="/">
                     <img src="/fuel_logo2.png" width="40" height="40" alt="" />
                 </Link>
-
                 <div className="collapse navbar-collapse" id="collapseNavbar">
                     <ul className="navbar-nav mr-auto">
                         <li className="nav-item active">
@@ -71,7 +69,5 @@ const Navbar = () => {
             </nav>
         </div>
     );
-
 };
-
 export default Navbar;
