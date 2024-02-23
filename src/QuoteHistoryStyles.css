@@ -21,17 +21,9 @@ body {
 
 .fuelTable {
     border-collapse: collapse;
-}
-
-caption {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.fuelHistory {
     display: block;
     top: 50px;
-    width: 80%;
+    width: 45%;
     margin: auto;
     table-layout: fixed;
     overflow-y: auto;
@@ -40,13 +32,9 @@ caption {
     background-color: #ffffff;
 }
 
-.fuelHistory thead th {
+thead {
     position: sticky;
     top: 0;
-}
-
-.tableHistory thead tr {
-    display: block;
 }
 
 th {
