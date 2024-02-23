@@ -53,6 +53,7 @@ const Register = () => {
                             placeholder='Username'
                             onChange={(e) => setUsername(e.target.value)}
                             required
+                            maxlength = '50'
                         />
                         <br />
                         <label className='label' htmlFor='password'>
@@ -65,6 +66,8 @@ const Register = () => {
                             placeholder='Password'
                             onChange={(e) => setPassword(e.target.value)}
                             required
+                            minlength = '8'
+                            maxlength = '32'
                         />
                         <br />
                         <label className='label' htmlFor='confirmPassword'>
@@ -77,6 +80,8 @@ const Register = () => {
                             placeholder='Confirm Password'
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             required
+                            minlength = '8'
+                            maxlength = '32'
                         />
                         <br />
                         <br />

@@ -125,6 +125,7 @@ const FuelQuoteForm = () => {
                             required
                             value={gallonsRequested}
                             min={1}
+                            max={1000000000}
                             onChange={e => setGallonsRequested(e.target.value)}
                         />
                     </div>
