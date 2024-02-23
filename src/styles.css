@@ -138,60 +138,61 @@ h2 a:hover {
     display: flex;
     float: left;
 }
-  
+
 .card {
     height: 375px;
     width: 350px;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
     border-radius: 10px;
-    position:absolute;
+    position: absolute;
     margin-left: 200px;
-    bottom:40px;
+    bottom: 40px;
 
 }
-.card h2{
+
+.card h2 {
     font-size: 25px;
     color: #0400ff;
 }
-  
+
 /* On mouse-over, add a deeper shadow */
 .card:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
-  
-  /* Add some padding inside the card container */
+
+/* Add some padding inside the card container */
 .card-container {
     text-align: center;
     padding: 32px 50px;
 }
-  
-  /* Responsive columns */
- @media (max-width: 600px) {
+
+/* Responsive columns */
+@media (max-width: 600px) {
     .column {
-      width: 100%;
-      display: block;
-      margin-bottom: 20px;
+        width: 100%;
+        display: block;
+        margin-bottom: 20px;
     }
 }
 
-.card-icon{
+.card-icon {
     padding-bottom: 40px;
 }
 
-.card-art{
+.card-art {
     display: block;
     margin-top: 375px;
     margin-left: auto;
     margin-right: auto;
-    height:45%;
-    width:45%;
+    height: 45%;
+    width: 45%;
 }
 
-#containers{
+#containers {
     margin-top: -30%;
-    position:relative;
-    
+    position: relative;
+
 }
 
 
@@ -201,34 +202,34 @@ input[type='checkbox'] {
 }
 
 /* Styling for home nav bar */
-.nav-home{
+.nav-home {
     max-width: auto;
-    margin:auto;
-    padding:16px 16px;
+    margin: auto;
+    padding: 16px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 32px;
 }
 
-.nav-logo{
+.nav-logo {
     max-width: 100px;
 }
 
-.nav-link{
+.nav-link {
     list-style: none;
-    display:flex;
+    display: flex;
     align-items: center;
-    gap:48px;
+    gap: 48px;
 }
 
-.link a{
+.link a {
     position: relative;
     padding-bottom: 10px;
     color: #0400ff;
 }
 
-.link a::after{
+.link a::after {
     content: "";
     position: absolute;
     height: 2px;
@@ -239,7 +240,7 @@ input[type='checkbox'] {
     transition: all 0.3s ease;
 }
 
-.home-login{
+.home-login {
     padding: 10px 25px;
     font-size: 16px;
     color: #fff;
@@ -249,7 +250,7 @@ input[type='checkbox'] {
     transition: all 0.3s ease;
 }
 
-.home-login:hover{
+.home-login:hover {
     background-color: rgb(62, 62, 224);
 }
 
