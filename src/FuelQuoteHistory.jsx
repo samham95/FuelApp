@@ -38,7 +38,7 @@ const FuelQuoteHistory = () => {
 
     return (
         <>
-            <center>
+            <div className="quote-history-page">
                 <div className="pageTitle">
                     <h1 className="header1">Fuel Quote History</h1>
                 </div>
@@ -46,11 +46,11 @@ const FuelQuoteHistory = () => {
                     <table className="fuelTable">
                         <thead>
                             <tr>
-                                <th class="text-center">Gallons Requested</th>
-                                <th class="text-center">Delivery Address</th>
-                                <th class="text-center">Delivery Date</th>
-                                <th class="text-center">Suggested Price (per gallon)</th>
-                                <th class="text-center">Total Due</th>
+                                <th className="text-center">Gallons Requested</th>
+                                <th className="text-center">Delivery Address</th>
+                                <th className="text-center">Delivery Date</th>
+                                <th className="text-center">Suggested Price (per gallon)</th>
+                                <th className="text-center">Total Due</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -74,10 +74,9 @@ const FuelQuoteHistory = () => {
                             }
 
                         </tbody>
-
                     </table>
                 </div>
-            </center>
+            </div>
         </>
     );
 }
