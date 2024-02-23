@@ -10,6 +10,9 @@ const FuelQuoteForm = () => {
     const token = localStorage.getItem('token');
     // today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split('T')[0];
+    const nextYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+    const maxDate = nextYear.toISOString().split('T')[0];
+
     const [gallonsRequested, setGallonsRequested] = useState('');
     const [deliveryDate, setDeliveryDate] = useState('');
     const [suggestedPricePerGallon, setSuggestedPricePerGallon] = useState(NaN);
@@ -135,6 +138,7 @@ const FuelQuoteForm = () => {
                             className="form-control"
                             id="deliveryDate"
                             min={today}
+                            max={maxDate}
                             value={deliveryDate}
                             required
                             onChange={e => setDeliveryDate(e.target.value)}
