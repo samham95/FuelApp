@@ -95,7 +95,7 @@ h2 a:hover {
 
 /* Styling for Landing Page title*/
 .heading {
-    padding-top: 250px;
+    padding-top: 150px;
     padding-left: 25px;
 }
 
@@ -130,11 +130,133 @@ h2 a:hover {
     font-weight: bold;
 }
 
+/* Styling for landing about section */
+.column {
+    flex: 1;
+    min-width: 250px;
+    margin-bottom: 20px;
+    margin-top: 600px;
+}
+
+.card {
+    height: 325px;
+    width: 325px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    border-radius: 10px;
+    position: absolute;
+    margin-left: 30px;
+    bottom: 100px;
+
+}
+
+.card h2 {
+    font-size: 20px;
+    color: #0400ff;
+}
+
+/* On mouse-over, add a deeper shadow */
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Add some padding inside the card container */
+.card-container {
+    text-align: center;
+    padding: 32px 50px;
+}
+
+/* Responsive columns */
+@media (max-width: 600px) {
+    .column {
+        width: 100%;
+        display: block;
+        margin-bottom: 20px;
+    }
+}
+
+.card-icon {
+    padding-bottom: 40px;
+}
+
+.card-art {
+    display: block;
+    margin-top: 375px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 45%;
+    width: 45%;
+}
+
+#containers {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 20px;
+    margin-top: 2rem;
+    position: relative;
+}
+
+
 
 /* Styling for "Remember me" checkbox */
 input[type='checkbox'] {
     margin: 10px 0;
 }
+
+/* Styling for home nav bar */
+.nav-home {
+    max-width: auto;
+    margin: auto;
+    padding: 16px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.nav-logo {
+    max-width: 100px;
+}
+
+.nav-link {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 48px;
+}
+
+.link a {
+    position: relative;
+    padding-bottom: 10px;
+    color: #0400ff;
+}
+
+.link a::after {
+    content: "";
+    position: absolute;
+    height: 2px;
+    width: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgb(62, 62, 224);
+    transition: all 0.3s ease;
+}
+
+.home-login {
+    padding: 10px 25px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #0400ff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.home-login:hover {
+    background-color: rgb(62, 62, 224);
+}
+
 
 .navButton {
     color: white;

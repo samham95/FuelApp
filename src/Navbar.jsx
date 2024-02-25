@@ -1,13 +1,12 @@
 import { React, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Logout from './Logout';
-import './styles.css';
 import { authClient } from './apiClient';
+import './styles.css';
 
 const Navbar = () => {
     let location = useLocation()
     const [activeSession, setActiveSession] = useState(false)
-
     useEffect(() => {
         const token = localStorage.getItem('token');
         const username = localStorage.getItem('username');
@@ -28,17 +27,17 @@ const Navbar = () => {
                 <Link className="navbar-brand" to="/">
                     <img src="/fuel_logo2.png" width="40" height="40" alt="" />
                 </Link>
-
                 <div className="collapse navbar-collapse" id="collapseNavbar">
                     <ul className="navbar-nav mr-auto">
                         <li className="nav-item active">
                             <Link className="nav-link navLink" to="/">Home <span className="sr-only">(current)</span></Link>
                         </li>
+                        <li className='nav-item active'>
+                            <a className='nav-link navLink' href='/#containers'>About</a>
+                        </li>
+
                         {activeSession ? (
                             <>
-                                <li className="nav-item active">
-                                    <Link className="nav-link navLink" to="/">About</Link>
-                                </li>
                                 <li className="nav-item dropdown active">
                                     <a className="nav-link dropdown-toggle navLink" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Profile
@@ -56,6 +55,7 @@ const Navbar = () => {
                                 <li className="nav-item active">
                                     <Link className="nav-link navLink" to="/login">Login</Link>
                                 </li>
+
                                 <li className="nav-item active">
                                     <Link className="nav-link navLink" to="/register">Register</Link>
                                 </li>
@@ -71,7 +71,5 @@ const Navbar = () => {
             </nav>
         </div>
     );
-
 };
-
 export default Navbar;
