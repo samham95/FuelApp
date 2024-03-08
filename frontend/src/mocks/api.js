@@ -67,7 +67,7 @@ const apiHandles = [
                     message: "Login Successful"
                 },
                 {
-                    status: 202,
+                    status: 200,
                     statusText: 'Mocked status',
                     headers: {
                         'Set-Cookie': `authToken=${token}`,
@@ -158,7 +158,7 @@ const apiHandles = [
                 {
                 },
                 {
-                    status: 202,
+                    status: 200,
                     statusText: "Mocked successful update of data"
                 }
             )
@@ -209,7 +209,7 @@ const apiHandles = [
                         message: `Successfully registered client ${username}`
                     },
                     {
-                        status: 202,
+                        status: 200,
                         statusText: "Mocked successful registration"
                     }
                 )

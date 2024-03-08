@@ -5,8 +5,8 @@ if (process.env.NODE_ENV === 'test') {
     port = '3000';
     env = 'test';
 } else {
-    const port = '3001';
-    const env = 'dev';
+    port = '3001';
+    env = 'dev';
 }
 
 const baseURL = `http://localhost:${port}/api`
