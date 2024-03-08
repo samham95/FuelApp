@@ -13,12 +13,12 @@ const requireAuth = (req, res, next) => {
     const username = req.body.username;
 
     if (!token) {
-        return res.status(401).send('Authentication required');
+        throw new AppError(401, "Authentication required");
     }
     try {
         const decoded = jwt.verify(token, secretKey);
         if (isTokenInvalidated(decoded.jti)) {
-            throw new AppError("Invalid token", 401);
+            throw new AppError("Token has already been invalidated", 401);
         }
         if (username !== decoded.username) {
             throw new AppError("Invalid user token", 401)
