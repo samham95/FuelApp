@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { authClient } from './apiClient';
+import { client } from './apiClient';
 
 
 const EditProfile = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const username = localStorage.getItem('username');
-    const token = localStorage.getItem('token');
 
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
             try {
-                const authRes = await authClient(token).post('/auth', { username });
-                const isAuthorized = authRes.data.isAuthorized;
-
-                if (!isAuthorized) {
-                    throw new Error('Not authorized');
-                }
-
                 if (!localStorage.getItem('profileData')) {
-                    const response = await authClient(token).get(`/profile/${username}`);
+                    const response = await client.get(`/profile/${username}`);
                     setProfileData(response.data);
                     localStorage.setItem('profileData', JSON.stringify(response.data));
                 }
@@ -32,7 +24,7 @@ const EditProfile = () => {
         };
 
         checkAuthorizationAndFetchData();
-    }, [navigate, token, username])
+    }, [navigate, username])
     const { needToCompleteProfile } = location.state || {};
 
     const initialProfileData = JSON.parse(localStorage.getItem('profileData')) || {
@@ -57,7 +49,7 @@ const EditProfile = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await authClient(token).post(`/profile/${username}/edit`, profileData);
+            await client.post(`/profile/${username}/edit`, profileData);
             localStorage.setItem('profileData', JSON.stringify(profileData));
             alert('Profile updated successfully!');
             navigate('/profile');

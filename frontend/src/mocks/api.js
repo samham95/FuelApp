@@ -56,28 +56,22 @@ function addUser(username, password) {
     });
 }
 const apiHandles = [
-    /*     http.get('/auth', async ({ request, params, cookies }) => {
-            const token = cookies.token;
-            try {
-                jwt.verify(token, JWT_SECRET);
-                res.json({ isAuthenticated: true });
-            } catch (error) {
-                res.json({ isAuthenticated: false });
-            }
-        }), */
 
     http.post('/api/login', async ({ request, params, cookies }) => {
         const { username, password, isChecked } = await request.json();
         if (validateUser(username, password)) {
             const token = generateToken(username);
+            console.log(token)
             return HttpResponse.json(
                 {
-                    token,
-                    username,
+                    message: "Login Successful"
                 },
                 {
                     status: 202,
-                    statusText: 'Mocked status'
+                    statusText: 'Mocked status',
+                    headers: {
+                        'Set-Cookie': `authToken=${token}`,
+                    }
                 },
 
 
@@ -88,7 +82,7 @@ const apiHandles = [
                 message: 'Login Failed',
             },
             {
-                status: 400,
+                status: 401,
                 statusText: 'Mocked status',
             },
         )
@@ -96,24 +90,27 @@ const apiHandles = [
 
     http.post('/api/auth', async ({ request, params, cookies }) => {
         const { username } = await request.json();
-        const token = request.headers.get('Authorization').split(' ')[1];
+        const token = cookies.authToken;
+        console.log(token);
         if (authenticateUser(username, token)) {
             return HttpResponse.json(
                 {
-                    isAuthorized: true
                 },
                 {
-                    status: 202
+                    status: 200,
+                    statusText: "Mocked successful authentication"
+
                 }
             )
         }
         else {
             return HttpResponse.json(
                 {
-                    isAuthorized: false
                 },
                 {
-                    status: 403
+                    status: 401,
+                    statusText: "Mocked unsuccessful authentication"
+
                 }
             )
         }
@@ -122,8 +119,8 @@ const apiHandles = [
 
     http.get('/api/profile/:username', async ({ request, params, cookies }) => {
         const username = params.username;
-        const token = request.headers.get('Authorization').split(' ')[1];
-        console.log(sessions);
+        const token = cookies.authToken;
+        console.log(token);
         if (authenticateUser(username, token)) {
             const { fullname, email, street1, street2, city, state, zip } = users.get(username);
             const profileData = { fullname, email, street1, street2, city, state, zip };
@@ -144,7 +141,7 @@ const apiHandles = [
                     message: "Login failed"
                 },
                 {
-                    status: 400,
+                    status: 401,
                     statusText: "Mocked unsuccessful authentication"
                 }
             )
@@ -154,12 +151,11 @@ const apiHandles = [
     http.post('/api/profile/:username/edit', async ({ request, params, cookies }) => {
         const profileData = await request.json();
         const username = params.username;
-        const token = request.headers.get('Authorization').split(' ')[1];
+        const token = cookies.authToken;
         if (authenticateUser(username, token)) {
             users.set(username, profileData);
             return HttpResponse.json(
                 {
-                    message: "success"
                 },
                 {
                     status: 202,
@@ -170,7 +166,6 @@ const apiHandles = [
         else {
             return HttpResponse.json(
                 {
-                    message: "failure"
                 },
 
                 {
@@ -184,7 +179,7 @@ const apiHandles = [
 
     http.post('/api/logout', async ({ request, params, cookies }) => {
         const { username } = await request.json();
-        const { token } = request.headers.get('Authorization').split(' ')[1];
+        const token = cookies.authToken;
         if (authenticateUser(username, token)) {
             revokeToken(token, username);
             return HttpResponse.json(
@@ -198,7 +193,7 @@ const apiHandles = [
             return HttpResponse.json(
                 {
                     status: 400,
-                    statusText: 'Mocked unsuccessfully session termination'
+                    statusText: 'Mocked unsuccessful session termination'
                 }
             )
         }
@@ -221,7 +216,7 @@ const apiHandles = [
             } catch (e) {
                 return HttpResponse.json(
                     {
-                        message: "User already exists"
+                        message: "Unable to register client as requested"
                     },
                     {
                         status: 400,
@@ -238,7 +233,7 @@ const apiHandles = [
     http.get('/api/quote/:username/:gallonsRequested', async ({ request, params, cookies }) => {
         const username = params.username;
         const gallons = params.gallonsRequested;
-        const token = request.headers.get('Authorization').split(' ')[1];
+        const token = cookies.authToken;
         console.log(token)
         if (authenticateUser(username, token)) {
             const pricePerGallon = 2.5;
@@ -308,7 +303,7 @@ const apiHandles = [
 
     http.get('/api/history/:username', async ({ request, params, cookies }) => {
         const username = params.username;
-        const token = request.headers.get('Authorization').split(' ')[1];
+        const token = cookies.authToken;
         try {
             if (authenticateUser(username, token)) {
                 const quotes = quoteHistory.get(username);

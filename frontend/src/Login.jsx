@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { authClient, client } from './apiClient'
+import { client } from './apiClient'
 import './styles.css'
 
 const Login = () => {
@@ -16,21 +16,18 @@ const Login = () => {
 
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
         const username = localStorage.getItem('username');
-        authClient(token).post('/auth', { username })
-            .then((res) => {
-                const auth = res.data.isAuthorized;
-                if (auth) navigate('/profile');
+        client.post('/auth', { username })
+            .then(() => {
+                navigate('/profile');
             })
-            .catch((err) => {
+            .catch(() => {
                 return;
             })
     }, []);
 
-    const loginSucess = (token) => {
+    const loginSucess = () => {
         localStorage.clear()
-        localStorage.setItem('token', token)
         localStorage.setItem('username', username)
         localStorage.setItem('rememberme', isChecked)
         if (registrationSuccess === true) {
@@ -44,13 +41,12 @@ const Login = () => {
     const submitLogin = async (e) => {
         e.preventDefault()
         await client.post('/login', { username, password, isChecked })
-            .then((res) => {
-                const token = res.data.token;
-                loginSucess(token);
+            .then(() => {
+                loginSucess();
             })
             .catch((err) => {
                 const status = err.response.status
-                if (status === 400) {
+                if (status === 401) {
                     alert('Login failed - incorrect credentials!')
                 }
             })
