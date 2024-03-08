@@ -13,7 +13,7 @@ const requireAuth = (req, res, next) => {
     const username = req.body.username;
 
     if (!token) {
-        throw new AppError(401, "Authentication required");
+        throw new AppError("Authentication required", 401);
     }
     try {
         const decoded = jwt.verify(token, secretKey);
