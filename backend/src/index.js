@@ -6,7 +6,7 @@ const secretKey = process.env.JWT_SECRET || 'secretkeyhehe';
 require('dotenv').config();
 
 const { requireAuth, addUser, generateToken, validateUser, invalidateToken } = require('./loginModule.js')
-const { users, quoteHistory } = require('./mockDatabase.js');
+const { users, quoteHistory } = require('./db/mockDatabase.js');
 const AppError = require('./AppError.js');
 
 const PORT = process.env.PORT || 3001;

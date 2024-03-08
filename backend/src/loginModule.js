@@ -1,4 +1,4 @@
-const { users } = require('./mockDatabase.js')
+const { users } = require('./db/mockDatabase.js')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
