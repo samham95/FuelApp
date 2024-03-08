@@ -1,4 +1,4 @@
-const { users } = require('./db/mockDatabase.js')
+const { users, invalidTokens } = require('./db/mockDatabase.js')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
@@ -29,7 +29,7 @@ const requireAuth = (req, res, next) => {
     }
 };
 
-const generateToken = (username) => {
+const generateToken = async (username) => {
     const jti = crypto.randomBytes(16).toString('hex'); // unique identifier
     return jwt.sign({ username, jti }, secretKey, { expiresIn: '24h' });
 };

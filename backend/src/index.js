@@ -11,7 +11,7 @@ const AppError = require('./AppError.js');
 
 const PORT = process.env.PORT || 3001;
 const corsOptions = {
-    origin: process.env.CLIENT_URL || 'http://localhost:3000', // client url
+    origin: process.env.CLIENT_URL || 'http://localhost:3000', // update .env for production
     credentials: true, // send cookies with requests
 };
 
