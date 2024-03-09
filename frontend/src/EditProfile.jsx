@@ -12,7 +12,7 @@ const EditProfile = () => {
         const checkAuthorizationAndFetchData = async () => {
             try {
                 if (!localStorage.getItem('profileData')) {
-                    const response = await client.get(`/profile/${username}`);
+                    const response = await client.get(`auth/profile/${username}`);
                     setProfileData(response.data);
                     localStorage.setItem('profileData', JSON.stringify(response.data));
                 }
@@ -49,7 +49,7 @@ const EditProfile = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await client.post(`/profile/${username}/edit`, profileData);
+            await client.post(`auth/profile/${username}/edit`, profileData);
             localStorage.setItem('profileData', JSON.stringify(profileData));
             alert('Profile updated successfully!');
             navigate('/profile');

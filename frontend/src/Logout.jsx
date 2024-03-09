@@ -8,7 +8,7 @@ const Logout = () => {
     const navigate = useNavigate()
     const handleLogout = async () => {
         const username = localStorage.getItem('username')
-        const response = await client.post('/logout', { username });
+        const response = await client.post('auth/logout', { username });
         localStorage.clear()
         navigate('/')
     }

@@ -24,7 +24,7 @@ const ProfileData = () => {
             try {
                 // Check if we need to fetch data or if it was loaded from cache
                 if (!localStorage.getItem('profileData')) {
-                    const response = await client.get(`/profile/${username}`);
+                    const response = await client.get(`/auth/profile/${username}`);
                     setProfileData(response.data);
                     localStorage.setItem('profileData', JSON.stringify(response.data));
                 }

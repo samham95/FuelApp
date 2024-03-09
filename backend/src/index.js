@@ -30,7 +30,9 @@ app.use('/api', unprotectedRouter);
 protectedRouter.post('/', async (req, res) => {
     const username = req.body.userame;
     res.status(200).send(`Successfully authenticated ${username}`);
-})
+});
+
+protectedRouter.get('/profile/:username')
 
 unprotectedRouter.post('/login', async (req, res) => {
     try {

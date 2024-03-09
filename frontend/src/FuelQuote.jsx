@@ -34,7 +34,7 @@ const FuelQuoteForm = () => {
             try {
                 // Check if we need to fetch data or if it was loaded from cache
                 if (!localStorage.getItem('profileData')) {
-                    const response = await authClient(token).get(`/profile/${username}`);
+                    const response = await client.get(`auth/profile/${username}`);
                     setProfileData(response.data);
                     localStorage.setItem('profileData', JSON.stringify(response.data));
                 }
@@ -51,7 +51,7 @@ const FuelQuoteForm = () => {
     const handleQuote = async (e) => {
         e.preventDefault();
         try {
-            const res = await client.get(`/quote/${username}/${gallonsRequested}`);
+            const res = await client.get(`auth/quote/${username}/${gallonsRequested}`);
             const { pricePerGallon } = res.data;
             setSuggestedPricePerGallon(parseFloat(pricePerGallon));
             setTotalDue(pricePerGallon * gallonsRequested);
@@ -63,7 +63,7 @@ const FuelQuoteForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await client.post('/quote', {
+            const res = await client.post('auth/quote', {
                 username,
                 street: profileData.street1,
                 city: profileData.city,

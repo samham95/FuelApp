@@ -117,7 +117,7 @@ const apiHandles = [
 
     }),
 
-    http.get('/api/profile/:username', async ({ request, params, cookies }) => {
+    http.get('/api/auth/profile/:username', async ({ request, params, cookies }) => {
         const username = params.username;
         const token = cookies.authToken;
         console.log(token);
@@ -148,7 +148,7 @@ const apiHandles = [
         }
     }),
 
-    http.post('/api/profile/:username/edit', async ({ request, params, cookies }) => {
+    http.post('/api/auth/profile/:username/edit', async ({ request, params, cookies }) => {
         const profileData = await request.json();
         const username = params.username;
         const token = cookies.authToken;
@@ -177,7 +177,7 @@ const apiHandles = [
 
     }),
 
-    http.post('/api/logout', async ({ request, params, cookies }) => {
+    http.post('/api/auth/logout', async ({ request, params, cookies }) => {
         const { username } = await request.json();
         const token = cookies.authToken;
         if (authenticateUser(username, token)) {
@@ -230,11 +230,10 @@ const apiHandles = [
 
     }),
 
-    http.get('/api/quote/:username/:gallonsRequested', async ({ request, params, cookies }) => {
+    http.get('/api/auth/quote/:username/:gallonsRequested', async ({ request, params, cookies }) => {
         const username = params.username;
         const gallons = params.gallonsRequested;
         const token = cookies.authToken;
-        console.log(token)
         if (authenticateUser(username, token)) {
             const pricePerGallon = 2.5;
             return HttpResponse.json(
@@ -261,7 +260,9 @@ const apiHandles = [
 
     }),
 
-    http.post('/api/quote', async ({ request, params, cookies }) => {
+    http.post('/api/auth/quote', async ({ request, params, cookies }) => {
+        const token = cookies.authToken;
+
         const {
             username,
             street,
@@ -273,6 +274,7 @@ const apiHandles = [
             suggestedPricePerGallon,
             totalDue } = await request.json();
         try {
+            if (!authenticateUser(username, token)) throw new Error("Not authenticated");
             if (!quoteHistory.get(username)) quoteHistory.set(username, []);
             const newQuote = {
                 username,
@@ -293,15 +295,15 @@ const apiHandles = [
         } catch (err) {
             return HttpResponse.json(
                 {
-                    status: 400,
-                    statusText: "Successfully mocked unable to submit quote history"
+                    status: err.status || 400,
+                    statusText: err.message || "Successfully mocked unable to submit quote history"
                 }
             )
         }
 
     }),
 
-    http.get('/api/history/:username', async ({ request, params, cookies }) => {
+    http.get('/api/auth/history/:username', async ({ request, params, cookies }) => {
         const username = params.username;
         const token = cookies.authToken;
         try {
