@@ -7,10 +7,15 @@ import './styles.css'
 const Logout = () => {
     const navigate = useNavigate()
     const handleLogout = async () => {
-        const username = localStorage.getItem('username')
-        const response = await client.post('auth/logout', { username });
-        localStorage.clear()
-        navigate('/')
+        try {
+            const username = localStorage.getItem('username')
+            const response = await client.post('/auth/logout', { username });
+            localStorage.clear()
+            navigate('/')
+        } catch (error) {
+            alert("Internal server error - unable to log you out!")
+        }
+
     }
 
     return (
