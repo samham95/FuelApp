@@ -9,13 +9,30 @@ const Register = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [validPassword, setValidPassword] = useState(false);
+    const [validUsername, setValidUsername] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+
+    const validatePassword = (password) => {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,15}$/;
+        return regex.test(password);
+    };
+
+    const validateUsername = (username) => {
+        const regex = /^[a-zA-Z][a-zA-Z0-9]{5,15}$/;
+        return regex.test(username);
+    }
 
     const submitRegister = async (e) => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
             setErrorMessage('Passwords do not match.');
+            return;
+        } else if (validPassword === false) {
+            return;
+        } else if (validUsername === false) {
+            setErrorMessage('Username must be alphanumeric, between 5-15 characters, and start with a letter');
             return;
         }
 
@@ -28,7 +45,7 @@ const Register = () => {
             .catch((err) => {
                 const status = err.response ? err.response.status : 500;
                 if (status === 400) {
-                    alert('Registration failed - please try again!');
+                    alert(`Registration failed - ${err.response.data}!`);
                 } else {
                     console.error("Error during registration:", err);
                 }
@@ -42,7 +59,6 @@ const Register = () => {
                 <h1>Register Here</h1>
                 <form onSubmit={submitRegister}>
                     <div className='container'>
-                        {errorMessage && <p className="error-message" style={{ color: "red" }}>{errorMessage}</p>}
                         <label className='label' htmlFor='user'>
                             Username:
                         </label>
@@ -51,7 +67,18 @@ const Register = () => {
                             id='user'
                             name='user'
                             placeholder='Username'
-                            onChange={(e) => setUsername(e.target.value)}
+                            onChange={(e) => {
+                                const { value } = e.target;
+                                setUsername(value);
+
+                                if (!validateUsername(value)) {
+                                    setValidUsername(false);
+                                    setErrorMessage("Username must be alphanumeric, between 5-15 characters, and begin with a letter")
+                                } else {
+                                    setErrorMessage("");
+                                    setValidUsername(true);
+                                }
+                            }}
                             required
                         />
                         <br />
@@ -63,7 +90,19 @@ const Register = () => {
                             id='password'
                             name='password'
                             placeholder='Password'
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={
+                                (e) => {
+                                    const { value } = e.target;
+                                    setPassword(value);
+
+                                    if (!validatePassword(value)) {
+                                        setValidPassword(false);
+                                        setErrorMessage('Password must be 8-15 characters long and include at least one lowercase letter, one uppercase letter, one digit, and one special character (!@#$%^&*).');
+                                    } else {
+                                        setErrorMessage('');
+                                        setValidPassword(true);
+                                    }
+                                }}
                             required
                         />
                         <br />
@@ -79,6 +118,7 @@ const Register = () => {
                             required
                         />
                         <br />
+                        {errorMessage && <p className="error-message" style={{ color: "red" }}>{errorMessage}</p>}
                         <br />
                         <button type='submit'>
                             REGISTER
