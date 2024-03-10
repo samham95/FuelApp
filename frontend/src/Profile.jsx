@@ -36,7 +36,7 @@ const ProfileData = () => {
         };
 
         checkAuthorizationAndFetchData();
-    }, [navigate, username]);
+    }, []);
 
     return (
         <>
