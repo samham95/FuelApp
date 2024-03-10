@@ -14,7 +14,7 @@ const hashPassword = async (password) => {
 };
 
 (async () => {
-    const hash = await hashPassword('Abc123?!');
+    const hash = await hashPassword('Abc12345!');
     users.set('samham', {
         fullname: 'Sammy Hamdi',
         password: hash,
