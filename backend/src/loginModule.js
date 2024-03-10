@@ -2,32 +2,11 @@ const { users, invalidTokens } = require('./db/mockDatabase.js')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const { AppError } = require('./AppError.js');
+const AppError = require('./AppError.js');
 require('dotenv').config();
+
 const saltRounds = 10;
-
 const secretKey = process.env.JWT_SECRET || 'secretkeyhehe';
-
-const requireAuth = (req, res, next) => {
-    const token = req.cookies.auth_token;
-    const username = req.body.username;
-
-    if (!token) {
-        throw new AppError("Authentication required", 401);
-    }
-    try {
-        const decoded = jwt.verify(token, secretKey);
-        if (isTokenInvalidated(decoded.jti)) {
-            throw new AppError("Token has already been invalidated", 401);
-        }
-        if (username !== decoded.username) {
-            throw new AppError("Invalid user token", 401)
-        }
-        next();
-    } catch (error) {
-        return res.status(error.status || 401).send(error.message || 'Invalid or expired token');
-    }
-};
 
 const generateToken = async (username) => {
     const jti = crypto.randomBytes(16).toString('hex'); // unique identifier
@@ -46,8 +25,10 @@ const isTokenInvalidated = async (jti) => {
     return true;
 }
 
-const invalidateToken = async (jti, expTime) => {
+const invalidateToken = async (decodedToken) => {
     const now = new Date().getTime();
+    const expTime = decodedToken.exp;
+
     if (now < expTime) {
         invalidTokens.set(jti, expTime);
     }
@@ -60,7 +41,7 @@ const validateUsername = (username) => {
 
 const validatePassword = (password) => {
     // require capital/lowercase letters, special character, and number, length 8 to 15
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,15}$/;
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{7,15}$/;
     return regex.test(password);
 }
 
@@ -101,4 +82,4 @@ const validateUser = async (username, password) => {
 
 
 
-module.exports = { requireAuth, addUser, generateToken, validateUser, invalidateToken };
+module.exports = { addUser, generateToken, validateUser, invalidateToken, isTokenInvalidated };
