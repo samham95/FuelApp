@@ -1,15 +1,17 @@
 import { React, useState, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import './styles.css'
-import { authClient } from './apiClient';
+import { client } from './apiClient';
 
 const FuelQuoteForm = () => {
 
     const navigate = useNavigate();
     const username = localStorage.getItem('username')
-    const token = localStorage.getItem('token');
     // today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split('T')[0];
+    const nextYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+    const maxDate = nextYear.toISOString().split('T')[0];
+
     const [gallonsRequested, setGallonsRequested] = useState('');
     const [deliveryDate, setDeliveryDate] = useState('');
     const [suggestedPricePerGallon, setSuggestedPricePerGallon] = useState(NaN);
@@ -30,16 +32,9 @@ const FuelQuoteForm = () => {
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
             try {
-                const res = await authClient(token).post('/auth', { username });
-                const auth = res.data.isAuthorized;
-
-                if (!auth) {
-                    throw new Error('Not authorized');
-                }
-
                 // Check if we need to fetch data or if it was loaded from cache
                 if (!localStorage.getItem('profileData')) {
-                    const response = await authClient(token).get(`/profile/${username}`);
+                    const response = await client.get(`auth/profile/${username}`);
                     setProfileData(response.data);
                     localStorage.setItem('profileData', JSON.stringify(response.data));
                 }
@@ -51,14 +46,12 @@ const FuelQuoteForm = () => {
         };
 
         checkAuthorizationAndFetchData();
-    }, [navigate, token, username]);
+    }, [navigate, username]);
 
     const handleQuote = async (e) => {
         e.preventDefault();
         try {
-            console.log(token);
-            const res = await authClient(token).get(`/quote/${username}/${gallonsRequested}`);
-            if (res.status === 400) throw new Error("Unable to get quote");
+            const res = await client.get(`auth/quote/${username}/${gallonsRequested}`);
             const { pricePerGallon } = res.data;
             setSuggestedPricePerGallon(parseFloat(pricePerGallon));
             setTotalDue(pricePerGallon * gallonsRequested);
@@ -70,7 +63,7 @@ const FuelQuoteForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await authClient(token).post('/quote', {
+            const res = await client.post('auth/quote', {
                 username,
                 street: profileData.street1,
                 city: profileData.city,
@@ -81,7 +74,6 @@ const FuelQuoteForm = () => {
                 suggestedPricePerGallon,
                 totalDue
             });
-            if (res.status === 400) throw new Error("Unable to save quote")
             alert("Successfully saved your new quote!")
             navigate('/quote/history')
         } catch (err) {
@@ -135,6 +127,7 @@ const FuelQuoteForm = () => {
                             className="form-control"
                             id="deliveryDate"
                             min={today}
+                            max={maxDate}
                             value={deliveryDate}
                             required
                             onChange={e => setDeliveryDate(e.target.value)}

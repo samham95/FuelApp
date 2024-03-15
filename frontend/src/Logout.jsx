@@ -1,18 +1,21 @@
 import { React } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { authClient } from './apiClient'
+import { client } from './apiClient'
 import './styles.css'
 
 
 const Logout = () => {
     const navigate = useNavigate()
     const handleLogout = async () => {
-        const username = localStorage.getItem('username')
-        const token = localStorage.getItem('token')
+        try {
+            const username = localStorage.getItem('username')
+            const response = await client.post('/auth/logout', { username });
+            localStorage.clear()
+            navigate('/')
+        } catch (error) {
+            alert("Internal server error - unable to log you out!")
+        }
 
-        const response = await authClient(token).post('/logout', { username });
-        localStorage.clear()
-        navigate('/')
     }
 
     return (
