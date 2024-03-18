@@ -1,7 +1,7 @@
 import './QuoteHistoryStyles.css'
 import { React, useState, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { authClient } from './apiClient';
+import { client } from './apiClient';
 
 const FuelQuoteHistory = () => {
     const username = localStorage.getItem('username');
@@ -11,14 +11,7 @@ const FuelQuoteHistory = () => {
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
             try {
-                const res = await authClient(token).post('/auth', { username });
-                const auth = res.data.isAuthorized;
-
-                if (!auth) {
-                    throw new Error('Not authorized');
-                }
-
-                const response = await authClient(token).get(`/history/${username}`);
+                const response = await client.get(`auth/history/${username}`);
                 const quoteHistory = response.data.quotes;
                 SetQuotes(quoteHistory);
             } catch (err) {
@@ -74,7 +67,7 @@ const FuelQuoteHistory = () => {
 
                     </tbody>
                 </table>
-                </div>
+            </div>
         </>
     );
 }

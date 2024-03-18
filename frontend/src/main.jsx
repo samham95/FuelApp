@@ -4,7 +4,7 @@ import App from './App.jsx'
 import worker from './mocks/worker.js'
 import config from './config'
 
-if (config.env === 'development') {
+if (config.env === 'test') {
   worker.start();
 }
 

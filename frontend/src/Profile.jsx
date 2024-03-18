@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { authClient } from './apiClient';
+import { client } from './apiClient';
 import './styles.css';
 
 const ProfileData = () => {
     const navigate = useNavigate();
     const username = localStorage.getItem('username');
-    const token = localStorage.getItem('token');
     const [profileData, setProfileData] = useState(() => {
         const cachedData = localStorage.getItem('profileData');
         return cachedData ? JSON.parse(cachedData) : {
@@ -23,16 +22,9 @@ const ProfileData = () => {
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
             try {
-                const res = await authClient(token).post('/auth', { username });
-                const auth = res.data.isAuthorized;
-
-                if (!auth) {
-                    throw new Error('Not authorized');
-                }
-
                 // Check if we need to fetch data or if it was loaded from cache
                 if (!localStorage.getItem('profileData')) {
-                    const response = await authClient(token).get(`/profile/${username}`);
+                    const response = await client.get(`/auth/profile/${username}`);
                     setProfileData(response.data);
                     localStorage.setItem('profileData', JSON.stringify(response.data));
                 }
@@ -44,7 +36,7 @@ const ProfileData = () => {
         };
 
         checkAuthorizationAndFetchData();
-    }, [navigate, token, username]);
+    }, []);
 
     return (
         <>

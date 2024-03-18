@@ -1,20 +1,17 @@
 import { React, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Logout from './Logout';
-import { authClient } from './apiClient';
+import { client } from './apiClient';
 import './styles.css';
 
 const Navbar = () => {
     let location = useLocation()
     const [activeSession, setActiveSession] = useState(false)
     useEffect(() => {
-        const token = localStorage.getItem('token');
         const username = localStorage.getItem('username');
-        authClient(token).post('/auth', { username })
+        client.post('/auth', { username })
             .then((res) => {
-                const auth = res.data.isAuthorized;
-                if (auth) setActiveSession(true);
-                else throw new Error;
+                setActiveSession(true);
             })
             .catch(() => {
                 setActiveSession(false);
@@ -39,7 +36,7 @@ const Navbar = () => {
                         {activeSession ? (
                             <>
                                 <li className="nav-item dropdown active">
-                                    <a className="nav-link dropdown-toggle navLink" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Profile
                                     </a>
                                     <div className="dropdown-menu" aria-labelledby="navbarDropdown">
