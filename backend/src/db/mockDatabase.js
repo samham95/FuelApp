@@ -5,12 +5,8 @@ let quoteHistory = new Map();
 let invalidTokens = new Map();
 
 const hashPassword = async (password) => {
-    try {
-        const saltRounds = 10;
-        return await bcrypt.hash(password, saltRounds);
-    } catch (err) {
-        console.error(err);
-    }
+    const saltRounds = 10;
+    return await bcrypt.hash(password, saltRounds);
 };
 
 (async () => {
