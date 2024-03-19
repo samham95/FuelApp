@@ -3,7 +3,7 @@ const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const { addUser, generateToken, validateUser, invalidateToken, isTokenInvalidated } = require('./loginModule.js');
-const { getProfileData } = require('./profileModule.js');
+const { getProfileData, updateProfile } = require('./profileModule.js');
 const requireAuth = require('./requireAuth.js');
 const AppError = require('./AppError.js');
 require('dotenv').config();
@@ -40,6 +40,22 @@ protectedRouter.get('/profile/:username', requireAuth, async (req, res) => {
         res.status(error.status || 400).send(error.message || `Unable to fetch profile data for user: ${username}`);
     }
 
+})
+
+protectedRouter.post('/profile/:username/edit', requireAuth, async(req, res) =>{
+    try{
+        const username = req.username;
+        const newData = req.body;
+        //only checking street1 since street2 is optional
+        if(!fullname || !street1 || !city || !zip) {
+            throw new AppError("All fields are required", 400);
+        }
+        await updateProfile(username, { fullname, email, street1, street2, city, state, zip });
+        await username.save();
+        res.status(200).json({message: "Profile updated successfully" });
+    }catch (error) {
+        res.status(error.status || 400).send(error.message || "Unable to update profile");
+    }
 })
 
 protectedRouter.post('/logout', requireAuth, async (req, res) => {
