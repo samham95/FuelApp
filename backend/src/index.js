@@ -32,8 +32,8 @@ protectedRouter.post('/', requireAuth, async (req, res) => {
 });
 
 protectedRouter.get('/profile/:username', requireAuth, async (req, res) => {
-    const username = req.username;
     try {
+        const username = req.username;
         const profileData = await getProfileData(username);
         res.status(200).json({ ...profileData });
     } catch (error) {
@@ -43,9 +43,10 @@ protectedRouter.get('/profile/:username', requireAuth, async (req, res) => {
 })
 
 protectedRouter.post('/logout', requireAuth, async (req, res) => {
-    const username = req.username;
-    const token = req.signedCookies.auth_token;
     try {
+        const username = req.username;
+        const token = req.signedCookies.auth_token;
+
         await invalidateToken(token);
         res.clearCookie('auth_token', { httpOnly: true, signed: true });
         res.status(200).send(`User ${username} logged out`);
@@ -74,10 +75,10 @@ unprotectedRouter.post('/login', async (req, res) => {
 });
 
 unprotectedRouter.post('/register', async (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
-
     try {
+        const username = req.body.username;
+        const password = req.body.password;
+
         await addUser(username, password);
         res.status(200).send(`Successfully created user ${username} skeleton`);
 
