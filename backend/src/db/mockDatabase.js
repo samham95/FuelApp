@@ -14,7 +14,6 @@ const hashPassword = async (password) => {
     users.set('samham', {
         fullname: 'Sammy Hamdi',
         password: hash,
-        email: 'samham@gmail.com',
         street1: '9222 Memorial Dr.',
         street2: '1215 Main Street',
         city: 'Houston',

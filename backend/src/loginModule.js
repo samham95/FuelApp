@@ -70,7 +70,6 @@ const addUser = async (username, password) => {
     users.set(username, {
         fullname: '',
         password: hashedPassword,
-        email: '',
         street1: '',
         street2: '',
         city: '',
