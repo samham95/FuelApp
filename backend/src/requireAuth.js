@@ -12,7 +12,7 @@ const requireAuth = async (req, res, next) => {
             throw new AppError('Authentication required', 401);
         }
         const decoded = jwt.verify(token, secretKey);
-        if (await isTokenInvalidated(decoded.jti)) {
+        if (await isTokenInvalidated(token)) {
             throw new AppError("Token has already been invalidated", 401);
         }
 

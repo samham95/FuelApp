@@ -13,25 +13,35 @@ const generateToken = async (username) => {
     return jwt.sign({ username, jti }, secretKey, { expiresIn: '24h' });
 };
 
-const isTokenInvalidated = async (jti) => {
-    const expTime = invalidTokens.get(jti);
-    if (!expTime) return false;
+const isTokenInvalidated = async (token) => {
+    try {
+        const decodedToken = jwt.verify(token, secretKey);
+        jti = decodedToken.jti;
+        const expTime = invalidTokens.get(jti);
+        if (!expTime) return false;
 
-    const now = new Date().getTime();
-    if (now > expTime) {
-        invalidTokens.delete(jti);
-        return false;
+        const now = new Date().getTime();
+        if (now > expTime) {
+            invalidTokens.delete(jti);
+        }
+        return true;
+    } catch (error) {
+        throw new AppError(400, "Unable to decode token")
     }
-    return true;
+
 }
 
-const invalidateToken = async (decodedToken) => {
+const invalidateToken = async (token) => {
     const now = new Date().getTime();
-    const expTime = decodedToken.exp;
-
-    if (now < expTime) {
+    try {
+        const decodedToken = jwt.verify(token, secretKey);
+        const expTime = decodedToken.exp;
+        const jti = decodedToken.jti;
         invalidTokens.set(jti, expTime);
+    } catch (error) {
+        throw new AppError(400, "Unable to invalidate invalid token");
     }
+
 }
 
 const validateUsername = (username) => {
@@ -60,7 +70,6 @@ const addUser = async (username, password) => {
     users.set(username, {
         fullname: '',
         password: hashedPassword,
-        email: '',
         street1: '',
         street2: '',
         city: '',
@@ -77,7 +86,7 @@ const validPassword = async (username, password) => {
 };
 
 const validateUser = async (username, password) => {
-    return users.has(username) && await validPassword(username, password);
+    return await validPassword(username, password);
 };
 
 

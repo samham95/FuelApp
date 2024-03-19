@@ -8,7 +8,6 @@ let quoteHistory = new Map();
 users.set('samham', {
     fullname: 'Sammy Hamdi',
     password: 'abc123',
-    email: 'samham@gmail.com',
     street1: '9222 Memorial Dr.',
     street2: '1215 Main Street',
     city: 'Houston',
@@ -122,7 +121,7 @@ const apiHandles = [
         const token = cookies.authToken;
         console.log(token);
         if (authenticateUser(username, token)) {
-            const { fullname, email, street1, street2, city, state, zip } = users.get(username);
+            const { fullname, street1, street2, city, state, zip } = users.get(username);
             const profileData = { fullname, email, street1, street2, city, state, zip };
             return HttpResponse.json(
                 {
