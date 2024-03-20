@@ -3,7 +3,7 @@ const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const { addUser, generateToken, validateUser, invalidateToken, isTokenInvalidated } = require('./loginModule.js');
-const { getProfileData } = require('./profileModule.js');
+const { getProfileData, updateProfile } = require('./profileModule.js');
 const requireAuth = require('./requireAuth.js');
 const AppError = require('./AppError.js');
 require('dotenv').config();
@@ -32,8 +32,8 @@ protectedRouter.post('/', requireAuth, async (req, res) => {
 });
 
 protectedRouter.get('/profile/:username', requireAuth, async (req, res) => {
-    const username = req.username;
     try {
+        const username = req.username;
         const profileData = await getProfileData(username);
         res.status(200).json({ ...profileData });
     } catch (error) {
@@ -42,12 +42,28 @@ protectedRouter.get('/profile/:username', requireAuth, async (req, res) => {
 
 })
 
+protectedRouter.post('/profile/:username/edit', requireAuth, async(req, res) =>{
+    try{
+        const username = req.username;
+        const newData = req.body;
+        //only checking street1 since street2 is optional
+        if(!fullname || !street1 || !city || !zip) {
+            throw new AppError("All fields are required", 400);
+        }
+        await updateProfile(username, { fullname, email, street1, street2, city, state, zip });
+        await username.save();
+        res.status(200).json({message: "Profile updated successfully" });
+    }catch (error) {
+        res.status(error.status || 400).send(error.message || "Unable to update profile");
+    }
+})
+
 protectedRouter.post('/logout', requireAuth, async (req, res) => {
-    const username = req.username;
-    const token = req.signedCookies.auth_token;
     try {
-        const decoded = jwt.verify(token, secretKey);
-        await invalidateToken(decoded);
+        const username = req.username;
+        const token = req.signedCookies.auth_token;
+
+        await invalidateToken(token);
         res.clearCookie('auth_token', { httpOnly: true, signed: true });
         res.status(200).send(`User ${username} logged out`);
     } catch (error) {
@@ -75,10 +91,10 @@ unprotectedRouter.post('/login', async (req, res) => {
 });
 
 unprotectedRouter.post('/register', async (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
-
     try {
+        const username = req.body.username;
+        const password = req.body.password;
+
         await addUser(username, password);
         res.status(200).send(`Successfully created user ${username} skeleton`);
 
@@ -96,6 +112,4 @@ app.use((error, req, res, next) => {
     res.status(error.status || 500).send(error.message || "Internal Server Error");
 });
 
-app.listen(PORT, (req, res) => {
-    console.log(`Serving on port ${PORT}...`);
-})
+module.exports = app;
