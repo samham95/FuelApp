@@ -42,18 +42,19 @@ protectedRouter.get('/profile/:username', requireAuth, async (req, res) => {
 
 })
 
-protectedRouter.post('/profile/:username/edit', requireAuth, async(req, res) =>{
-    try{
+protectedRouter.post('/profile/:username/edit', requireAuth, async (req, res) => {
+    try {
         const username = req.username;
-        const newData = req.body;
+        const { fullname, street1, state, zip, city, street2 } = req.body;
+
         //only checking street1 since street2 is optional
-        if(!fullname || !street1 || !city || !zip) {
+        if (!fullname || !street1 || !city || !zip || !state) {
             throw new AppError("All fields are required", 400);
         }
-        await updateProfile(username, { fullname, email, street1, street2, city, state, zip });
-        await username.save();
-        res.status(200).json({message: "Profile updated successfully" });
-    }catch (error) {
+        await updateProfile(username, { fullname, street1, street2, state, zip, city });
+        //await username.save();
+        res.status(200).json({ message: "Profile updated successfully" });
+    } catch (error) {
         res.status(error.status || 400).send(error.message || "Unable to update profile");
     }
 })
