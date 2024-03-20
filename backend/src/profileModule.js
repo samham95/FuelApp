@@ -49,7 +49,7 @@ const validateKeys = (newData) => {
 
     const missingKeys = requiredKeys.filter(key => !(key in newData));
     if (missingKeys.length > 0) {
-        throw new Error(`Missing required fields: ${missingKeys.join(', ')}`);
+        throw new AppError(`Missing required fields: ${missingKeys.join(', ')}`, 400);
     }
 }
 
@@ -63,8 +63,8 @@ const updateProfile = async (username, newData) => {
         validateKeys(newData);
         const { fullname, street1, street2, city, state, zip } = newData;
         validateInputs(fullname, street1, street2, city, zip);
-
-        users.set(username, { fullname, street1, street2, city, state, zip });
+        const currentData = users.get(username);
+        users.set(username, { ...currentData, fullname, street1, street2, city, state, zip });
     }
     catch (error) {
         console.error(error);
