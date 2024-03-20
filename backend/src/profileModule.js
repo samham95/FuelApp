@@ -7,7 +7,7 @@ const getProfileData = async (username) => {
     return profileData;
 }
 
-const validateFullName = (fullname) =>{
+const validateFullName = (fullname) => {
     const regex = /^[a-zA-Z\s]+$/;
     return regex.test(fullname);
 }
@@ -24,50 +24,49 @@ Didn't do state validation since it's a drop down selection
 */
 const validateZipcode = (zip) => {
     const regex = /^\d{5}(?:-\d{4})?$/;
-    return  regex.test(zip);
+    return regex.test(zip);
 }
 
 const validateInputs = (fullname, street1, street2, city, zip) => {
-    if(!validateFullName(fullname)){
+    if (!validateFullName(fullname)) {
         throw new AppError("Invalid name format", 400);
     }
-    if(!validateStreet(street1)){
+    if (!validateStreet(street1)) {
         throw new AppError("Invalid address format", 400);
     }
-    if(!validateStreet(street2)){
+    if (!validateStreet(street2)) {
         throw new AppError("Invalid address format", 400);
     }
-    if(!validateCity(city)){
+    if (!validateCity(city)) {
         throw new AppError("Invalid city format", 400);
     }
-    if(!validateZipcode(zip)){
+    if (!validateZipcode(zip)) {
         throw new AppError("Invalid zip code format", 400);
     }
 }
+const validateKeys = (newData) => {
+    const requiredKeys = ['fullname', 'street1', 'street2', 'city', 'state', 'zip'];
 
-const updateProfile = async (req, res) => {
-    const username = req.username; 
-    const { fullname, street1, street2, city, state, zip} = req.body;
+    const missingKeys = requiredKeys.filter(key => !(key in newData));
+    if (missingKeys.length > 0) {
+        throw new Error(`Missing required fields: ${missingKeys.join(', ')}`);
+    }
+}
 
-    try{
+const updateProfile = async (username, newData) => {
+
+    try {
+        if (!username || !users.has(username)) {
+            throw new AppError("User not found", 400);
+        }
+
+        validateKeys(newData);
+        const { fullname, street1, street2, city, state, zip } = newData;
         validateInputs(fullname, street1, street2, city, zip);
 
-        if(!users.has(username)){
-            throw new AppError("User not found", 404);
-        }
-        const userData = users.get(username);
-
-        userData.fullname = fullname;
-        userData.street1 = street1;
-        userData.street2 = street2;
-        userData.city = city;
-        userData.state = state;
-        userData.zip = zip;
-
         users.set(username, { fullname, street1, street2, city, state, zip });
-        res.status(200).json({message: "Profil]e updated successfully"});
     }
-    catch(error){
+    catch (error) {
         console.error(error);
         throw new AppError("Unable to update profile", 400);
     }
