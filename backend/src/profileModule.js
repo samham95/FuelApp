@@ -9,22 +9,22 @@ const getProfileData = async (username) => {
 
 const validateFullName = (fullname) => {
     const regex = /^[a-zA-Z\s]+$/;
-    return regex.test(fullname);
+    return fullname && regex.test(fullname);
 }
-const validateStreet = (street1, street2) => {
+const validateStreet = (street1) => {
     const regex = /^[a-zA-Z0-9\s.,-]+$/;
-    return regex.test(street1) && regex.test(street2);
+    return street1 && regex.test(street1);
 }
 const validateCity = (city) => {
     const regex = /^[a-zA-Z\s]+$/;
-    return regex.test(city);
+    return city && regex.test(city);
 }
 /*
 Didn't do state validation since it's a drop down selection
 */
 const validateZipcode = (zip) => {
     const regex = /^\d{5}(?:-\d{4})?$/;
-    return regex.test(zip);
+    return zip && regex.test(zip);
 }
 
 const validateInputs = (fullname, street1, street2, city, zip) => {
@@ -49,7 +49,7 @@ const validateKeys = (newData) => {
 
     const missingKeys = requiredKeys.filter(key => !(key in newData));
     if (missingKeys.length > 0) {
-        throw new Error(`Missing required fields: ${missingKeys.join(', ')}`);
+        throw new AppError(`Missing required fields: ${missingKeys.join(', ')}`, 400);
     }
 }
 
@@ -63,8 +63,8 @@ const updateProfile = async (username, newData) => {
         validateKeys(newData);
         const { fullname, street1, street2, city, state, zip } = newData;
         validateInputs(fullname, street1, street2, city, zip);
-
-        users.set(username, { fullname, street1, street2, city, state, zip });
+        const currentData = users.get(username);
+        users.set(username, { ...currentData, fullname, street1, street2, city, state, zip });
     }
     catch (error) {
         console.error(error);

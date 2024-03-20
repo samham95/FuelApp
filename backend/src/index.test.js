@@ -17,6 +17,14 @@ const validRegister = {
     username: 'samham123',
     password: 'Abc12345!'
 }
+const newProfileData = {
+    fullname: 'Sam Ham',
+    street1: '123 Sesame Street',
+    street2: 'APT 123',
+    city: 'New York',
+    state: 'NY',
+    zip: '10003',
+}
 
 const apiClient = (cookie = '') => axios.create({
     baseURL: `http://localhost:${PORT}/api`,
@@ -45,21 +53,29 @@ beforeEach(async () => {
         state: 'TX',
         zip: '77379',
     });
-
-
-    server = app.listen(PORT);
 });
 
 afterEach(() => {
     users.clear();
-    server.close();
 });
+
+beforeAll(() => {
+    server = app.listen(PORT);
+})
+afterAll(() => {
+    server.close();
+})
 
 const loginMock = async (credentials) => {
     const response = await apiClient().post('/login', credentials);
     const cookies = response.headers['set-cookie'];
     const authTokenCookie = cookies.find(cookie => cookie.startsWith('auth_token='));
     return authTokenCookie;
+}
+const getProfileDataMock = async (token, username) => {
+    const response = await apiClient(token).get(`auth/profile/${username}`);
+    const profileData = response.data;
+    return profileData;
 }
 
 describe("Index file testing... ", () => {
@@ -124,6 +140,16 @@ describe("Index file testing... ", () => {
         expect(apiClient(token).get(`/auth/profile/${invalidCred.username}`)).rejects.toThrow();
 
     });
+    test("This test should update profile data for authorized user", async () => {
+        const token = await loginMock(validCred);
+        const response = await apiClient(token).post(`auth/profile/${validCred.username}/edit`, newProfileData);
+        expect(response.status).toBe(200);
+        const newData = await getProfileDataMock(token, validCred.username);
+        Object.keys(newProfileData).forEach((key) => { expect(newProfileData[key]).toBe(newData[key]) })
+    })
+    test("This test should throw if new data to update profile has wrong key", async () => {
+
+    })
     test("This test should allow registration with valid input", async () => {
         const response = await apiClient().post('/register', validRegister);
         expect(response.status).toBe(200);
