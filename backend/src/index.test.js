@@ -53,15 +53,18 @@ beforeEach(async () => {
         state: 'TX',
         zip: '77379',
     });
-
-
-    server = app.listen(PORT);
 });
 
 afterEach(() => {
     users.clear();
-    server.close();
 });
+
+beforeAll(() => {
+    server = app.listen(PORT);
+})
+afterAll(() => {
+    server.close();
+})
 
 const loginMock = async (credentials) => {
     const response = await apiClient().post('/login', credentials);
