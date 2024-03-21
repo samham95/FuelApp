@@ -27,12 +27,12 @@ app.use(cookieParser(secretKey));
 app.use('/api/auth', protectedRouter);
 app.use('/api', unprotectedRouter);
 
-protectedRouter.post('/', requireAuth, async (req, res) => {
+protectedRouter.post('/', requireAuth, async (req, res, next) => {
     const username = req.username;
     res.status(200).send(`Successfully authenticated ${username}`);
 });
 
-protectedRouter.get('/profile/:username', requireAuth, async (req, res) => {
+protectedRouter.get('/profile/:username', requireAuth, async (req, res, next) => {
     try {
         const username = req.username;
         const profileData = await getProfileData(username);
@@ -43,7 +43,7 @@ protectedRouter.get('/profile/:username', requireAuth, async (req, res) => {
 
 })
 
-protectedRouter.post('/profile/:username/edit', requireAuth, async (req, res) => {
+protectedRouter.post('/profile/:username/edit', requireAuth, async (req, res, next) => {
     try {
         const username = req.username;
         const { fullname, street1, state, zip, city, street2 } = req.body;
@@ -60,7 +60,7 @@ protectedRouter.post('/profile/:username/edit', requireAuth, async (req, res) =>
     }
 })
 
-protectedRouter.post('/logout', requireAuth, async (req, res) => {
+protectedRouter.post('/logout', requireAuth, async (req, res, next) => {
     try {
         const username = req.username;
         const token = req.signedCookies.auth_token;
@@ -73,7 +73,7 @@ protectedRouter.post('/logout', requireAuth, async (req, res) => {
     }
 })
 
-unprotectedRouter.post('/login', async (req, res) => {
+unprotectedRouter.post('/login', async (req, res, next) => {
     try {
         const username = req.body.username;
         const password = req.body.password;
@@ -90,7 +90,7 @@ unprotectedRouter.post('/login', async (req, res) => {
     }
 });
 
-unprotectedRouter.post('/register', async (req, res) => {
+unprotectedRouter.post('/register', async (req, res, next) => {
     try {
         const username = req.body.username;
         const password = req.body.password;
