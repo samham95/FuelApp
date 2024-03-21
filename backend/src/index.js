@@ -2,6 +2,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const errorHandler = require('./ErrorHandler.js')
 const { addUser, generateToken, validateUser, invalidateToken, isTokenInvalidated } = require('./loginModule.js');
 const { getProfileData, updateProfile } = require('./profileModule.js');
 const requireAuth = require('./requireAuth.js');
@@ -37,7 +38,7 @@ protectedRouter.get('/profile/:username', requireAuth, async (req, res) => {
         const profileData = await getProfileData(username);
         res.status(200).json({ ...profileData });
     } catch (error) {
-        res.status(error.status || 400).send(error.message || `Unable to fetch profile data for user: ${username}`);
+        next(error);
     }
 
 })
@@ -55,7 +56,7 @@ protectedRouter.post('/profile/:username/edit', requireAuth, async (req, res) =>
         //await username.save();
         res.status(200).json({ message: "Profile updated successfully" });
     } catch (error) {
-        res.status(error.status || 400).send(error.message || "Unable to update profile");
+        next(error);
     }
 })
 
@@ -68,7 +69,7 @@ protectedRouter.post('/logout', requireAuth, async (req, res) => {
         res.clearCookie('auth_token', { httpOnly: true, signed: true });
         res.status(200).send(`User ${username} logged out`);
     } catch (error) {
-        res.status(error.status || 400).send(error.message || `Unable to log out user ${username}`);
+        next(error);
     }
 })
 
@@ -84,10 +85,8 @@ unprotectedRouter.post('/login', async (req, res) => {
         res.status(200).json({
             msg: `Successfully validated credentials for user: ${username}`,
         })
-    } catch (err) {
-        res.status(err.status || 500).json({
-            msg: `Invalid login: ${err.message || ""}`
-        })
+    } catch (error) {
+        next(error);
     }
 });
 
@@ -100,7 +99,7 @@ unprotectedRouter.post('/register', async (req, res) => {
         res.status(200).send(`Successfully created user ${username} skeleton`);
 
     } catch (error) {
-        res.status(error.status || 400).send(error.message || "Unable to create user")
+        next(error);
     }
 })
 
@@ -108,9 +107,6 @@ app.use((req, res) => {
     res.status(404).send("RESOURCE NOT FOUND");
 });
 
-app.use((error, req, res, next) => {
-    console.error(error);
-    res.status(error.status || 500).send(error.message || "Internal Server Error");
-});
+app.use(errorHandler);
 
 module.exports = app;
