@@ -27,7 +27,7 @@ app.use(cookieParser(secretKey));
 app.use('/api/auth', protectedRouter);
 app.use('/api', unprotectedRouter);
 
-protectedRouter.post('/', requireAuth, async (req, res, next) => {
+protectedRouter.post('/', requireAuth, async (req, res) => {
     const username = req.username;
     res.status(200).send(`Successfully authenticated ${username}`);
 });
