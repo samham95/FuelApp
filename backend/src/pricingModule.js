@@ -9,5 +9,4 @@ class FuelPricing {
         return 2.5;
     }
 }
-
 module.exports = FuelPricing;

@@ -67,8 +67,7 @@ const updateProfile = async (username, newData) => {
         users.set(username, { ...currentData, fullname, street1, street2, city, state, zip });
     }
     catch (error) {
-        console.error(error);
-        throw new AppError("Unable to update profile", 400);
+        throw new AppError(error.message || "Unable to update profile", error.status || 400);
     }
 }
 module.exports = { getProfileData, updateProfile };
