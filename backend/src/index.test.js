@@ -11,7 +11,7 @@ const validCred = {
     password: 'Abc12345!'
 }
 const invalidCred = {
-    username: 'samham1',
+    username: 'sa1',
     password: '123'
 }
 const validRegister = {
@@ -137,13 +137,8 @@ describe("Index file testing... ", () => {
         test("This test should get profile data for authorized user", async () => {
             const authToken = await loginMock(validCred);
             const response = await apiClient(authToken).get(`/auth/profile/${validCred.username}`);
-            const { fullname, street1, street2, city, state, zip } = response.data;
-            expect(fullname).toBe(users.get(validCred.username).fullname);
-            expect(street1).toBe(users.get(validCred.username).street1);
-            expect(street2).toBe(users.get(validCred.username).street2);
-            expect(city).toBe(users.get(validCred.username).city);
-            expect(state).toBe(users.get(validCred.username).state);
-            expect(zip).toBe(users.get(validCred.username).zip);
+            const profileData = response.data;
+            expect(users.get(validCred.username)).toEqual(expect.objectContaining(profileData));
         });
         test("This test should fail to fetch profile data for unauthorized user (invalid cookie)", async () => {
             await loginMock(validCred);
@@ -167,14 +162,16 @@ describe("Index file testing... ", () => {
             const newData = await getProfileDataMock(token, validCred.username);
             Object.keys(newProfileData).forEach((key) => { expect(newProfileData[key]).toBe(newData[key]) })
         })
-        test("This test should throw if new data to update profile has missing keys", async () => {
-            const token = await loginMock(validCred);
-            await expect(apiClient(token).post(`auth/profile/${validCred.username}/edit`, { fullname: "hello" })).rejects.toThrow();
-        })
-        test("This test should throw if new data to update profile has wrong keys", async () => {
-            const token = await loginMock(validCred);
-            const { fullname, street1, street2, city, state, zip } = newProfileData;
-            await expect(apiClient(token).post(`auth/profile/${validCred.username}/edit`, { full_name: fullname, street1, street2, city, state, zip })).rejects.toThrow();
+        test("This test should throw if new data to update profile has wrong/missing key/values", async () => {
+            try {
+                const token = await loginMock(validCred);
+                const { fullname, street1, street2, city, state, zip } = newProfileData;
+                response = await apiClient(token).post(`auth/profile/${validCred.username}/edit`, { full_name: fullname, street1, street2, city, state, zip });
+                fail("Test was supposed to throw error on updating profile, but didn't")
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+                expect(error.response.data).toBe("All fields are required");
+            }
         })
     })
 
@@ -187,11 +184,21 @@ describe("Index file testing... ", () => {
             await expect(bcrypt.compare(validRegister.password, password)).resolves.toBe(true);
         });
         test("This test should throw if registration with malformed input", async () => {
-            await expect(apiClient().post('/register', invalidCred)).rejects.toThrow();
+            try {
+                response = await apiClient().post('/register', invalidCred);
+                fail("Test was supposed to throw error if malformed registration request")
+
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+            }
 
         });
         test("This test should throw if registration with no input in request body", async () => {
-            await expect(apiClient().post('/register')).rejects.toThrow();
+            try {
+                await apiClient().post('/register');
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+            }
 
         });
     })
@@ -204,13 +211,25 @@ describe("Index file testing... ", () => {
             expect(response.status).toBe(200);
         })
         test("This test should not authorize users with valid authentication cookie but incorrect username in body", async () => {
-            const token = await loginMock(validCred);
-            await expect(apiClient(token).post('/auth/', { username: invalidCred.username })).rejects.toThrow();
+            try {
+                const token = await loginMock(validCred);
+                await apiClient(token).post('/auth/', { username: invalidCred.username });
+                fail("Test was supposed to not authorize invalid user")
+
+            } catch (error) {
+                expect(error.response.status).toBe(401);
+            }
+
         })
         test("This test should not authorize users with invalid authentication cookie", async () => {
-            await loginMock(validCred);
-            const token = 'badtoken';
-            await expect(apiClient(token).post('/auth/', { username: validCred.username })).rejects.toThrow();
+            try {
+                await loginMock(validCred);
+                const token = 'badtoken';
+                await apiClient(token).post('/auth/', { username: validCred.username })
+                fail("Test was supposed to not authorize user with invalid token cookie");
+            } catch (error) {
+                expect(error.response.status).toBe(401);
+            }
         })
     })
 
