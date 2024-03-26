@@ -25,12 +25,12 @@ const validateDeliveryAddr = (address) => {
         return false;
     }
 
-    const { street ='', city='', state='', zip='' } = address;
-    
+    const { street = '', city = '', state = '', zip = '' } = address;
+
     const isStreetValid = validateStreet(street);
     const isCityValid = validateCity(city);
     const isZipcodeValid = validateZipcode(zip);
-    
+
     return isStreetValid && isCityValid && isZipcodeValid;
 }
 
@@ -39,7 +39,7 @@ const validateInputs = (fullname, galReq, date, address) => {
     if (!validateGalReq(galReq)) {
         throw new AppError("Invalid gallons format", 400);
     }
-    if(!validateDeliveryDate(date)) {
+    if (!validateDeliveryDate(date)) {
         throw new AppError("Invalid date format", 400);
     }
 }
@@ -73,12 +73,27 @@ const getQuote = async (username, gallons) => {
 const submitQuote = async (quoteObject) => {
     try {
         validateKeys(quoteObject);
-        const { username, suggestedPricePerGallon, ...quoteData } = quoteObject;
+        const {
+            username,
+            street,
+            city,
+            state,
+            zip,
+            deliveryDate,
+            gallonsRequested,
+            suggestedPricePerGallon,
+            totalDue } = quoteObject;
         if (!quoteHistory.has(username)) {
             quoteHistory.set(username, []);
         }
-        const updatedQuoteObject = { ...quoteData, suggestedPricePerGallon };
-        quoteHistory.get(username).push(quoteObject);
+        const newQuote = {
+            address: { street, city, state, zip },
+            deliveryDate,
+            gallonsRequested,
+            suggestedPricePerGallon,
+            totalDue
+        };
+        quoteHistory.get(username).push(newQuote);
     } catch (error) {
         throw new AppError(error.message || "Error submitting quote", error.status || 400)
     }

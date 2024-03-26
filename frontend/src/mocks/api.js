@@ -302,7 +302,7 @@ const apiHandles = [
 
     }),
 
-    http.get('/api/auth/history/:username', async ({ request, params, cookies }) => {
+    http.get('/api/auth/quote/history/:username', async ({ request, params, cookies }) => {
         const username = params.username;
         const token = cookies.authToken;
         try {

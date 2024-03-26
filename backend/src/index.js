@@ -104,8 +104,18 @@ unprotectedRouter.post('/register', async (req, res, next) => {
     }
 })
 
+protectedRouter.get('/quote/history/:username', requireAuth, async (req, res, next) => {
+    try {
+        const username = req.params.username;
+        const quotes = await getQuoteHistory(username);
+        res.status(200).json({ quotes });
+    } catch (error) {
+        next(error);
+    }
+})
+
 protectedRouter.get('/quote/:username/:gallons', requireAuth, async (req, res, next) => {
-    try{
+    try {
         const username = req.params.username;
         const gallons = req.params.gallons;
         const quote = await getQuote(username, gallons);
@@ -116,21 +126,11 @@ protectedRouter.get('/quote/:username/:gallons', requireAuth, async (req, res, n
 })
 
 protectedRouter.post('/quote', requireAuth, async (req, res, next) => {
-    try{
+    try {
         const quoteObject = req.body;
         const result = await submitQuote(quoteObject);
-        res.status(200).json({message: 'Quote submitted successfully', result});
-    }catch (error) {
-        next(error);
-    }
-})
-
-protectedRouter.get('/quote/history/:username', requireAuth, async (req, res, next) => {
-    try {
-        const username = req.params.username;
-        const history = await getQuoteHistory(username);
-        res.status(200).json({ history });
-    }catch (error) {
+        res.status(200).json({ message: 'Quote submitted successfully', result });
+    } catch (error) {
         next(error);
     }
 })

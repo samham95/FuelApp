@@ -11,7 +11,7 @@ const FuelQuoteHistory = () => {
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
             try {
-                const response = await client.get(`auth/history/${username}`);
+                const response = await client.get(`auth/quote/history/${username}`);
                 const quoteHistory = response.data.quotes;
                 SetQuotes(quoteHistory);
             } catch (err) {
