@@ -7,6 +7,7 @@ const { addUser, generateToken, validateUser, invalidateToken, isTokenInvalidate
 const { getProfileData, updateProfile } = require('./profileModule.js');
 const requireAuth = require('./requireAuth.js');
 const AppError = require('./AppError.js');
+const { getQuote, submitQuote, getQuoteHistory } = require('./quoteModule.js');
 require('dotenv').config();
 require('express-async-errors');
 
@@ -99,6 +100,37 @@ unprotectedRouter.post('/register', async (req, res, next) => {
         res.status(200).send(`Successfully created user ${username} skeleton`);
 
     } catch (error) {
+        next(error);
+    }
+})
+
+protectedRouter.get('/quote/:username/:gallons', requireAuth, async (req, res, next) => {
+    try{
+        const username = req.params.username;
+        const gallons = req.params.gallons;
+        const quote = await getQuote(username, gallons);
+        res.status(200).json({ ...quote });
+    } catch (error) {
+        next(error);
+    }
+})
+
+protectedRouter.post('/quote', requireAuth, async (req, res, next) => {
+    try{
+        const quoteObject = req.body;
+        const result = await submitQuote(quoteObject);
+        res.status(200).json({message: 'Quote submitted successfully', result});
+    }catch (error) {
+        next(error);
+    }
+})
+
+protectedRouter.get('/quote/history/:username', requireAuth, async (req, res, next) => {
+    try {
+        const username = req.params.username;
+        const history = await getQuoteHistory(username);
+        res.status(200).json({ history });
+    }catch (error) {
         next(error);
     }
 })

@@ -70,4 +70,4 @@ const updateProfile = async (username, newData) => {
         throw new AppError(error.message || "Unable to update profile", error.status || 400);
     }
 }
-module.exports = { getProfileData, updateProfile };
+module.exports = { getProfileData, updateProfile, validateFullName, validateStreet, validateCity, validateZipcode };
