@@ -86,16 +86,12 @@ const submitQuote = async (quoteObject) => {
 
 const getQuoteHistory = async (username) => {
     try {
-        console.log(`Fetching quote history for user: ${username}`);
         if (!quoteHistory.has(username)) {
-            console.log("Quote history not found for user");
             throw new AppError("Quote history not found for user", 404);
         }
         const history = quoteHistory.get(username);
-        console.log("Quote history fetched successfully:", history);
         return history;
     } catch (error) {
-        console.error("Error in getQuoteHistory:", error);
         throw new AppError(error.message || "Error retrieving quote history", error.status || 400);
     }
 }

@@ -76,13 +76,13 @@ const EditProfile = () => {
                     <input name='fullname' type='text' value={profileData.fullname} onChange={handleChange} required maxLength={50} />
                     <br />
                     <label htmlFor='street1'>Street Address:</label>
-                    <input name='street1' type='text' value={profileData.street1} onChange={handleChange} required maxLength={100} />
+                    <input name='street1' type='text' value={profileData.street1} onChange={handleChange} required maxLength={50} />
                     <br />
                     <label htmlFor='street2'>Alternate Street Address:</label>
-                    <input name='street2' type='text' value={profileData.street2} onChange={handleChange} placeholder='(optional)' maxLength={100} />
+                    <input name='street2' type='text' value={profileData.street2} onChange={handleChange} placeholder='(optional)' maxLength={50} />
                     <br />
                     <label htmlFor='city'>City:</label>
-                    <input name='city' type='text' value={profileData.city} onChange={handleChange} required maxLength={100} />
+                    <input name='city' type='text' value={profileData.city} onChange={handleChange} required maxLength={50} />
                     <br />
                     <label htmlFor='state'>State:</label>
                     <br />

@@ -14,7 +14,6 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [isChecked, setIsChecked] = useState(false);
 
-
     useEffect(() => {
         const username = localStorage.getItem('username');
         client.post('/auth', { username })
@@ -75,6 +74,7 @@ const Login = () => {
                             placeholder='Username'
                             onChange={(e) => setUsername(e.target.value)}
                             required
+                            maxlength = '50'
                         />
                         <br />
                         <label className='label' htmlFor='password'>
@@ -87,6 +87,8 @@ const Login = () => {
                             placeholder='Password'
                             onChange={(e) => setPassword(e.target.value)}
                             required
+                            minlength = '8'
+                            maxlength = '32'
                         />
 
                         <br />
@@ -94,7 +96,7 @@ const Login = () => {
                             type='checkbox'
                             id='checked'
                             onChange={(e) => setIsChecked(e.target.value)}
-                            checked={isChecked} />
+                             />
                         Remember me
                         <br />
                         <br />
