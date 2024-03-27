@@ -47,14 +47,8 @@ protectedRouter.get('/profile/:username', requireAuth, async (req, res, next) =>
 protectedRouter.post('/profile/:username/edit', requireAuth, async (req, res, next) => {
     try {
         const username = req.username;
-        const { fullname, street1, state, zip, city, street2 } = req.body;
-
-        //only checking street1 since street2 is optional
-        if (!fullname || !street1 || !city || !zip || !state) {
-            throw new AppError("All fields are required", 400);
-        }
-        await updateProfile(username, { fullname, street1, street2, state, zip, city });
-        //await username.save();
+        const newProfileData = req.body;
+        await updateProfile(username, newProfileData);
         res.status(200).json({ message: "Profile updated successfully" });
     } catch (error) {
         next(error);
@@ -116,7 +110,7 @@ protectedRouter.get('/quote/history/:username', requireAuth, async (req, res, ne
 
 protectedRouter.get('/quote/:username/:gallons', requireAuth, async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.username;
         const gallons = req.params.gallons;
         const quote = await getQuote(username, gallons);
         res.status(200).json({ ...quote });
