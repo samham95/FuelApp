@@ -13,8 +13,6 @@ const EditProfile = () => {
             try {
                 const response = await client.get(`auth/profile/${username}`);
                 setProfileData(response.data);
-                localStorage.setItem('profileData', JSON.stringify(response.data));
-
             } catch (err) {
                 console.error("Authorization failed or failed to fetch profile data:", err);
                 localStorage.clear();
