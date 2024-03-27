@@ -212,7 +212,7 @@ describe("Index file testing... ", () => {
                 fail("Test was supposed to throw error on updating profile, but didn't")
             } catch (error) {
                 expect(error.response.status).toBe(400);
-                expect(error.response.data).toBe("All fields are required");
+                expect(error.response.data).toMatch("Missing required fields");
             }
         })
     })

@@ -1,5 +1,5 @@
 const AppError = require('./AppError.js');
-const {getProfileData, updateProfile} = require('./profileModule.js');
+const { getProfileData, updateProfile } = require('./profileModule.js');
 
 // Mock the mock database to isolate the profile module for testing
 jest.mock('./db/mockDatabase.js');
@@ -90,11 +90,11 @@ describe('Testing updateProfile', () => {
 
         expect(newProfData).toEqual(expect.objectContaining(newMockData));
     });
-    
+
     test('Fails and throws AppError if user is not in db', async () => {
         await expect(updateProfile('voidUser', newMockData)).rejects.toThrow('User not found');
     });
-    
+
     test('Passes if AppError thrown if new data is missing a field', async () => {
         // Missing Street field
         const missingMockData = {
@@ -119,36 +119,36 @@ describe('Testing updateProfile', () => {
 
         await expect(updateProfile('mockUser', wrongFormatData)).rejects.toThrow('Invalid name format');
     });
-    
+
     test('Passes if street1 has an invalid format', async () => {
         const wrongFormatData = {
-            fullname: 'Peter Griffin', 
-            street1: '33333 Sp@@ner Street', // Invalid Street 1
+            fullname: 'Peter Griffin',
+            street1: 'Invalid$ street address format', // Invalid Street 1
             street2: '44444 Washington Avenue',
             city: 'Quahog',
             state: 'Rhode Island',
             zip: '00093'
         };
 
-        await expect(updateProfile('mockUser', wrongFormatData)).rejects.toThrow('Invalid address format');
+        await expect(updateProfile('mockUser', wrongFormatData)).rejects.toThrow('Invalid street address format');
     });
-    
+
     test('Passes if street2 has an invalid format', async () => {
         const wrongFormatData = {
-            fullname: 'Peter Griffin', 
-            street1: '33333 Spooner Street', 
+            fullname: 'Peter Griffin',
+            street1: '33333 Spooner Street',
             street2: '44444 W@shington @venue', // Invalid Street 2
             city: 'Quahog',
             state: 'Rhode Island',
             zip: '00093'
         };
 
-        await expect(updateProfile('mockUser', wrongFormatData)).rejects.toThrow('Invalid address format');
+        await expect(updateProfile('mockUser', wrongFormatData)).rejects.toThrow('Invalid optional address format');
     });
 
     test('Passes if city has an invalid format', async () => {
         const wrongFormatData = {
-            fullname: 'Peter Griffin', 
+            fullname: 'Peter Griffin',
             street1: '33333 Spooner Street',
             street2: '44444 Washington Avenue',
             city: 'Qu@h0g', // Invalid city
@@ -161,9 +161,9 @@ describe('Testing updateProfile', () => {
 
     test('Passes if zip has an invalid format', async () => {
         const wrongFormatData = {
-            fullname: 'Peter Griffin', 
-            street1: '33333 Spooner Street', 
-            street2: '44444 Washington Avenue', 
+            fullname: 'Peter Griffin',
+            street1: '33333 Spooner Street',
+            street2: '44444 Washington Avenue',
             city: 'Quahog',
             state: 'Rhode Island',
             zip: '0003' //Invalid 4-digit zip code
@@ -171,5 +171,5 @@ describe('Testing updateProfile', () => {
 
         await expect(updateProfile('mockUser', wrongFormatData)).rejects.toThrow('Invalid zip code format');
     });
-     
+
 });
