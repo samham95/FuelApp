@@ -171,7 +171,7 @@ const EditProfile = () => {
                     <br />
                     <br />
                     <label htmlFor='zip'>Zip Code:</label>
-                    <input name='zip' type='text' value={profileData.zip} onChange={handleChange} required minLength={5} maxLength={9} />
+                    <input name='zip' type='text' value={profileData.zip} onChange={handleChange} required minLength={5} maxLength={10} />
                     <br />
                     {errorMessage && <p className="error-message" style={{ color: "red" }}>{errorMessage}</p>}
                     <button type='submit'>Save</button>
