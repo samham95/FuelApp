@@ -40,7 +40,7 @@ const FuelQuoteHistory = () => {
                         <tr>
                             <th className="text-center">Gallons Requested</th>
                             <th className="text-center">Delivery Address</th>
-                            <th className="text-center">Delivery Date</th>
+                            <th className="text-center">Delivery Date (YYYY-MM-DD)</th>
                             <th className="text-center">Suggested Price (per gallon)</th>
                             <th className="text-center">Total Due</th>
                         </tr>
