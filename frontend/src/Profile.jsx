@@ -6,37 +6,41 @@ import './styles.css';
 const ProfileData = () => {
     const navigate = useNavigate();
     const username = localStorage.getItem('username');
-    const [profileData, setProfileData] = useState(() => {
-        const cachedData = localStorage.getItem('profileData');
-        return cachedData ? JSON.parse(cachedData) : {
-            fullname: '',
-            street1: '',
-            street2: '',
-            city: '',
-            state: '',
-            zip: '',
-        };
-    });
-
+    const [profileData, setProfileData] = useState({});
 
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
             try {
-                // Check if we need to fetch data or if it was loaded from cache
-                if (!localStorage.getItem('profileData')) {
-                    const response = await client.get(`/auth/profile/${username}`);
-                    setProfileData(response.data);
-                    localStorage.setItem('profileData', JSON.stringify(response.data));
-                }
+                const response = await client.get(`/auth/profile/${username}`);
+                setProfileData(response.data);
             } catch (err) {
-                console.error("Authorization check failed or failed to fetch profile data:", err);
-                localStorage.clear();
-                navigate('/login');
+                if (err.response.status === 403) {
+                    localStorage.clear();
+                    navigate('/login');
+                }
+                else {
+                    alert(`Unable to fetch profile data: ${err.response.data}`)
+                    navigate('/profile')
+                }
             }
         };
 
         checkAuthorizationAndFetchData();
-    }, []);
+    }, [navigate]);
+
+    const validateProfileData = () => {
+        return profileData.fullname && profileData.street1 && profileData.state && profileData.zip && profileData.city;
+    };
+
+    useEffect(() => {
+        if (Object.keys(profileData).length > 0) {
+            if (!validateProfileData()) {
+                console.log(profileData);
+                navigate('/profile/edit', { state: { needToCompleteProfile: true } });
+            }
+        }
+    }, [profileData, navigate]);
+
 
     return (
         <>
@@ -55,7 +59,7 @@ const ProfileData = () => {
                     <input name='street1' type='text' className="form-control" value={profileData.street1 || ''} readOnly />
                 </div>
                 <div className='form-group'>
-                    <label htmlFor='street2'>Alternate Street Address:</label>
+                    <label htmlFor='street2'>Apt, suite, etc.:</label>
                     <input name='street2' type='text' className="form-control" value={profileData.street2 || ''} readOnly />
                 </div>
                 <div className='form-group'>

@@ -17,17 +17,7 @@ const FuelQuoteForm = () => {
     const [suggestedPricePerGallon, setSuggestedPricePerGallon] = useState(NaN);
     const [totalDue, setTotalDue] = useState(NaN);
 
-    const [profileData, setProfileData] = useState(() => {
-        const cachedData = localStorage.getItem('profileData');
-        return cachedData ? JSON.parse(cachedData) : {
-            fullname: '',
-            street1: '',
-            street2: '',
-            city: '',
-            state: '',
-            zip: '',
-        };
-    });
+    const [profileData, setProfileData] = useState({});
     const validateQuote = () => {
         return Number.isFinite(totalDue) && Number.isFinite(suggestedPricePerGallon)
     }
@@ -35,12 +25,8 @@ const FuelQuoteForm = () => {
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
             try {
-                // Check if we need to fetch data or if it was loaded from cache
-                if (!localStorage.getItem('profileData')) {
-                    const response = await client.get(`auth/profile/${username}`);
-                    setProfileData(response.data);
-                    localStorage.setItem('profileData', JSON.stringify(response.data));
-                }
+                const response = await client.get(`auth/profile/${username}`);
+                setProfileData(response.data);
             } catch (err) {
                 console.error("Authorization check failed or failed to fetch profile data:", err);
                 localStorage.clear();
@@ -50,6 +36,19 @@ const FuelQuoteForm = () => {
 
         checkAuthorizationAndFetchData();
     }, [navigate, username]);
+
+    const validateProfileData = () => {
+        return profileData.fullname && profileData.street1 && profileData.state && profileData.zip && profileData.city;
+    };
+
+    useEffect(() => {
+        if (Object.keys(profileData).length > 0) {
+            if (!validateProfileData()) {
+                console.log(profileData);
+                navigate('/profile/edit', { state: { needToCompleteProfile: true } });
+            }
+        }
+    }, [profileData, navigate]);
 
     const handleQuote = async (e) => {
         e.preventDefault();

@@ -4,9 +4,8 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { client } from './apiClient';
 
 const FuelQuoteHistory = () => {
-    const username = localStorage.getItem('username');
-    const token = localStorage.getItem('token');
 
+    const username = localStorage.getItem('username');
     const [quotes, SetQuotes] = useState([]);
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
@@ -15,13 +14,13 @@ const FuelQuoteHistory = () => {
                 const quoteHistory = response.data.quotes;
                 SetQuotes(quoteHistory);
             } catch (err) {
-                if (err.response.status === 500) {
-                    alert('Unable to get quotes')
-                    navigate('/profile')
-                }
-                else if (err.response.status === 403) {
+                if (err.response.status === 403) {
                     localStorage.clear();
                     navigate('/login');
+                }
+                else {
+                    alert(`Unable to get quotes: ${err.response.data}`)
+                    navigate('/profile')
                 }
 
             }

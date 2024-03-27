@@ -7,15 +7,14 @@ const EditProfile = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const username = localStorage.getItem('username');
-
+    const [errorMessage, setErrorMessage] = useState("");
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
             try {
-                if (!localStorage.getItem('profileData')) {
-                    const response = await client.get(`auth/profile/${username}`);
-                    setProfileData(response.data);
-                    localStorage.setItem('profileData', JSON.stringify(response.data));
-                }
+                const response = await client.get(`auth/profile/${username}`);
+                setProfileData(response.data);
+                localStorage.setItem('profileData', JSON.stringify(response.data));
+
             } catch (err) {
                 console.error("Authorization failed or failed to fetch profile data:", err);
                 localStorage.clear();
@@ -25,9 +24,12 @@ const EditProfile = () => {
 
         checkAuthorizationAndFetchData();
     }, [navigate, username])
+
+
     const { needToCompleteProfile } = location.state || {};
 
-    const initialProfileData = JSON.parse(localStorage.getItem('profileData')) || {
+    const initialProfileData =
+    {
         fullname: '',
         street1: '',
         street2: '',
@@ -48,14 +50,41 @@ const EditProfile = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        setErrorMessage("");
+        if (!/^[a-zA-Z\s]+$/.test(profileData.fullname)) {
+            setErrorMessage("Invalid format for Full Name. Only letters and spaces are allowed.");
+            return;
+        }
+        if (!/^[a-zA-Z0-9\s.,-]+$/.test(profileData.street1)) {
+            setErrorMessage("Invalid format for Street Address. Only letters, numbers, spaces, commas, and hyphens are allowed.");
+            return;
+        }
+        if (profileData.street2 && !/^[A-Za-z0-9#.\-\s/,]*$/.test(profileData.street2)) {
+            setErrorMessage("Invalid format for Apt, suite, etc. Only letters, numbers, spaces, #, ., -, and / are allowed.");
+            return;
+        }
+        if (!/^[a-zA-Z\s]+$/.test(profileData.city)) {
+            setErrorMessage("Invalid format for City. Only letters and spaces are allowed.");
+            return;
+        }
+        if (!/^\d{5}(?:-\d{4})?$/.test(profileData.zip)) {
+            setErrorMessage("Invalid format for Zip Code. Should be 5 digits or 5 digits followed by a hyphen and 4 more digits.");
+            return;
+        }
         try {
             await client.post(`auth/profile/${username}/edit`, profileData);
             localStorage.setItem('profileData', JSON.stringify(profileData));
             alert('Profile updated successfully!');
             navigate('/profile');
         } catch (err) {
-            alert('Failed to update profile. Please try again.');
-            console.error("Error updating profile:", err);
+            if (err.response.status === 403) {
+                localStorage.clear();
+                navigate('/login');
+            }
+            else {
+                alert(`Failed to update profile with error: ${err.response.data}`);
+            }
         }
     };
 
@@ -78,7 +107,7 @@ const EditProfile = () => {
                     <label htmlFor='street1'>Street Address:</label>
                     <input name='street1' type='text' value={profileData.street1} onChange={handleChange} required maxLength={50} />
                     <br />
-                    <label htmlFor='street2'>Alternate Street Address:</label>
+                    <label htmlFor='street2'>Apt, suite, etc.:</label>
                     <input name='street2' type='text' value={profileData.street2} onChange={handleChange} placeholder='(optional)' maxLength={50} />
                     <br />
                     <label htmlFor='city'>City:</label>
@@ -145,6 +174,7 @@ const EditProfile = () => {
                     <label htmlFor='zip'>Zip Code:</label>
                     <input name='zip' type='text' value={profileData.zip} onChange={handleChange} required minLength={5} maxLength={9} />
                     <br />
+                    {errorMessage && <p className="error-message" style={{ color: "red" }}>{errorMessage}</p>}
                     <button type='submit'>Save</button>
                 </form>
             </div>
