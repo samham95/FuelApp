@@ -1,6 +1,5 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const errorHandler = require('./ErrorHandler.js')
 const { addUser, generateToken, validateUser, invalidateToken, isTokenInvalidated } = require('./loginModule.js');
@@ -12,10 +11,9 @@ require('dotenv').config();
 require('express-async-errors');
 
 const secretKey = process.env.JWT_SECRET || 'secretkeyhehe';
-const PORT = process.env.PORT || 3001;
 const corsOptions = {
-    origin: process.env.CLIENT_URL || 'http://localhost:3000', // update .env for production
-    credentials: true, // send cookies with requests
+    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    credentials: true,
 };
 
 const protectedRouter = express.Router();

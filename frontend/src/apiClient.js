@@ -1,9 +1,6 @@
 import axios from 'axios';
-import config from './config';
-
+const baseURL = import.meta.env.VITE_BASE_URL;
 axios.defaults.withCredentials = true;
-
-const baseURL = config.baseURL;
 
 const client = axios.create({
     baseURL: `${baseURL}`,
