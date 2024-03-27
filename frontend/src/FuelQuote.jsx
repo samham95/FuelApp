@@ -28,6 +28,9 @@ const FuelQuoteForm = () => {
             zip: '',
         };
     });
+    const validateQuote = () => {
+        return Number.isFinite(totalDue) && Number.isFinite(suggestedPricePerGallon)
+    }
     const address = profileData.street1 + ', ' + profileData.city + ', ' + profileData.state + ' ' + profileData.zip;
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
@@ -62,6 +65,10 @@ const FuelQuoteForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validateQuote()) {
+            alert("Please generate a valid quote before attempting to submit!");
+            return;
+        }
         try {
             const res = await client.post('auth/quote', {
                 username,
@@ -118,7 +125,11 @@ const FuelQuoteForm = () => {
                             value={gallonsRequested}
                             min={1}
                             max={1000000000}
-                            onChange={e => setGallonsRequested(e.target.value)}
+                            onChange={e => {
+                                setGallonsRequested(e.target.value);
+                                setSuggestedPricePerGallon(NaN);
+                                setTotalDue(NaN);
+                            }}
                         />
                     </div>
                     <div className="form-group">
@@ -131,7 +142,11 @@ const FuelQuoteForm = () => {
                             max={maxDate}
                             value={deliveryDate}
                             required
-                            onChange={e => setDeliveryDate(e.target.value)}
+                            onChange={e => {
+                                setDeliveryDate(e.target.value);
+                                setSuggestedPricePerGallon(NaN);
+                                setTotalDue(NaN);
+                            }}
                         />
                     </div>
                     <button type="submit" className="btn btn-primary">GENERATE QUOTE</button>
