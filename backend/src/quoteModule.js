@@ -9,14 +9,19 @@ const validateName = (fullname) => {
     return isValidName;
 }
 
-const validateGalReq = (galReq) => {
-    const regex = /\d+/;
-    return galReq && regex.test(galReq);
+const validateNum = (num) => {
+    const regex = /^\d*\.?\d+$/;
+    return num && regex.test(num);
 }
 
 const validateDeliveryDate = (date) => {
     const regex = /^\d{4}-\d{2}-\d{2}$/;
     return date && regex.test(date);
+}
+const validateState = (state) => {
+    const regex = /^[A-Z]{2}$/;
+    return state && regex.test(state);
+
 }
 // Validate Delivery Address
 const validateDeliveryAddr = (address) => {
@@ -30,23 +35,42 @@ const validateDeliveryAddr = (address) => {
     const isStreetValid = validateStreet(street);
     const isCityValid = validateCity(city);
     const isZipcodeValid = validateZipcode(zip);
+    const isStateValid = validateState(state);
 
-    return isStreetValid && isCityValid && isZipcodeValid;
+    return isStreetValid && isCityValid && isZipcodeValid && isStateValid;
 }
 
-const validateInputs = (fullname, galReq, date, address) => {
+const validateInputs = (ppg, total, galReq, date, address) => {
 
-    if (!validateGalReq(galReq)) {
-        throw new AppError("Invalid gallons format", 400);
+    if (!validateNum(galReq)) {
+        throw new AppError(`Invalid gallons requested format - expected number, input: ${galReq}`, 400);
+    }
+    if (!validateNum(total)) {
+        throw new AppError(`Invalid total due format - expected number, input: ${total}`, 400);
+    }
+    if (!validateNum(ppg)) {
+        throw new AppError(`Invalid price per gallon format - expected number, input: ${ppg}`, 400);
     }
     if (!validateDeliveryDate(date)) {
-        throw new AppError("Invalid date format", 400);
+        throw new AppError(`Invalid date format - expeced input:`, 400);
+    }
+    if (!validateDeliveryAddr(address)) {
+        throw new AppError("Invalid Delivery Address", 400);
     }
 }
 
 // Check to see if any form data is missing
 const validateKeys = (formData) => {
-    const requiredKeys = ['gallonsRequested', 'deliveryDate', 'suggestedPricePerGallon', 'totalDue'];
+    const requiredKeys = [
+        'username',
+        'street',
+        'city',
+        'state',
+        'zip',
+        'gallonsRequested',
+        'deliveryDate',
+        'suggestedPricePerGallon',
+        'totalDue'];
 
     const missingKeys = requiredKeys.filter(key => !(key in formData));
     if (missingKeys.length > 0) {
@@ -83,9 +107,11 @@ const submitQuote = async (quoteObject) => {
             gallonsRequested,
             suggestedPricePerGallon,
             totalDue } = quoteObject;
+
         if (!quoteHistory.has(username)) {
             quoteHistory.set(username, []);
         }
+
         const newQuote = {
             address: { street, city, state, zip },
             deliveryDate,
@@ -93,7 +119,16 @@ const submitQuote = async (quoteObject) => {
             suggestedPricePerGallon,
             totalDue
         };
+
+        validateInputs(
+            newQuote.suggestedPricePerGallon,
+            newQuote.totalDue,
+            newQuote.gallonsRequested,
+            newQuote.deliveryDate,
+            newQuote.address);
+
         quoteHistory.get(username).push(newQuote);
+
     } catch (error) {
         throw new AppError(error.message || "Error submitting quote", error.status || 400)
     }
@@ -102,7 +137,7 @@ const submitQuote = async (quoteObject) => {
 const getQuoteHistory = async (username) => {
     try {
         if (!quoteHistory.has(username)) {
-            throw new AppError("Quote history not found for user", 404);
+            return [];
         }
         const history = quoteHistory.get(username);
         return history;
