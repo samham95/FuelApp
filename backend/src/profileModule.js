@@ -15,6 +15,12 @@ const validateStreet = (street1) => {
     const regex = /^[a-zA-Z0-9\s.,-]+$/;
     return street1 && regex.test(street1);
 }
+const validateStreet2 = (street2) => {
+    const regex = /^[A-Za-z0-9#.\-\s/,]+$/;
+    return street2 && regex.test(street2);
+}
+
+
 const validateCity = (city) => {
     const regex = /^[a-zA-Z\s]+$/;
     return city && regex.test(city);
@@ -32,10 +38,10 @@ const validateInputs = (fullname, street1, street2, city, zip) => {
         throw new AppError("Invalid name format", 400);
     }
     if (!validateStreet(street1)) {
-        throw new AppError("Invalid address format", 400);
+        throw new AppError("Invalid street address format", 400);
     }
-    if (!validateStreet(street2)) {
-        throw new AppError("Invalid address format", 400);
+    if (street2 && !validateStreet2(street2)) {
+        throw new AppError("Invalid optional address format", 400);
     }
     if (!validateCity(city)) {
         throw new AppError("Invalid city format", 400);
