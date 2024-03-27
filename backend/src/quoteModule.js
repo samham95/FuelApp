@@ -1,14 +1,18 @@
 const FuelPricing = require('./pricingModule');
 const AppError = require('./AppError.js');
 const { users, quoteHistory } = require('./db/mockDatabase.js');
-const { validateFullName, validateStreet, validateCity, validateZipcode } = require('./profileModule');
+const { validateFullName, validateCity, validateZipcode } = require('./profileModule');
 
 /*Validation functions for form fields*/
 const validateName = (fullname) => {
     const isValidName = validateFullName(fullname);
     return isValidName;
 }
+const validateStreet = (street) => {
+    const regex = /^[A-Za-z0-9\s.,-]+(?:\s[A-Za-z0-9#.\-\s/,]+)?$/;
+    return street && regex.test(street);
 
+}
 const validateNum = (num) => {
     const regex = /^\d*\.?\d+$/;
     return num && regex.test(num);

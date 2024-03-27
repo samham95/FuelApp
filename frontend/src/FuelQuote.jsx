@@ -21,7 +21,7 @@ const FuelQuoteForm = () => {
     const validateQuote = () => {
         return Number.isFinite(totalDue) && Number.isFinite(suggestedPricePerGallon)
     }
-    const address = profileData.street1 + ', ' + profileData.city + ', ' + profileData.state + ' ' + profileData.zip;
+    const [address, setAddress] = useState("");
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
             try {
@@ -47,6 +47,8 @@ const FuelQuoteForm = () => {
                 console.log(profileData);
                 navigate('/profile/edit', { state: { needToCompleteProfile: true } });
             }
+            const address = `${profileData.street1}\n${profileData.street2 ? profileData.street2 + '\n' : ''}${profileData.city}, ${profileData.state} ${profileData.zip}`;
+            setAddress(address);
         }
     }, [profileData, navigate]);
 
@@ -71,7 +73,7 @@ const FuelQuoteForm = () => {
         try {
             const res = await client.post('auth/quote', {
                 username,
-                street: profileData.street1,
+                street: `${profileData.street1}${profileData.street2 ? ' ' + profileData.street2 : ''}`,
                 city: profileData.city,
                 state: profileData.state,
                 zip: profileData.zip,
@@ -106,12 +108,13 @@ const FuelQuoteForm = () => {
                     </div>
                     <div className="form-group">
                         <label htmlFor="deliveryAddress">Delivery Address</label>
-                        <input
+                        <textarea
                             type="text"
                             className="form-control"
                             id="deliveryAddress"
                             value={address}
                             readOnly
+                            rows={3}
                         />
                     </div>
                     <div className="form-group">
