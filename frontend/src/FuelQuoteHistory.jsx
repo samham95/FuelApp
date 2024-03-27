@@ -5,6 +5,7 @@ import { client } from './apiClient';
 
 const FuelQuoteHistory = () => {
 
+    const navigate = useNavigate();
     const username = localStorage.getItem('username');
     const [quotes, SetQuotes] = useState([]);
     useEffect(() => {
@@ -14,7 +15,8 @@ const FuelQuoteHistory = () => {
                 const quoteHistory = response.data.quotes;
                 SetQuotes(quoteHistory);
             } catch (err) {
-                if (err.response.status === 403) {
+                if (err.response.status === 401 || err.response.status === 403) {
+                    alert(`Unable to get quotes: ${err.response.data}`)
                     localStorage.clear();
                     navigate('/login');
                 }

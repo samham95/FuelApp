@@ -14,13 +14,14 @@ const ProfileData = () => {
                 const response = await client.get(`/auth/profile/${username}`);
                 setProfileData(response.data);
             } catch (err) {
-                if (err.response.status === 403) {
+                if (err.response.status === 403 || err.response.status == 401) {
                     localStorage.clear();
-                    navigate('/login');
+                    alert(`Unable to fetch profile data: ${err.response.data}`);
+                    navigate('/login')
                 }
                 else {
-                    alert(`Unable to fetch profile data: ${err.response.data}`)
-                    navigate('/profile')
+                    alert(`Unable to fetch profile data: ${err.response.data}`);
+                    navigate('/')
                 }
             }
         };

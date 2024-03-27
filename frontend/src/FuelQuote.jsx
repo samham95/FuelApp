@@ -28,9 +28,15 @@ const FuelQuoteForm = () => {
                 const response = await client.get(`auth/profile/${username}`);
                 setProfileData(response.data);
             } catch (err) {
-                console.error("Authorization check failed or failed to fetch profile data:", err);
-                localStorage.clear();
-                navigate('/login');
+                if (err.response.status === 401 || rr.response.status === 403) {
+                    alert(`Unable to get fuel quotes: ${err.response.data}`)
+                    localStorage.clear();
+                    navigate('/login');
+                } else {
+                    alert(`Unable to get fuel quotes: ${err.response.data}`)
+                    navigate('/profile')
+                }
+
             }
         };
 

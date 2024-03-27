@@ -78,12 +78,13 @@ const EditProfile = () => {
             alert('Profile updated successfully!');
             navigate('/profile');
         } catch (err) {
-            if (err.response.status === 403) {
+            if (err.response.status === 401 || err.response.status === 403) {
+                alert(`Unable to edit profile: ${err.response.data}`)
                 localStorage.clear();
                 navigate('/login');
             }
             else {
-                alert(`Failed to update profile with error: ${err.response.data}`);
+                alert(`Failed to update profile with error: ${err.response.data}`)
             }
         }
     };
