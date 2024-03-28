@@ -59,7 +59,7 @@ protectedRouter.post('/logout', requireAuth, async (req, res, next) => {
         const token = req.signedCookies.auth_token;
 
         await invalidateToken(token);
-        res.clearCookie('auth_token', { httpOnly: true, signed: true });
+        res.clearCookie('auth_token', { httpOnly: true, signed: true /*, secure: true, sameSite: "none" */ });
         res.status(200).send(`User ${username} logged out`);
     } catch (error) {
         next(error);
@@ -74,7 +74,7 @@ unprotectedRouter.post('/login', async (req, res, next) => {
             throw new AppError("Invalid Credentials", 401)
         }
         const token = await generateToken(username);
-        res.cookie('auth_token', token, { httpOnly: true, signed: true });
+        res.cookie('auth_token', token, { httpOnly: true, signed: true /*, secure: true, sameSite: "none" */ });
         res.status(200).json({
             msg: `Successfully validated credentials for user: ${username}`,
         })
