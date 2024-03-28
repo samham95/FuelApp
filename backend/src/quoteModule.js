@@ -89,6 +89,10 @@ const getQuote = async (username, gallons) => {
         }
         const user = users.get(username);
         const state = user.state;
+        if (!validateNum(gallons)) {
+            throw new AppError(`Invalid gallons requested format - expected number, input: ${gallons}`, 400);
+
+        }
         const fuelPrice = new FuelPricing(username, state, gallons);
         const pricePerGallon = await fuelPrice.getPricePerGallon();
         return { pricePerGallon };
