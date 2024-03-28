@@ -56,7 +56,7 @@ const validateInputs = (ppg, total, galReq, date, address) => {
         throw new AppError(`Invalid price per gallon format - expected number, input: ${ppg}`, 400);
     }
     if (!validateDeliveryDate(date)) {
-        throw new AppError(`Invalid date format - expeced input:`, 400);
+        throw new AppError(`Invalid date format - expected input:`, 400);
     }
     if (!validateDeliveryAddr(address)) {
         throw new AppError("Invalid Delivery Address", 400);
@@ -89,7 +89,6 @@ const getQuote = async (username, gallons) => {
         }
         const user = users.get(username);
         const state = user.state;
-        //validateInputs(user.fullname, gallons, user.deliveryDate, user.address);
         const fuelPrice = new FuelPricing(username, state, gallons);
         const pricePerGallon = await fuelPrice.getPricePerGallon();
         return { pricePerGallon };

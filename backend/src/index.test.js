@@ -316,6 +316,142 @@ describe("Index file testing... ", () => {
         });
     })
 
+    describe("Get quote history route testing...", ()=>{
+        test("This test should get quote history for authorized user", async() => {
+            try{
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).get(`/auth/quote/history/${validCred.username}`);
+                const quoteData = response.data;
+                expect(response.status).toBe(200);
+                expect(users.get(validCred.username)).toEqual(expect.objectContaining(quoteData));
+            } catch (error) {
+                fail(`test failed with error: ${error}`)
+            }
+        });
+        test("This test should return an empty quote history for a new user", async() => {
+            try{
+                const token = await loginMock(newUser);
+                const response = await apiClient(token).get(`/auth/quote/history/${newUser.username}`);
+                expect(response.status).toBe(200);
+                expect(response.data.quotes).toBeDefined();
+                expect(response.data.quotes).toHaveLength(0);
+            } catch (error) {
+                fail(`Test failed with error: ${error}`);
+            }
+        });        
+        test("This test should fail to fetch quote history for unauthorized user", async() => {
+            try{
+                const token = await loginMock(validCred);
+                const badtoken = 'auth_token=badtoken';
+                const response = await apiClient(badtoken).get(`/auth/quote/history/${validCred.username}`);
+                expect(error.response.status).toBe(401);
+                expect(error.response.data).toBe("Authentication required");
+            } catch (error) {
+                fail(`Test failed with error: ${error}`);
+            }
+        });
+    })
+
+    describe("Get quote route testing...", () => {
+        test("This test should get a quote for authorized user", async() => {
+            try{
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).get(`/auth/quote/${validCred.username}/${gallons}`);
+                expect(response.status).toBe(200);
+                expect(response.data).toEqual(expect.objectContaining({pricePerGallon: expect.any(Number)}));
+            } catch (error) {
+                fail(`Test failed with error: ${error}`);
+            }
+        });
+        test("This test should fail to get a quote for unauthorized user", async() => {
+             try{
+                const token = await loginMock(validCred);
+                const badtoken = 'auth_token=badtoken';
+                const response = await apiClient(badtoken).get(`/auth/quote/${validCred.username}/${gallons}`);
+                expect(error.response.status).toBe(401);
+                expect(error.response.data).toBe("Authentication required");
+            } catch (error) {
+                fail(`Test failed with error: ${error}`);
+            }
+        });
+        test("This test should fail to get a quote with invalid gallon input", async() => {
+            try{
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).get(`/auth/quote/${validCred.username}/invalidGallons`);
+                expect(response.status).toBe(400);
+                expect(response.data.error).toBe("Invalid gallons format");
+            } catch (error) {
+                fail(`Test failed with error: ${error}`);
+            }
+        });
+        test("This test should fail to get quote with no input in request body", async() => {
+            try{
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).get(`/auth/quote/${validCred.username}`);
+                expect(response.status).toBe(400);
+                expect(response.data.error).toBe("Missing required parameters");
+            } catch (error) {
+                fail(`Test failed with error: ${error}`);
+            }
+        });
+    })
+
+    describe("Submit quote route testing...", () => {
+        test("This test should submit a quote for authorized user", async() =>{
+            try{
+                const token = await loginMock(validCred);
+                const quoteObject = {
+                    username: validCred.username,
+                    street: "123 Main St",
+                    city: "City",
+                    state: "TX",
+                    zip:"12345",
+                    deliveryDate: "2024-03-27",
+                    gallonsRequested: "100",
+                    suggestedPricePerGallon: "2.50",
+                    totalDue: "250"
+                };
+                const response = await apiClient(token).post(`/auth/quote`, quoteObject);
+                expect(response.status).toBe(200);
+            } catch (error) {
+                fail(`Test failed with error:${error}`);
+            }
+        });
+        test("This test should fail to submit a quote for unauthorized user", async() =>{
+            try{
+                const token = await loginMock(validCred);
+                const badtoken = 'auth_token=badtoken';
+                const quoteObject = {
+                    username: validCred.username,
+                    street: "123 Main St",
+                    city: "City",
+                    state: "TX",
+                    zip:"12345",
+                    deliveryDate: "2024-03-27",
+                    gallonsRequested: "100",
+                    suggestedPricePerGallon: "2.50",
+                    totalDue: "250"
+                };
+                const response = await apiClient(badtoken).post(`/auth/quote`, quoteObject);
+                expect(response.status).toBe(401);
+                expect(response.data.error).toBe("Authentication required");
+            } catch (error) {
+                fail(`Test failed with error:${error}`);
+            }
+        });
+        test("This should test for missing required fields in submission", async() => {
+            try{
+                const token = await loginMock(validCred);
+                const invalidQuoteObject = {};
+                const response = await apiClient(token).post(`/auth/quote`, invalidQuoteObject);
+                expect(response.status).toBe(400);
+                expect(response.data.error).toBe("Missing required fields");
+            } catch (error) {
+                fail(`Test failed with error: ${error}`);
+            }
+        });
+    })
+
 })
 
 
