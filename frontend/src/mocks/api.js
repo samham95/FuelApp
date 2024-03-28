@@ -46,7 +46,6 @@ function addUser(username, password) {
     users.set(username, {
         fullname: '',
         password: password,
-        email: '',
         street1: '',
         street2: '',
         city: '',
@@ -122,7 +121,7 @@ const apiHandles = [
         console.log(token);
         if (authenticateUser(username, token)) {
             const { fullname, street1, street2, city, state, zip } = users.get(username);
-            const profileData = { fullname, email, street1, street2, city, state, zip };
+            const profileData = { fullname, street1, street2, city, state, zip };
             return HttpResponse.json(
                 {
                     ...profileData
@@ -228,6 +227,42 @@ const apiHandles = [
         }
 
     }),
+    http.get('/api/auth/quote/history/:username', async ({ request, params, cookies }) => {
+        const username = params.username;
+        const token = cookies.authToken;
+        console.log(token, username)
+        try {
+            if (authenticateUser(username, token)) {
+                const quotes = quoteHistory.get(username);
+                return HttpResponse.json(
+                    {
+                        quotes
+                    },
+                    {
+                        status: 200,
+                        statusText: "Successfully mocked update quote history"
+                    }
+                )
+            }
+            else {
+                return HttpResponse.json(
+                    {
+                        message: "Not authorized"
+                    },
+                    {
+                        status: 403
+                    }
+                )
+            }
+        } catch (err) {
+            return HttpResponse.json(
+                {
+                    status: 500,
+                    statusText: "Successfully mocked unable to submit quote history"
+                }
+            )
+        }
+    }),
 
     http.get('/api/auth/quote/:username/:gallonsRequested', async ({ request, params, cookies }) => {
         const username = params.username;
@@ -302,41 +337,6 @@ const apiHandles = [
 
     }),
 
-    http.get('/api/auth/quote/history/:username', async ({ request, params, cookies }) => {
-        const username = params.username;
-        const token = cookies.authToken;
-        try {
-            if (authenticateUser(username, token)) {
-                const quotes = quoteHistory.get(username);
-                return HttpResponse.json(
-                    {
-                        quotes
-                    },
-                    {
-                        status: 200,
-                        statusText: "Successfully mocked update quote history"
-                    }
-                )
-            }
-            else {
-                return HttpResponse.json(
-                    {
-                        message: "Not authorized"
-                    },
-                    {
-                        status: 403
-                    }
-                )
-            }
-        } catch (err) {
-            return HttpResponse.json(
-                {
-                    status: 500,
-                    statusText: "Successfully mocked unable to submit quote history"
-                }
-            )
-        }
-    })
 ];
 
 export default apiHandles;
