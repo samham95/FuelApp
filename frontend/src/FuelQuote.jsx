@@ -28,7 +28,7 @@ const FuelQuoteForm = () => {
                 const response = await client.get(`auth/profile/${username}`);
                 setProfileData(response.data);
             } catch (err) {
-                if (err.response.status === 401 || rr.response.status === 403) {
+                if (err.response.status === 401 || err.response.status === 403) {
                     alert(`Unable to get fuel quotes: ${err.response.data}`)
                     localStorage.clear();
                     navigate('/login');
