@@ -3,7 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
-/* config for https, omitting...
+//config for https, omitting...
+/*
 const cert = fs.readFileSync(path.resolve('../../localhost+2.pem'));
 const key = fs.readFileSync(path.resolve('../../localhost+2-key.pem'));
 

@@ -4,7 +4,7 @@ const cors = require('cors');
 const errorHandler = require('./ErrorHandler.js')
 const { addUser, generateToken, validateUser, invalidateToken, isTokenInvalidated } = require('./loginModule.js');
 const { getProfileData, updateProfile } = require('./profileModule.js');
-const requireAuth = require('./requireAuth.js');
+const requireAuth = require('./RequireAuth.js');
 const AppError = require('./AppError.js');
 const { getQuote, submitQuote, getQuoteHistory } = require('./quoteModule.js');
 require('dotenv').config();

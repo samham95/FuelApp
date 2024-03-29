@@ -1,10 +1,10 @@
 const axios = require('axios');
-const app = require('./index.js');
+const app = require('../index.js');
 const bcrypt = require('bcrypt');
-const { addUser } = require("./loginModule.js");
-const { users, quoteHistory, invalidTokens } = require('./db/mockDatabase.js');
-const errorHandler = require('./ErrorHandler.js');
-const AppError = require('./AppError.js');
+const { addUser } = require("../loginModule.js");
+const { users, quoteHistory, invalidTokens } = require('../db/mockDatabase.js');
+const errorHandler = require('../ErrorHandler.js');
+const AppError = require('../AppError.js');
 const PORT = 3001;
 const validCred = {
     username: 'samham',

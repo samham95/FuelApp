@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
-const requireAuth = require('./requireAuth');
-const AppError = require('./AppError');
-const { isTokenInvalidated } = require('./loginModule');
+const requireAuth = require('../RequireAuth');
+const AppError = require('../AppError');
+const { isTokenInvalidated } = require('../loginModule');
 
 //Mock dependencies
 jest.mock('jsonwebtoken');
-jest.mock('./loginModule');
+jest.mock('../loginModule');
 
 describe('requireAuth middleware tests', () => {
     let req, res, next;
@@ -22,7 +22,7 @@ describe('requireAuth middleware tests', () => {
 
     test('passes if token valid and username matches', async () => {
         const tkn = 'valid_tkn'; //mock valid token
-        const decoded = { username: 'mock_user' }; 
+        const decoded = { username: 'mock_user' };
         req.signedCookies.auth_token = tkn;
         req.params.username = 'mock_user';
 
@@ -48,12 +48,12 @@ describe('requireAuth middleware tests', () => {
 
         isTokenInvalidated.mockResolvedValue(true);
 
-        await requireAuth( req, res, next);
+        await requireAuth(req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(401);
         expect(res.send).toHaveBeenCalledWith('Token has already been invalidated');
         expect(next).not.toHaveBeenCalled();
-    }); 
+    });
 
     test('401 returned if username not a match with decoded username', async () => {
         const tkn = 'val_tkn';

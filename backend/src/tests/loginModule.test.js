@@ -1,5 +1,5 @@
-const { addUser, generateToken, validateUser, invalidateToken, isTokenInvalidated } = require("./loginModule");
-const { users, invalidTokens } = require("./db/mockDatabase.js");
+const { addUser, generateToken, validateUser, invalidateToken, isTokenInvalidated } = require("../loginModule.js");
+const { users, invalidTokens } = require("../db/mockDatabase.js");
 const validUser = {
     username: 'samham',
     password: 'Abc12345!'

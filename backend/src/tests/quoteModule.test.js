@@ -1,14 +1,14 @@
-const FuelPricing = require('./pricingModule');
-const AppError = require('./AppError.js');
-const { getQuote, submitQuote, getQuoteHistory } = require('./quoteModule.js');
-const { validateFullName, validateCity, validateZipcode } = require('./profileModule');
+const FuelPricing = require('../pricingModule.js');
+const AppError = require('../AppError.js');
+const { getQuote, submitQuote, getQuoteHistory } = require('../quoteModule.js');
+const { validateFullName, validateCity, validateZipcode } = require('../profileModule.js');
 
 // Mock the database
-jest.mock('./db/mockDatabase.js');
-const { users, quoteHistory } = require('./db/mockDatabase.js');
+jest.mock('../db/mockDatabase.js');
+const { users, quoteHistory } = require('../db/mockDatabase.js');
 
 // Mock pricing module
-jest.mock('./pricingModule');
+jest.mock('../pricingModule');
 
 describe('Testing getQuote', () => {
     // Set mock database with a mock quote history and user before each test
@@ -113,7 +113,7 @@ describe('Testing submitQuote', () => {
             fail(error);
         }
     });
-    
+
     test('Valid input successfully adds new quote to list of quotes', async () => {
         // What is received from the form on the front end
         const mockQuoteObject = {
@@ -130,18 +130,18 @@ describe('Testing submitQuote', () => {
 
         // What is retrieved from the database
         const mockReturnedQuote = {
-            address: {city: 'Quahog', state: 'RI', street: '11111 Spooner Street', zip: '00093'},
+            address: { city: 'Quahog', state: 'RI', street: '11111 Spooner Street', zip: '00093' },
             deliveryDate: '2024-05-24',
             gallonsRequested: 50,
             suggestedPricePerGallon: 2.5,
             totalDue: 125
         }
-        
+
         await submitQuote(mockQuoteObject);
         const receivedQHist = await getQuoteHistory('mockUser');
         await expect(receivedQHist[2]).toEqual(mockReturnedQuote);
     });
-    
+
 });
 
 
@@ -190,7 +190,7 @@ describe('Testing getQuoteHistory function', () => {
         }];
 
         const returnedHist = await getQuoteHistory('mockUser');
-        
+
         // What was returned should match what was placed into the database
         await expect(returnedHist).toEqual(mockQHist);
     });

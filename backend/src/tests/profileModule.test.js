@@ -1,9 +1,9 @@
-const AppError = require('./AppError.js');
-const { getProfileData, updateProfile } = require('./profileModule.js');
+const AppError = require('../AppError.js');
+const { getProfileData, updateProfile } = require('../profileModule.js');
 
 // Mock the mock database to isolate the profile module for testing
-jest.mock('./db/mockDatabase.js');
-const { users } = require('./db/mockDatabase.js');
+jest.mock('../db/mockDatabase.js');
+const { users } = require('../db/mockDatabase.js');
 
 describe('Testing getProfileData', () => {
     // Set mock database with a mock user before each test
