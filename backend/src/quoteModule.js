@@ -4,14 +4,9 @@ const { users, quoteHistory } = require('./db/mockDatabase.js');
 const { validateFullName, validateCity, validateZipcode } = require('./profileModule');
 
 /*Validation functions for form fields*/
-const validateName = (fullname) => {
-    const isValidName = validateFullName(fullname);
-    return isValidName;
-}
 const validateStreet = (street) => {
     const regex = /^[A-Za-z0-9\s.,-]+(?:\s[A-Za-z0-9#.\-\s/,]+)?$/;
     return street && regex.test(street);
-
 }
 const validateNum = (num) => {
     const regex = /^\d*\.?\d+$/;
@@ -135,7 +130,7 @@ const submitQuote = async (quoteObject) => {
             newQuote.address);
 
         quoteHistory.get(username).push(newQuote);
-
+        return true;
     } catch (error) {
         throw new AppError(error.message || "Error submitting quote", error.status || 400)
     }

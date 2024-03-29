@@ -95,11 +95,53 @@ describe('Testing submitQuote', () => {
         quoteHistory.clear();
     });
 
-    test('Successfully submit quote when all required fields provided and inputs valid', async () => {
-        const newMockQuote = {
-            
+    test('Error not thrown when all required fields provided and inputs valid', async () => {
+        const mockQuoteObject = {
+            username: 'mockUser',
+            street: '11111 Spooner Street',
+            city: 'Quahog',
+            state: 'RI',
+            zip: '00093',
+            deliveryDate: '2024-05-24',
+            gallonsRequested: 50,
+            suggestedPricePerGallon: 2.5,
+            totalDue: 125
         };
+        try {
+            await expect(submitQuote(mockQuoteObject)).resolves.not.toThrow();
+        } catch (error) {
+            fail(error);
+        }
     });
+    
+    test('Valid input successfully adds new quote to list of quotes', async () => {
+        // What is received from the form on the front end
+        const mockQuoteObject = {
+            username: 'mockUser',
+            street: '11111 Spooner Street',
+            city: 'Quahog',
+            state: 'RI',
+            zip: '00093',
+            deliveryDate: '2024-05-24',
+            gallonsRequested: 50,
+            suggestedPricePerGallon: 2.5,
+            totalDue: 125
+        };
+
+        // What is retrieved from the database
+        const mockReturnedQuote = {
+            address: {city: 'Quahog', state: 'RI', street: '11111 Spooner Street', zip: '00093'},
+            deliveryDate: '2024-05-24',
+            gallonsRequested: 50,
+            suggestedPricePerGallon: 2.5,
+            totalDue: 125
+        }
+        
+        await submitQuote(mockQuoteObject);
+        const receivedQHist = await getQuoteHistory('mockUser');
+        await expect(receivedQHist[2]).toEqual(mockReturnedQuote);
+    });
+    
 });
 
 
