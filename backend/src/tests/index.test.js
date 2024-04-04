@@ -64,7 +64,7 @@ beforeEach(async () => {
         fullname: 'Sammy Hamdi',
         password: hash,
         street1: '9222 Memorial Dr.',
-        street2: '1215 Main Street',
+        street2: 'APT 212',
         city: 'Houston',
         state: 'TX',
         zip: '77379',

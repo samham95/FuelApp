@@ -1,6 +1,6 @@
 const FuelPricing = require('./pricingModule');
 const AppError = require('./AppError.js');
-const { users, quoteHistory } = require('./db/mockDatabase.js');
+const { users, quoteHistory } = require('./db/MongoDatabase.js');
 const { validateFullName, validateCity, validateZipcode } = require('./profileModule');
 
 /*Validation functions for form fields*/

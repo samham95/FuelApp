@@ -1,11 +1,25 @@
 const AppError = require('./AppError.js');
-const { users } = require('./db/mockDatabase.js');
+const { User, Profile } = require('./db/MongoDatabase.js');
 
 const getProfileData = async (username) => {
-    if (!users.has(username)) throw new AppError("User data not found: ", 400);
-    const { password, ...profileData } = users.get(username);
-    return profileData;
-}
+    try {
+        const user = await User.findOne({ username }).populate('profile');
+        if (!user) {
+            throw new AppError(400, "Unable to find user");
+        }
+
+        if (!user.profile) {
+            throw new AppError(404, "Profile not found");
+        }
+
+        const { userId, ...profileData } = user.profile.toObject();
+        return profileData;
+    } catch (error) {
+        console.error(error);
+        throw new AppError(error.statusCode || 500, error.message || "An error occurred while fetching profile data");
+    }
+};
+
 
 const validateFullName = (fullname) => {
     const regex = /^[a-zA-Z\s]+$/;
