@@ -16,12 +16,14 @@ const FuelQuoteForm = () => {
     const [deliveryDate, setDeliveryDate] = useState('');
     const [suggestedPricePerGallon, setSuggestedPricePerGallon] = useState(NaN);
     const [totalDue, setTotalDue] = useState(NaN);
-
-    const [profileData, setProfileData] = useState({});
-    const validateQuote = () => {
-        return Number.isFinite(totalDue) && Number.isFinite(suggestedPricePerGallon)
-    }
     const [address, setAddress] = useState("");
+    const [profileData, setProfileData] = useState({});
+
+    const validateQuote = () => {
+        return Number.isFinite(totalDue) &&
+            Number.isFinite(suggestedPricePerGallon) &&
+            Number.isFinite(Number.parseInt(gallonsRequested));
+    }
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
             try {
@@ -50,7 +52,6 @@ const FuelQuoteForm = () => {
     useEffect(() => {
         if (Object.keys(profileData).length > 0) {
             if (!validateProfileData()) {
-                console.log(profileData);
                 navigate('/profile/edit', { state: { needToCompleteProfile: true } });
             }
             const address = `${profileData.street1}\n${profileData.street2 ? profileData.street2 + '\n' : ''}${profileData.city}, ${profileData.state} ${profileData.zip}`;
@@ -77,6 +78,7 @@ const FuelQuoteForm = () => {
             return;
         }
         try {
+            const gallons = Number.parseInt(gallonsRequested);
             const res = await client.post('auth/quote', {
                 username,
                 street: `${profileData.street1}${profileData.street2 ? ' ' + profileData.street2 : ''}`,
@@ -84,7 +86,7 @@ const FuelQuoteForm = () => {
                 state: profileData.state,
                 zip: profileData.zip,
                 deliveryDate,
-                gallonsRequested,
+                gallonsRequested: gallons,
                 suggestedPricePerGallon,
                 totalDue
             });
