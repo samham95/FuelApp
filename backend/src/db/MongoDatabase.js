@@ -107,24 +107,29 @@ const QuoteHistorySchema = new Schema({
     },
     deliveryDate: {
         type: String,
-        require: true
+        require: true,
+        match: /^\d{4}-\d{2}-\d{2}$/
     },
     address: {
         street: {
             type: String,
-            required: true
+            required: true,
+            match: /^[A-Za-z0-9\s.,-]+(?:\s[A-Za-z0-9#.\-\s/,]+)?$/
         },
         city: {
             type: String,
-            required: true
+            required: true,
+            match: /^[a-zA-Z\s]+$/
         },
         state: {
             type: String,
-            required: true
+            required: true,
+            match: /^[A-Z]{2}$/
         },
         zip: {
             type: String,
-            required: true
+            required: true,
+            match: /^\d{5}(?:-\d{4})?$/
         }
     }
 })
