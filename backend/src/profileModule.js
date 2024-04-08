@@ -12,7 +12,7 @@ const getProfileData = async (username) => {
             throw new AppError(404, "Profile not found");
         }
 
-        const { userId, ...profileData } = user.profile.toObject();
+        const { userId, __v, _id, ...profileData } = user.profile.toObject();
         return profileData;
     } catch (error) {
         console.error(error);
@@ -73,18 +73,32 @@ const validateKeys = (newData) => {
     }
 }
 
+const filterUpdates = (original, newData) => {
+
+    const updates = {};
+    Object.keys(newData).forEach(key => {
+        if (original[key] !== newData[key]) {
+            updates[key] = newData[key];
+        }
+    });
+    return updates;
+}
+
 const updateProfile = async (username, newData) => {
 
     try {
-        if (!username || !users.has(username)) {
+        const user = await User.findOne({ username }).populate('profile');
+        if (!user) {
             throw new AppError("User not found", 400);
         }
 
         validateKeys(newData);
         const { fullname, street1, street2, city, state, zip } = newData;
         validateInputs(fullname, street1, street2, city, zip);
-        const currentData = users.get(username);
-        users.set(username, { ...currentData, fullname, street1, street2, city, state, zip });
+
+        const profileUpdate = filterUpdates(user.profile, { fullname, street1, street2, city, state, zip });
+        Object.assign(user.profile, profileUpdate);
+        await user.profile.save();
     }
     catch (error) {
         throw new AppError(error.message || "Unable to update profile", error.status || 400);
