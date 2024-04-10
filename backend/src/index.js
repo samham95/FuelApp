@@ -98,7 +98,7 @@ unprotectedRouter.post('/register', async (req, res, next) => {
 
 protectedRouter.get('/quote/history/:username', requireAuth, async (req, res, next) => {
     try {
-        const username = req.username;
+        const username = req.params.username;
         const quotes = await getQuoteHistory(username);
         res.status(200).json({ quotes });
     } catch (error) {
@@ -108,7 +108,7 @@ protectedRouter.get('/quote/history/:username', requireAuth, async (req, res, ne
 
 protectedRouter.get('/quote/:username/:gallons', requireAuth, async (req, res, next) => {
     try {
-        const username = req.username;
+        const username = req.params.username;
         const gallons = req.params.gallons;
         const quote = await getQuote(username, gallons);
         res.status(200).json({ ...quote });

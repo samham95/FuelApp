@@ -1,7 +1,7 @@
 const FuelPricing = require('./pricingModule');
 const AppError = require('./AppError.js');
-const { users, quoteHistory } = require('./db/MongoDatabase.js');
-const { validateFullName, validateCity, validateZipcode } = require('./profileModule');
+const { User, QuoteHistory } = require('./db/MongoDatabase.js');
+const { validateCity, validateZipcode } = require('./profileModule');
 
 /*Validation functions for form fields*/
 const validateStreet = (street) => {
@@ -79,15 +79,14 @@ const validateKeys = (formData) => {
 
 const getQuote = async (username, gallons) => {
     try {
-        if (!username || !users.has(username)) {
+        if (!username) {
+            throw new AppError("Username is required", 400);
+        }
+        const user = await User.findOne({ username });
+        if(!user) {
             throw new AppError("User not found", 404);
         }
-        const user = users.get(username);
         const state = user.state;
-        if (!validateNum(gallons)) {
-            throw new AppError(`Invalid gallons requested format - expected number, input: ${gallons}`, 400);
-
-        }
         const fuelPrice = new FuelPricing(username, state, gallons);
         const pricePerGallon = await fuelPrice.getPricePerGallon();
         return { pricePerGallon };
@@ -110,27 +109,36 @@ const submitQuote = async (quoteObject) => {
             suggestedPricePerGallon,
             totalDue } = quoteObject;
 
-        if (!quoteHistory.has(username)) {
-            quoteHistory.set(username, []);
+        const user = await User.findOne({ username });
+        if(!user){
+            throw new AppError("User not found", 404);
         }
 
-        const newQuote = {
-            address: { street, city, state, zip },
-            deliveryDate,
+        const newQuote = new QuoteHistory({
+            userId: user._id,
             gallonsRequested,
             suggestedPricePerGallon,
-            totalDue
-        };
+            totalDue,
+            deliveryDate,
+            address: {
+                street,
+                city,
+                state,
+                zip
+            }
+        });
 
         validateInputs(
-            newQuote.suggestedPricePerGallon,
-            newQuote.totalDue,
-            newQuote.gallonsRequested,
-            newQuote.deliveryDate,
-            newQuote.address);
+            suggestedPricePerGallon,
+            totalDue,
+            gallonsRequested,
+            deliveryDate,
+            {street, city, state, zip}
+        );
 
-        quoteHistory.get(username).push(newQuote);
-        return true;
+        const savedQuote = await newQuote.save();
+        return savedQuote;
+
     } catch (error) {
         throw new AppError(error.message || "Error submitting quote", error.status || 400)
     }
@@ -138,11 +146,16 @@ const submitQuote = async (quoteObject) => {
 
 const getQuoteHistory = async (username) => {
     try {
-        if (!quoteHistory.has(username)) {
-            return [];
+        const user = await User.findOne({ username });
+        if(!user) {
+            throw new AppError("User not found", 404);
         }
-        const history = quoteHistory.get(username);
-        return history;
+        await user.populate('quotes');
+        if (!user.quotes || user.quotes.length === 0) {
+            // Handle the case where there are no quotes
+            throw new AppError("Quote history not found", 404);
+        }
+        return user.quotes;
     } catch (error) {
         throw new AppError(error.message || "Error retrieving quote history", error.status || 400);
     }
