@@ -15,7 +15,6 @@ const getProfileData = async (username) => {
         const { userId, __v, _id, ...profileData } = user.profile.toObject();
         return profileData;
     } catch (error) {
-        console.error(error);
         throw new AppError(error.message || "An error occurred while fetching profile data", error.status || 500);
     }
 };

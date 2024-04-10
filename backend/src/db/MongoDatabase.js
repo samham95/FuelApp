@@ -1,15 +1,9 @@
 const mongoose = require('mongoose');
 const AppError = require('../AppError')
-const mongoConnectionString = process.env.DB_CONNECTION_STRING || 'mongodb://127.0.0.1:27017/fuelapp';
 const Schema = mongoose.Schema;
 
-const connectDB = async () => {
-    try {
-        await mongoose.connect(mongoConnectionString);
-    } catch (error) {
-        throw new AppError(500, "Unable to connect to Database");
-    }
-}
+
+
 
 const UserSchema = new Schema(
     {
@@ -150,4 +144,4 @@ InvalidTokenSchema.index({ expTime: 1 }, { expireAfterSeconds: 0 });
 const InvalidToken = mongoose.model('InvalidToken', InvalidTokenSchema);
 
 
-module.exports = { connectDB, User, Profile, QuoteHistory, InvalidToken };
+module.exports = { User, Profile, QuoteHistory, InvalidToken };
