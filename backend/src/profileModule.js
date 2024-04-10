@@ -5,18 +5,18 @@ const getProfileData = async (username) => {
     try {
         const user = await User.findOne({ username }).populate('profile');
         if (!user) {
-            throw new AppError(400, "Unable to find user");
+            throw new AppError("Unable to find user", 400);
         }
 
         if (!user.profile) {
-            throw new AppError(404, "Profile not found");
+            throw new AppError("Profile not found", 400);
         }
 
         const { userId, __v, _id, ...profileData } = user.profile.toObject();
         return profileData;
     } catch (error) {
         console.error(error);
-        throw new AppError(error.statusCode || 500, error.message || "An error occurred while fetching profile data");
+        throw new AppError(error.message || "An error occurred while fetching profile data", error.status || 500);
     }
 };
 
