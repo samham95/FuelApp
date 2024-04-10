@@ -7,9 +7,11 @@ const ProfileData = () => {
     const navigate = useNavigate();
     const username = localStorage.getItem('username');
     const [profileData, setProfileData] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
+            setIsLoading(true);
             try {
                 const response = await client.get(`/auth/profile/${username}`);
                 setProfileData(response.data);
@@ -23,24 +25,25 @@ const ProfileData = () => {
                     alert(`Unable to fetch profile data: ${err.response.data}`);
                     navigate('/')
                 }
+            } finally {
+                setIsLoading(false);
             }
         };
 
         checkAuthorizationAndFetchData();
-    }, [navigate]);
+    }, []);
 
     const validateProfileData = () => {
         return profileData.fullname && profileData.street1 && profileData.state && profileData.zip && profileData.city;
     };
 
     useEffect(() => {
-        if (Object.keys(profileData).length > 0) {
-            if (!validateProfileData()) {
-                console.log(profileData);
+        if (!isLoading) {
+            if (Object.keys(profileData).length == 0 || !validateProfileData()) {
                 navigate('/profile/edit', { state: { needToCompleteProfile: true } });
             }
         }
-    }, [profileData, navigate]);
+    }, [profileData, navigate, isLoading]);
 
 
     return (

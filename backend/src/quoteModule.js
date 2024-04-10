@@ -83,13 +83,14 @@ const getQuote = async (username, gallons) => {
             throw new AppError("Username is required", 400);
         }
         const user = await User.findOne({ username });
-        if(!user) {
+        if (!user) {
             throw new AppError("User not found", 404);
         }
         const state = user.state;
         const fuelPrice = new FuelPricing(username, state, gallons);
         const pricePerGallon = await fuelPrice.getPricePerGallon();
-        return { pricePerGallon };
+        const totalPrice = await fuelPrice.getTotalPrice();
+        return { pricePerGallon, totalPrice };
     } catch (error) {
         throw new AppError(error.message || "Error retrieving quote", error.status || 400);
     }
@@ -110,9 +111,17 @@ const submitQuote = async (quoteObject) => {
             totalDue } = quoteObject;
 
         const user = await User.findOne({ username });
-        if(!user){
+        if (!user) {
             throw new AppError("User not found", 404);
         }
+
+        validateInputs(
+            suggestedPricePerGallon,
+            totalDue,
+            gallonsRequested,
+            deliveryDate,
+            { street, city, state, zip }
+        );
 
         const newQuote = new QuoteHistory({
             userId: user._id,
@@ -128,14 +137,6 @@ const submitQuote = async (quoteObject) => {
             }
         });
 
-        validateInputs(
-            suggestedPricePerGallon,
-            totalDue,
-            gallonsRequested,
-            deliveryDate,
-            {street, city, state, zip}
-        );
-
         const savedQuote = await newQuote.save();
         return savedQuote;
 
@@ -146,16 +147,11 @@ const submitQuote = async (quoteObject) => {
 
 const getQuoteHistory = async (username) => {
     try {
-        const user = await User.findOne({ username });
-        if(!user) {
+        const user = await User.findOne({ username }).populate('quotes');
+        if (!user) {
             throw new AppError("User not found", 404);
         }
-        await user.populate('quotes');
-        if (!user.quotes || user.quotes.length === 0) {
-            // Handle the case where there are no quotes
-            throw new AppError("Quote history not found", 404);
-        }
-        return user.quotes;
+        return user.quotes.map(quote => quote.toObject());
     } catch (error) {
         throw new AppError(error.message || "Error retrieving quote history", error.status || 400);
     }

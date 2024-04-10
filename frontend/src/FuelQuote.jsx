@@ -18,13 +18,14 @@ const FuelQuoteForm = () => {
     const [totalDue, setTotalDue] = useState(NaN);
     const [address, setAddress] = useState("");
     const [profileData, setProfileData] = useState({});
-
+    const [isLoading, setIsLoading] = useState(true);
     const validateQuote = () => {
         return Number.isFinite(totalDue) &&
             Number.isFinite(suggestedPricePerGallon) &&
             Number.isFinite(Number.parseInt(gallonsRequested));
     }
     useEffect(() => {
+        setIsLoading(true);
         const checkAuthorizationAndFetchData = async () => {
             try {
                 const response = await client.get(`auth/profile/${username}`);
@@ -39,6 +40,8 @@ const FuelQuoteForm = () => {
                     navigate('/profile')
                 }
 
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -50,22 +53,25 @@ const FuelQuoteForm = () => {
     };
 
     useEffect(() => {
-        if (Object.keys(profileData).length > 0) {
-            if (!validateProfileData()) {
+        if (!isLoading) {
+            if (Object.keys(profileData).length == 0 || !validateProfileData()) {
                 navigate('/profile/edit', { state: { needToCompleteProfile: true } });
+            } else {
+                const address = `${profileData.street1}\n${profileData.street2 ? profileData.street2 + '\n' : ''}${profileData.city}, ${profileData.state} ${profileData.zip}`;
+                setAddress(address);
             }
-            const address = `${profileData.street1}\n${profileData.street2 ? profileData.street2 + '\n' : ''}${profileData.city}, ${profileData.state} ${profileData.zip}`;
-            setAddress(address);
         }
-    }, [profileData, navigate]);
+
+
+    }, [profileData, navigate, isLoading]);
 
     const handleQuote = async (e) => {
         e.preventDefault();
         try {
             const res = await client.get(`auth/quote/${username}/${gallonsRequested}`);
-            const { pricePerGallon } = res.data;
+            const { pricePerGallon, totalPrice } = res.data;
             setSuggestedPricePerGallon(parseFloat(pricePerGallon));
-            setTotalDue(pricePerGallon * gallonsRequested);
+            setTotalDue(parseFloat(totalPrice));
         } catch (err) {
             alert("Unable to get quote - please try again")
         }

@@ -1,11 +1,19 @@
 const axios = require('axios');
 const app = require('../index.js');
 const bcrypt = require('bcrypt');
-const { addUser } = require("../loginModule.js");
-const { users, quoteHistory, invalidTokens } = require('../db/mockDatabase.js');
+const { User, Profile, QuoteHistory, InvalidToken } = require('../db/MongoDatabase.js');
+const { connectDB, closeDB, cleanDB, initDB } = require('../db/UtilisDB.js')
 const errorHandler = require('../ErrorHandler.js');
 const AppError = require('../AppError.js');
 const PORT = 3001;
+const validProfileData = {
+    fullname: 'Sammy Hamdi',
+    street1: '9222 Memorial Dr.',
+    street2: 'Apt. 212',
+    city: 'Houston',
+    state: 'TX',
+    zip: '77379',
+};
 const validCred = {
     username: 'samham',
     password: 'Abc12345!'
@@ -44,47 +52,25 @@ const fail = (message) => {
 }
 
 const apiClient = (cookie = '') => axios.create({
-    baseURL: `http://localhost:${PORT}/api`,
+    baseURL: `http://127.0.0.1:${PORT}/api`,
     withCredentials: true,
     headers: {
         ...(cookie && { Cookie: cookie })
     }
 });
 
-beforeEach(async () => {
 
-    // need to add a user to the "database" to test functionality
-    const hashPassword = async (password) => {
-        const saltRounds = 10;
-        return await bcrypt.hash(password, saltRounds);
-    };
-    const hash = await hashPassword(validCred.password);
-
-    users.set(validCred.username, {
-        fullname: 'Sammy Hamdi',
-        password: hash,
-        street1: '9222 Memorial Dr.',
-        street2: 'APT 212',
-        city: 'Houston',
-        state: 'TX',
-        zip: '77379',
-    });
-    quoteHistory.set(validCred.username,
-        [
-            quote
-        ]
-    )
-});
-
-afterEach(() => {
-    users.clear();
-});
-
-beforeAll(() => {
+beforeAll(async () => {
     server = app.listen(PORT);
+    await connectDB();
+    await initDB();
+
 })
-afterAll(() => {
+afterAll(async () => {
     server.close();
+    await cleanDB();
+    await closeDB();
+
 })
 
 const loginMock = async (credentials) => {
@@ -180,7 +166,7 @@ describe("Index file testing... ", () => {
                 const authToken = await loginMock(validCred);
                 const response = await apiClient(authToken).get(`/auth/profile/${validCred.username}`);
                 const profileData = response.data;
-                expect(users.get(validCred.username)).toEqual(expect.objectContaining(profileData));
+                expect(profileData).toEqual(validProfileData);
             } catch (error) {
                 fail(`Test failed with error: ${error}`)
             }
@@ -243,8 +229,12 @@ describe("Index file testing... ", () => {
             try {
                 const response = await apiClient().post('/register', validRegister);
                 expect(response.status).toBe(200);
-                const password = users.get(validRegister.username).password;
-                await expect(bcrypt.compare(validRegister.password, password)).resolves.toBe(true);
+                const password = validRegister.password;
+                const user = await User.findOne({ username: validRegister.username }).populate('profile');
+                const dbPassword = user.password;
+                expect(user).toBeDefined();
+                expect(user.username).toEqual(validRegister.username);
+                await expect(bcrypt.compare(password, dbPassword)).resolves.toBe(true);
 
             } catch (error) {
                 fail(`Test failed with error: ${error}`)

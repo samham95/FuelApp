@@ -9,7 +9,7 @@ const getProfileData = async (username) => {
         }
 
         if (!user.profile) {
-            throw new AppError("Profile not found", 400);
+            return {};
         }
 
         const { userId, __v, _id, ...profileData } = user.profile.toObject();
