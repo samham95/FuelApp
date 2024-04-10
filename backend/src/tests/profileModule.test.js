@@ -1,39 +1,60 @@
 const AppError = require('../AppError.js');
 const { getProfileData, updateProfile } = require('../profileModule.js');
-
-// Mock the mock database to isolate the profile module for testing
-jest.mock('../db/mockDatabase.js');
-const { users } = require('../db/mockDatabase.js');
+const mongoose = require('mongoose');
+const { connectDB, User, Profile } = require('../db/MongoDatabase.js');
 
 describe('Testing getProfileData', () => {
-    // Set mock database with a mock user before each test
-    beforeEach(() => {
-        users.set('mockUser', {
+
+    beforeAll(async () => {
+        await connectDB(); // Connect to DB before tests
+    });
+
+    afterAll(async () => {
+        await mongoose.connection.close(); // Close connection to DB after tests
+    });
+    
+    beforeEach(async () => {
+        // Seed DB with test data before each test
+        
+        // User document
+        const user = await User.create({
+            username: 'mockUser',
+            password: 'password'            
+        });
+
+        // Associated profile document
+        await Profile.create({
+            userId: user._id,
             fullname: 'Joe Swanson',
             street1: '11111 Spooner Street',
             street2: '22222 Washington Avenue',
             city: 'Quahog',
-            state: 'Rhode Island',
+            state: 'RI',
             zip: '00093'
         });
     });
 
-    // Reset mock database after each test
-    afterEach(() => {
-        users.clear();
+    
+    afterEach(async () => {
+        // Clean DB after each test
+        await User.deleteMany(); 
+        await Profile.deleteMany();
     });
 
     test('Should pass if user exists', async () => {
+        const profData = await getProfileData('mockUser');
 
-        // Returned profile data should match expected data
-        await expect(getProfileData('mockUser')).toBeDefined();
+        // If user exists, then the value of profData should be defined
+        expect(profData).toBeDefined();
     });
-
+    
+    
     test('Should throw an AppError if username is not found in database', async () => {
         // Call getProfileData with non-existing username
-        await expect(getProfileData('void')).rejects.toThrow('User data not found');
+        await expect(getProfileData('void')).rejects.toThrow('Unable to find user');
     });
-
+    
+    
     test('Should pass if profile data matches the expected structure', async () => {
         // Call function with existing user
         const returnedProfData = await getProfileData('mockUser');
@@ -47,31 +68,54 @@ describe('Testing getProfileData', () => {
         expect(returnedProfData).toHaveProperty('zip');
     });
 
+    
     test('Should pass if password is excluded from profile data', async () => {
         // Call function with existing user
         const returnedProfData = await getProfileData('mockUser');
         // Password property should be undefined in the returned profile data
         expect(returnedProfData.password).toBeUndefined();
     });
+    
 });
+
 
 describe('Testing updateProfile', () => {
     // Set mock database with a mock user before each test
-    beforeEach(() => {
-        users.set('mockUser', {
+    beforeAll(async () => {
+        await connectDB(); // Connect to DB before tests
+    });
+
+    afterAll(async () => {
+        await mongoose.connection.close(); // Close connection to DB after tests
+    });
+    
+    beforeEach(async () => {
+        // Seed DB with test data before each test
+        
+        // User document
+        const user = await User.create({
+            username: 'mockUser',
+            password: 'password'            
+        });
+
+        // Associated profile document
+        await Profile.create({
+            userId: user._id,
             fullname: 'Joe Swanson',
             street1: '11111 Spooner Street',
             street2: '22222 Washington Avenue',
             city: 'Quahog',
-            state: 'Rhode Island',
+            state: 'RI',
             zip: '00093'
         });
     });
 
-    // Reset mock database after each test
-    afterEach(() => {
-        users.clear();
+    
+    afterEach(async () => {
+        await User.deleteMany(); // Clean DB after each test
+        await Profile.deleteMany();
     });
+
 
     // Updated mock data to send to function
     const newMockData = {
@@ -79,22 +123,27 @@ describe('Testing updateProfile', () => {
         street1: '33333 Spooner Street',
         street2: '44444 Washington Avenue',
         city: 'Quahog',
-        state: 'Rhode Island',
+        state: 'RI',
         zip: '00093'
     };
 
     test('Passes if function updates profile data correctly', async () => {
+        // Update profile of seeded user, providing seeded user's username and data to update with
         await updateProfile('mockUser', newMockData);
-
-        const newProfData = users.get('mockUser');
-
-        expect(newProfData).toEqual(expect.objectContaining(newMockData));
+        // Query database to retrieve user's now updated profile data
+        const newProfData = await User.findOne({ username: 'mockUser' }).populate('profile');
+        // Query result should be non-null
+        expect(newProfData).toBeTruthy();
+        // Query result should have returned an object containing the updated profile data
+        expect(newProfData.profile).toEqual(expect.objectContaining(newMockData));
     });
 
+   
     test('Fails and throws AppError if user is not in db', async () => {
         await expect(updateProfile('voidUser', newMockData)).rejects.toThrow('User not found');
     });
 
+    
     test('Passes if AppError thrown if new data is missing a field', async () => {
         // Missing Street field
         const missingMockData = {
@@ -107,6 +156,7 @@ describe('Testing updateProfile', () => {
         await expect(updateProfile('mockUser', missingMockData)).rejects.toThrow('Missing required fields:');
     });
 
+    
     test('Passes if fullname has an invalid format', async () => {
         const wrongFormatData = {
             fullname: 'r0b0 b3t3r', // Invalid name
@@ -171,5 +221,6 @@ describe('Testing updateProfile', () => {
 
         await expect(updateProfile('mockUser', wrongFormatData)).rejects.toThrow('Invalid zip code format');
     });
-
+    
 });
+
