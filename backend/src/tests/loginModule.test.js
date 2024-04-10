@@ -1,5 +1,6 @@
 const { addUser, generateToken, validateUser, invalidateToken, isTokenInvalidated } = require("../loginModule.js");
-const { users, invalidTokens } = require("../db/mockDatabase.js");
+const { connectDB, User, Profile, InvalidToken } = require("../db/MongoDatabase.js");
+const mongoose = require('mongoose');
 const validUser = {
     username: 'samham',
     password: 'Abc12345!'
@@ -17,8 +18,21 @@ const invalidPassword = {
     noSpecChar: "Abc123456",
     noCapital: 'abc12345!'
 }
+beforeAll(async () => {
+    await connectDB(); // Connect to DB before tests
+});
 
-beforeEach(() => { users.clear(); invalidTokens.clear(); })
+afterAll(async () => {
+    await mongoose.connection.close(); // Close connection to DB after tests
+});
+
+beforeEach(async () => {
+    // Clean DB before each test
+    await User.deleteMany(); 
+    await Profile.deleteMany();
+    await InvalidToken.deleteMany();
+});
+
 describe("Login Module testing...", () => {
     test('This test should generate a token', async () => {
         await expect(generateToken(validUser.username)).resolves.not.toBe(undefined);
