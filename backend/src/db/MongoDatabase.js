@@ -144,4 +144,4 @@ InvalidTokenSchema.index({ expTime: 1 }, { expireAfterSeconds: 0 });
 const InvalidToken = mongoose.model('InvalidToken', InvalidTokenSchema);
 
 
-module.exports = { connectDB, closeDB, cleanDB, User, Profile, QuoteHistory, InvalidToken };
+module.exports = { User, Profile, QuoteHistory, InvalidToken };

@@ -1,6 +1,7 @@
 const { addUser } = require('../loginModule');
 const { Profile, User } = require('./MongoDatabase')
 const { AppError } = require('../AppError')
+const mongoose = require('mongoose');
 const mongoConnectionString = process.env.DB_CONNECTION_STRING || 'mongodb://127.0.0.1:27017/fuelapp';
 
 
