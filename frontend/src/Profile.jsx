@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { client } from './apiClient';
 import './styles.css';
 
@@ -33,11 +33,13 @@ const ProfileData = () => {
         checkAuthorizationAndFetchData();
     }, []);
 
-    const validateProfileData = () => {
-        return profileData.fullname && profileData.street1 && profileData.state && profileData.zip && profileData.city;
-    };
+
 
     useEffect(() => {
+        const validateProfileData = () => {
+            return profileData.fullname && profileData.street1 && profileData.state && profileData.zip && profileData.city;
+        };
+
         if (!isLoading) {
             if (Object.keys(profileData).length == 0 || !validateProfileData()) {
                 navigate('/profile/edit', { state: { needToCompleteProfile: true } });

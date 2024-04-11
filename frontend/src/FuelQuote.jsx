@@ -48,11 +48,12 @@ const FuelQuoteForm = () => {
         checkAuthorizationAndFetchData();
     }, [navigate, username]);
 
-    const validateProfileData = () => {
-        return profileData.fullname && profileData.street1 && profileData.state && profileData.zip && profileData.city;
-    };
+
 
     useEffect(() => {
+        const validateProfileData = () => {
+            return profileData.fullname && profileData.street1 && profileData.state && profileData.zip && profileData.city;
+        };
         if (!isLoading) {
             if (Object.keys(profileData).length == 0 || !validateProfileData()) {
                 navigate('/profile/edit', { state: { needToCompleteProfile: true } });
