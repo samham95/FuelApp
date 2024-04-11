@@ -67,10 +67,9 @@ beforeAll(async () => {
 
 })
 afterAll(async () => {
-    server.close();
     await cleanDB();
     await closeDB();
-
+    server.close();
 })
 
 const loginMock = async (credentials) => {
