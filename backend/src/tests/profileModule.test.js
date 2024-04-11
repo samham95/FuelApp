@@ -2,11 +2,12 @@ const AppError = require('../AppError.js');
 const { getProfileData, updateProfile } = require('../profileModule.js');
 const mongoose = require('mongoose');
 const { User, Profile } = require('../db/MongoDatabase.js');
-const { connectDB, closeDB, cleanDB } = require('../db/UtilisDB.js')
+const { connectDB, closeDB, cleanDB, initDB } = require('../db/UtilisDB.js')
 describe('Testing getProfileData', () => {
 
     beforeAll(async () => {
         await connectDB(); // Connect to DB before tests
+        await initDB();
     });
 
     afterAll(async () => {
@@ -84,10 +85,12 @@ describe('Testing updateProfile', () => {
     // Set mock database with a mock user before each test
     beforeAll(async () => {
         await connectDB(); // Connect to DB before tests
+        await initDB();
     });
 
     afterAll(async () => {
-        await mongoose.connection.close(); // Close connection to DB after tests
+        await cleanDB(); // Clean DB after tests
+        await closeDB(); // Close connection to DB after tests
     });
 
     beforeEach(async () => {

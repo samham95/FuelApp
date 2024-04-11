@@ -1,8 +1,9 @@
 const { addUser, generateToken, validateUser, invalidateToken, isTokenInvalidated } = require("../loginModule.js");
-const { connectDB, User, Profile, InvalidToken } = require("../db/MongoDatabase.js");
+const { User, Profile, InvalidToken } = require("../db/MongoDatabase.js");
+const { connectDB, closeDB, cleanDB, initDB } = require("../db/UtilisDB.js");
 const mongoose = require('mongoose');
 const validUser = {
-    username: 'samham',
+    username: 'samham1',
     password: 'Abc12345!'
 }
 const invalidUsername = {
@@ -20,15 +21,18 @@ const invalidPassword = {
 }
 beforeAll(async () => {
     await connectDB(); // Connect to DB before tests
+    await initDB(); // Initialize DB before tests
 });
 
 afterAll(async () => {
-    await mongoose.connection.close(); // Close connection to DB after tests
+    await cleanDB(); // Clean DB after tests
+    await closeDB(); // Close connection to DB after tests
+
 });
 
 beforeEach(async () => {
     // Clean DB before each test
-    await User.deleteMany(); 
+    await User.deleteMany();
     await Profile.deleteMany();
     await InvalidToken.deleteMany();
 });
