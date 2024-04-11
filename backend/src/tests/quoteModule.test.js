@@ -1,48 +1,72 @@
-const FuelPricing = require('../pricingModule.js');
 const AppError = require('../AppError.js');
 const { getQuote, submitQuote, getQuoteHistory } = require('../quoteModule.js');
 const { validateFullName, validateCity, validateZipcode } = require('../profileModule.js');
-
-// Mock the database
-jest.mock('../db/mockDatabase.js');
-const { users, quoteHistory } = require('../db/mockDatabase.js');
+const { User, QuoteHistory } = require('../db/MongoDatabase.js');
+const { connectDB, closeDB, cleanDB, } = require('../db/UtilisDB.js')
 
 // Mock pricing module
 jest.mock('../pricingModule');
+const FuelPricing = require('../pricingModule.js');
+const { identity } = require('update/lib/utils.js');
 
 describe('Testing getQuote', () => {
+    beforeAll(async () => {
+        await connectDB(); //connect database before testing
+    });
+    afterAll(async ()=>{
+        await cleanDB(); //clean up database after testing
+        await closeDB(); //close database connection after testing
+    })
     // Set mock database with a mock quote history and user before each test
-    beforeEach(() => {
-        quoteHistory.set('mockUser', [{
-            fullname: 'Joe Swanson',
-            address: '11111 Spooner St., Quahog, RI 00093',
-            gallonsRequested: '45',
-            deliveryDate: '05/24/2024',
-            suggestedPricePerGallon: '2.93',
-            totalDue: '105'
-        },
-        {
-            fullname: 'Joe Swanson',
-            address: '11111 Spooner St., Quahog, RI 00093',
-            gallonsRequested: '64',
-            deliveryDate: '05/31/2024',
-            suggestedPricePerGallon: '2.79',
-            totalDue: '85'
-        }]);
+    beforeEach(async () => {
+        try {    
+            const user = await User.create({
+                username: 'mockUser',
+                password: 'password',
+                fullname: 'Joe Swanson',
+                street1: '11111 Spooner Street',
+                street2: 'Apt 122',
+                city: 'Quahog',
+                state: 'RI',
+                zip: '00093'
+            });
 
-        users.set('mockUser', {
-            fullname: 'Joe Swanson',
-            street1: '11111 Spooner Street',
-            street2: '22222 Washington Avenue',
-            city: 'Quahog',
-            state: 'RI',
-            zip: '00093'
-        });
+            await QuoteHistory.create({
+                userId: user._id,
+                gallonsRequested: 50,
+                suggestedPricePerGallon: 2.50,
+                totalDue: 125,
+                deliveryDate: new Date('2024-05-24'),
+                address: {
+                    street: '11111 Spooner Street',
+                    city: 'Quahog',
+                    state: 'RI',
+                    zip: '00093'
+                }
+            });
+
+            await QuoteHistory.create({
+                userId: user._id,
+                gallonsRequested: 60,
+                suggestedPricePerGallon: 2.75,
+                totalDue: 165,
+                deliveryDate: new Date('2024-05-31'),   
+                address: {
+                    street: '11111 Spooner Street',
+                    city: 'Quahog',
+                    state: 'RI',
+                    zip: '00093'
+                }                             
+            });
+        } catch (error) {
+            console.error("Error setting up test data: ", error);
+        }
     });
 
     // Reset mock database after each test
-    afterEach(() => {
-        quoteHistory.clear();
+    afterEach(async () => {
+        await User.deleteMany();
+        await QuoteHistory.deleteMany();
     });
 
     test('Existing user with valid gallons successfully returns quote', async () => {
@@ -54,45 +78,51 @@ describe('Testing getQuote', () => {
 
     test('Username not provided OR username not in database throws error: "User not found"', async () => {
         // Username not provided
-        await expect(getQuote('', '50')).rejects.toThrow('User not found');
+        await expect(getQuote('', '50')).rejects.toThrow('Username is required');
         // Username not in database
         await expect(getQuote('voidUser', '50')).rejects.toThrow('User not found');
     });
 });
 
 describe('Testing submitQuote', () => {
+    beforeAll(async () => {
+        await connectDB(); //connect database before testing
+    });
+    afterAll(async ()=>{
+        await cleanDB(); //clean up database after testing
+        await closeDB(); //close database connection after testing
+    })
     // Set mock database with a mock quote history and user before each test
-    beforeEach(() => {
-        quoteHistory.set('mockUser', [{
-            fullname: 'Joe Swanson',
-            address: '11111 Spooner St., Quahog, RI 00093',
-            gallonsRequested: '45',
-            deliveryDate: '05/24/2024',
-            suggestedPricePerGallon: '2.93',
-            totalDue: '105'
-        },
-        {
-            fullname: 'Joe Swanson',
-            address: '11111 Spooner St., Quahog, RI 00093',
-            gallonsRequested: '64',
-            deliveryDate: '05/31/2024',
-            suggestedPricePerGallon: '2.79',
-            totalDue: '85'
-        }]);
-
-        users.set('mockUser', {
+    beforeEach(async () => {
+        const user = await User.create({
+            username: 'mockUser',
+            password: 'password',
             fullname: 'Joe Swanson',
             street1: '11111 Spooner Street',
-            street2: '22222 Washington Avenue',
+            street2: 'Apt 122',
             city: 'Quahog',
             state: 'RI',
             zip: '00093'
         });
+
+        await QuoteHistory.create({
+            userId: user._id,
+            gallonsRequested: 50,
+            suggestedPricePerGallon: 2.50,
+            totalDue: 125,
+            deliveryDate: '2024-05-24',
+            address: {
+                street: '11111 Spooner Street',
+                city: 'Quahog',
+                state: 'RI',
+                zip: '00093'
+            }
+        });
     });
 
-    // Reset mock database after each test
-    afterEach(() => {
-        quoteHistory.clear();
+    afterEach(async () => {
+        await User.deleteMany();
+        await QuoteHistory.deleteMany();
     });
 
     test('Error not thrown when all required fields provided and inputs valid', async () => {
@@ -129,73 +159,96 @@ describe('Testing submitQuote', () => {
         };
 
         // What is retrieved from the database
-        const mockReturnedQuote = {
-            address: { city: 'Quahog', state: 'RI', street: '11111 Spooner Street', zip: '00093' },
+        await submitQuote(mockQuoteObject);
+        const receivedQuoteObject = await getQuoteHistory('mockUser');
+
+        expect(receivedQuoteObject.length).toBeGreaterThan(0);
+        const latestQuote = receivedQuoteObject[receivedQuoteObject.length - 1];
+        expect(latestQuote).toEqual(expect.objectContaining({
+            address: expect.objectContaining({
+                street: '11111 Spooner Street',
+                city: 'Quahog',
+                state: 'RI',
+                zip: '00093'
+            }),
             deliveryDate: '2024-05-24',
             gallonsRequested: 50,
             suggestedPricePerGallon: 2.5,
             totalDue: 125
-        }
-
-        await submitQuote(mockQuoteObject);
-        const receivedQHist = await getQuoteHistory('mockUser');
-        await expect(receivedQHist[2]).toEqual(mockReturnedQuote);
+        }));
     });
 
 });
 
 
 describe('Testing getQuoteHistory function', () => {
-    // Set mock database with a mock quote history before each test
-    beforeEach(() => {
-        quoteHistory.set('mockUser', [{
-            fullname: 'Joe Swanson',
-            address: '11111 Spooner St., Quahog, RI 00093',
-            gallonsRequested: '45',
-            deliveryDate: '05/24/2024',
-            suggestedPricePerGallon: '2.93',
-            totalDue: '105'
-        },
-        {
-            fullname: 'Joe Swanson',
-            address: '11111 Spooner St., Quahog, RI 00093',
-            gallonsRequested: '64',
-            deliveryDate: '05/31/2024',
-            suggestedPricePerGallon: '2.79',
-            totalDue: '85'
-        }]);
+    beforeAll(async () => {
+        await connectDB(); //connect database before testing
+    });
+    afterAll(async ()=>{
+        await cleanDB(); //clean up database after testing
+        await closeDB(); //close database connection after testing
+    })
+    // Set mock database with a mock quote history and user before each test
+    beforeEach(async () => {
+        try {    
+            const user = await User.create({
+                username: 'mockUser',
+                password: 'password',
+                fullname: 'Joe Swanson',
+                street1: '11111 Spooner Street',
+                street2: 'Apt 122',
+                city: 'Quahog',
+                state: 'RI',
+                zip: '00093'
+            });
+
+            await QuoteHistory.create({
+                userId: user._id,
+                gallonsRequested: 50,
+                suggestedPricePerGallon: 2.50,
+                totalDue: 125,
+                deliveryDate: '2024-05-24',
+                address: {
+                    street: '11111 Spooner Street',
+                    city: 'Quahog',
+                    state: 'RI',
+                    zip: '00093'
+                }
+            });
+
+            await QuoteHistory.create({
+                userId: user._id,
+                gallonsRequested: 60,
+                suggestedPricePerGallon: 2.75,
+                totalDue: 165,
+                deliveryDate: '2024-05-31',   
+                address: {
+                    street: '11111 Spooner Street',
+                    city: 'Quahog',
+                    state: 'RI',
+                    zip: '00093'
+                }                             
+            });
+        } catch (error) {
+            console.error("Error setting up test data: ", error);
+        }
     });
 
     // Reset mock database after each test
-    afterEach(() => {
-        quoteHistory.clear();
+    afterEach(async () => {
+        await User.deleteMany();
+        await QuoteHistory.deleteMany();
     });
 
     test('Existing username returns quoteHistory object with list of quote objects', async () => {
-        const mockQHist = [{
-            fullname: 'Joe Swanson',
-            address: '11111 Spooner St., Quahog, RI 00093',
-            gallonsRequested: '45',
-            deliveryDate: '05/24/2024',
-            suggestedPricePerGallon: '2.93',
-            totalDue: '105'
-        },
-        {
-            fullname: 'Joe Swanson',
-            address: '11111 Spooner St., Quahog, RI 00093',
-            gallonsRequested: '64',
-            deliveryDate: '05/31/2024',
-            suggestedPricePerGallon: '2.79',
-            totalDue: '85'
-        }];
-
-        const returnedHist = await getQuoteHistory('mockUser');
-
-        // What was returned should match what was placed into the database
-        await expect(returnedHist).toEqual(mockQHist);
+        const returnedHistory = await  getQuoteHistory('mockUser');
+        expect(returnedHistory.length).toBe(2);
+        expect(returnedHistory[0]).toHaveProperty('gallonsRequested', 50);
+        expect(returnedHistory[1]).toHaveProperty('gallonsRequested', 60);
     });
 
     test('Non-existent username returns empty quote list', async () => {
-        await expect(getQuoteHistory('voidUser')).toMatchObject({});
+        await expect(getQuoteHistory('voidUser')).rejects.toThrow('User not found');
     });
 });
