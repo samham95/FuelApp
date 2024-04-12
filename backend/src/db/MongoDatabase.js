@@ -90,15 +90,17 @@ const QuoteHistorySchema = new Schema({
     },
     suggestedPricePerGallon: {
         type: Number,
+        min: 0,
         required: true
     },
     totalDue: {
         type: Number,
-        require: true
+        min: 0,
+        required: true
     },
     deliveryDate: {
         type: String,
-        require: true,
+        required: true,
         match: /^\d{4}-\d{2}-\d{2}$/
     },
     address: {
