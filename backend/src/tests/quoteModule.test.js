@@ -10,7 +10,7 @@ const FuelPricing = require('../pricingModule.js');
 describe('Testing validateDeliveryAddr', () => {
     test('Should return false when non-address object passed', () => {
         const int = 1;
-        expect(() => validateDeliveryAddr(int)).toBe(false);
+        expect(validateDeliveryAddr(int)).toBe(false);
     });
 });
 
