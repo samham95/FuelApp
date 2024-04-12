@@ -38,7 +38,7 @@ describe('Testing validateInputs', () => {
 });
 
 describe('Testing validateKeys', () => {
-    test('Should not throw an error when all required fields are filled', ()=>{
+    test('Should not throw an error when all required fields are filled', () => {
         const formData = {
             username: 'testUser',
             street: '123 BinkBonk Dr',
@@ -94,13 +94,13 @@ describe('Testing getQuote', () => {
     beforeAll(async () => {
         await connectDB(); //connect database before testing
     });
-    afterAll(async ()=>{
+    afterAll(async () => {
         await cleanDB(); //clean up database after testing
         await closeDB(); //close database connection after testing
     })
     // Set mock database with a mock quote history and user before each test
     beforeEach(async () => {
-        try {    
+        try {
             const user = await User.create({
                 username: 'mockUser',
                 password: 'password',
@@ -117,7 +117,7 @@ describe('Testing getQuote', () => {
                 gallonsRequested: 50,
                 suggestedPricePerGallon: 2.50,
                 totalDue: 125,
-                deliveryDate: new Date('2024-05-24'),
+                deliveryDate: '2024-05-24',
                 address: {
                     street: '11111 Spooner Street',
                     city: 'Quahog',
@@ -131,13 +131,13 @@ describe('Testing getQuote', () => {
                 gallonsRequested: 60,
                 suggestedPricePerGallon: 2.75,
                 totalDue: 165,
-                deliveryDate: new Date('2024-05-31'),   
+                deliveryDate: '2024-05-31',
                 address: {
                     street: '11111 Spooner Street',
                     city: 'Quahog',
                     state: 'RI',
                     zip: '00093'
-                }                             
+                }
             });
         } catch (error) {
             console.error("Error setting up test data: ", error);
@@ -168,7 +168,7 @@ describe('Testing submitQuote', () => {
     beforeAll(async () => {
         await connectDB(); //connect database before testing
     });
-    afterAll(async ()=>{
+    afterAll(async () => {
         await cleanDB(); //clean up database after testing
         await closeDB(); //close database connection after testing
     })
@@ -282,13 +282,13 @@ describe('Testing getQuoteHistory function', () => {
     beforeAll(async () => {
         await connectDB(); //connect database before testing
     });
-    afterAll(async ()=>{
+    afterAll(async () => {
         await cleanDB(); //clean up database after testing
         await closeDB(); //close database connection after testing
     })
     // Set mock database with a mock quote history and user before each test
     beforeEach(async () => {
-        try {    
+        try {
             const user = await User.create({
                 username: 'mockUser',
                 password: 'password',
@@ -319,13 +319,13 @@ describe('Testing getQuoteHistory function', () => {
                 gallonsRequested: 60,
                 suggestedPricePerGallon: 2.75,
                 totalDue: 165,
-                deliveryDate: '2024-05-31',   
+                deliveryDate: '2024-05-31',
                 address: {
                     street: '11111 Spooner Street',
                     city: 'Quahog',
                     state: 'RI',
                     zip: '00093'
-                }                             
+                }
             });
         } catch (error) {
             console.error("Error setting up test data: ", error);
@@ -338,7 +338,7 @@ describe('Testing getQuoteHistory function', () => {
     });
 
     test('Existing username returns quoteHistory object with list of quote objects', async () => {
-        const returnedHistory = await  getQuoteHistory('mockUser');
+        const returnedHistory = await getQuoteHistory('mockUser');
         expect(returnedHistory.length).toBe(2);
         expect(returnedHistory[0]).toHaveProperty('gallonsRequested', 50);
         expect(returnedHistory[1]).toHaveProperty('gallonsRequested', 60);

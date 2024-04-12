@@ -1,5 +1,5 @@
 const { addUser } = require('../loginModule');
-const { Profile, User } = require('./MongoDatabase')
+const { Profile, User, QuoteHistory } = require('./MongoDatabase')
 const AppError = require('../AppError')
 const mongoose = require('mongoose');
 const mongoConnectionString = process.env.DB_CONNECTION_STRING || 'mongodb://127.0.0.1:27017/fuelapp';
@@ -30,6 +30,18 @@ const initDB = async () => {
         state: 'TX',
         zip: '77379',
     };
+    const validQuote = {
+        address: {
+            street: "9222 Memorial Dr. Apt. 212",
+            city: "Houston",
+            state: "TX",
+            zip: "77379"
+        },
+        deliveryDate: "2024-04-04",
+        gallonsRequested: 3,
+        suggestedPricePerGallon: 2.5,
+        totalDue: 7.5
+    };
 
     try {
         const prevUser = await User.findOne({ username: 'samham' });
@@ -42,6 +54,10 @@ const initDB = async () => {
                 userId: user._id
             });
             await profile.save();
+            await QuoteHistory.create({
+                userId: user._id,
+                ...validQuote
+            })
         }
 
 
