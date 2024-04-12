@@ -1,6 +1,6 @@
 const { addUser } = require('../loginModule');
 const { Profile, User } = require('./MongoDatabase')
-const { AppError } = require('../AppError')
+const AppError = require('../AppError')
 const mongoose = require('mongoose');
 const mongoConnectionString = process.env.DB_CONNECTION_STRING || 'mongodb://127.0.0.1:27017/fuelapp';
 
@@ -9,7 +9,7 @@ const connectDB = async () => {
     try {
         await mongoose.connect(mongoConnectionString);
     } catch (error) {
-        throw new AppError(500, "Unable to connect to Database");
+        throw new AppError("Unable to connect to Database", 500);
     }
 }
 
@@ -17,7 +17,7 @@ const closeDB = async () => {
     try {
         await mongoose.connection.close();
     } catch (error) {
-        throw new AppError(500, "Unable to close database connection")
+        throw new AppError("Unable to close database connection", 500)
     }
 }
 
@@ -36,7 +36,7 @@ const initDB = async () => {
         if (!prevUser) {
             await addUser('samham', 'Abc12345!');
             const user = await User.findOne({ username: 'samham' });
-            if (!user) throw new AppError(400, "User not found");
+            if (!user) throw new AppError("User not found", 400);
             const profile = new Profile({
                 ...profileData,
                 userId: user._id
@@ -50,13 +50,19 @@ const initDB = async () => {
         return;
     }
 };
-const cleanDB = async () => {
-    try {
-        await mongoose.connection.dropDatabase();
-    } catch (error) {
-        throw error;
-    }
 
-}
+const cleanDB = async () => {
+    const collections = mongoose.connection.collections;
+
+    for (const key in collections) {
+        const collection = collections[key];
+        try {
+            await collection.deleteMany({});
+        } catch (error) {
+            throw new AppError(`Error clearing collection ${key}: ${error.message}`, 400);
+        }
+    }
+};
+
 
 module.exports = { initDB, connectDB, closeDB, cleanDB };

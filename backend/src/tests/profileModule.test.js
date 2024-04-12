@@ -6,14 +6,16 @@ const { connectDB, closeDB, cleanDB, initDB } = require('../db/UtilisDB.js')
 
 beforeAll(async () => {
     await connectDB(); // Connect to DB before tests
-    await initDB();
+    //await initDB();
 });
 
 afterAll(async () => {
     await cleanDB(); // Clean DB after tests
     await closeDB(); // Close connection to DB after tests
 });
-
+beforeEach(async () => {
+    await cleanDB();
+})
 describe('Testing getProfileData...', () => {
 
     beforeEach(async () => {
