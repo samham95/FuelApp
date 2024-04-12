@@ -1,3 +1,4 @@
+const { User, InvalidToken } = require('./db/MongoDatabase.js')
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
