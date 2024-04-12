@@ -9,10 +9,12 @@ const validateStreet = (street) => {
     return street && regex.test(street);
 }
 const validateNum = (num) => {
-    const regex = /^\d*\.?\d+$/;
+    return num && Number.isFinite(num);
+}
+const validateIntegerString = (num) => {
+    const regex = /^\d+$/;
     return num && regex.test(num);
 }
-
 const validateDeliveryDate = (date) => {
     const regex = /^\d{4}-\d{2}-\d{2}$/;
     return date && regex.test(date);
@@ -85,6 +87,9 @@ const getQuote = async (username, gallons) => {
         const user = await User.findOne({ username });
         if (!user) {
             throw new AppError("User not found", 404);
+        }
+        if (!validateIntegerString(gallons)) {
+            throw new AppError("Invalid gallons requested format - expected number", 400);
         }
         const state = user.state;
         const fuelPrice = new FuelPricing(username, state, gallons);

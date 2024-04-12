@@ -32,21 +32,21 @@ const validateStreet2 = (street2) => {
     const regex = /^[A-Za-z0-9#.\-\s/,]+$/;
     return street2 && regex.test(street2);
 }
-
-
 const validateCity = (city) => {
     const regex = /^[a-zA-Z\s]+$/;
     return city && regex.test(city);
 }
-/*
-Didn't do state validation since it's a drop down selection
-*/
+const validateState = (state) => {
+    const regex = /^[A-Z]{2}$/;
+    return state && regex.test(state);
+
+}
 const validateZipcode = (zip) => {
     const regex = /^\d{5}(?:-\d{4})?$/;
     return zip && regex.test(zip);
 }
 
-const validateInputs = (fullname, street1, street2, city, zip) => {
+const validateInputs = (fullname, street1, street2, city, zip, state) => {
     if (!validateFullName(fullname)) {
         throw new AppError("Invalid name format", 400);
     }
@@ -61,6 +61,9 @@ const validateInputs = (fullname, street1, street2, city, zip) => {
     }
     if (!validateZipcode(zip)) {
         throw new AppError("Invalid zip code format", 400);
+    }
+    if (!validateState(state)) {
+        throw new AppError("Invalid state format", 400);
     }
 }
 const validateKeys = (newData) => {
@@ -93,7 +96,7 @@ const updateProfile = async (username, newData) => {
 
         validateKeys(newData);
         const { fullname, street1, street2, city, state, zip } = newData;
-        validateInputs(fullname, street1, street2, city, zip);
+        validateInputs(fullname, street1, street2, city, zip, state);
 
         const profileUpdate = filterUpdates(user.profile, { fullname, street1, street2, city, state, zip });
         Object.assign(user.profile, profileUpdate);

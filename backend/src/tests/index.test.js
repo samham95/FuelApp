@@ -34,7 +34,15 @@ const newProfileData = {
     state: 'NY',
     zip: '10003',
 }
-const quote = {
+const invalidProfileData = {
+    fullname: '1Sam Ham',
+    street1: '123 Sesame@ Street',
+    street2: 'APT! 123',
+    city: 'New York^',
+    state: 'NYg',
+    zip: 'hi',
+}
+const validQuote = {
     address: {
         street: "9222 Memorial Dr. Apt. 212",
         city: "Houston",
@@ -45,6 +53,29 @@ const quote = {
     gallonsRequested: 3,
     suggestedPricePerGallon: 2.5,
     totalDue: 7.5
+};
+
+const invalidQuote = {
+
+    street: "!9222 Memorial Dr. Apt. 212",
+    city: "Houston!",
+    state: "TX!",
+    zip: "77379!",
+    deliveryDate: "2024-04-",
+    gallonsRequested: "3",
+    suggestedPricePerGallon: "2.5",
+    totalDue: '7.5'
+}
+const quote = {
+    username: validCred.username,
+    street: "123 Main St",
+    city: "City",
+    state: "TX",
+    zip: "12345",
+    deliveryDate: "2024-03-27",
+    gallonsRequested: 100,
+    suggestedPricePerGallon: 2.50,
+    totalDue: 250
 };
 
 const fail = (message) => {
@@ -193,6 +224,7 @@ describe("Index file testing... ", () => {
             }
 
         });
+
     })
 
     describe("Update profile route testing...", () => {
@@ -218,6 +250,66 @@ describe("Index file testing... ", () => {
             } catch (error) {
                 expect(error.response.status).toBe(400);
                 expect(error.response.data).toMatch("Missing required fields");
+            }
+        });
+        test("This test should throw if profile data is invalid", async () => {
+            try {
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).post(`auth/profile/${validCred.username}/edit`, { ...validProfileData, street1: invalidProfileData.street1 });
+                fail("Test was supposed to throw error on updating profile, but didn't")
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+                expect(error.response.data).toMatch("Invalid");
+            }
+        });
+        test("This test should throw if profile data is invalid", async () => {
+            try {
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).post(`auth/profile/${validCred.username}/edit`, { ...validProfileData, street2: invalidProfileData.street2 });
+                fail("Test was supposed to throw error on updating profile, but didn't")
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+                expect(error.response.data).toMatch("Invalid");
+            }
+        });
+        test("This test should throw if profile data is invalid", async () => {
+            try {
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).post(`auth/profile/${validCred.username}/edit`, { ...validProfileData, fullname: invalidProfileData.fullname });
+                fail("Test was supposed to throw error on updating profile, but didn't")
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+                expect(error.response.data).toMatch("Invalid");
+            }
+        });
+        test("This test should throw if profile data is invalid", async () => {
+            try {
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).post(`auth/profile/${validCred.username}/edit`, { ...validProfileData, zip: invalidProfileData.zip });
+                fail("Test was supposed to throw error on updating profile, but didn't")
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+                expect(error.response.data).toMatch("Invalid");
+            }
+        });
+        test("This test should throw if profile data is invalid", async () => {
+            try {
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).post(`auth/profile/${validCred.username}/edit`, { ...validProfileData, city: invalidProfileData.city });
+                fail("Test was supposed to throw error on updating profile, but didn't")
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+                expect(error.response.data).toMatch("Invalid");
+            }
+        });
+        test("This test should throw if profile data is invalid", async () => {
+            try {
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).post(`auth/profile/${validCred.username}/edit`, { ...validProfileData, state: invalidProfileData.state });
+                fail("Test was supposed to throw error on updating profile, but didn't")
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+                expect(error.response.data).toMatch("Invalid");
             }
         })
     })
@@ -332,14 +424,14 @@ describe("Index file testing... ", () => {
                 const response = await apiClient(token).get(`/auth/quote/history/${validCred.username}`);
                 const quoteData = response.data.quotes[0];
                 expect(response.status).toBe(200);
-                expect(quoteData).toEqual(quoteHistory.get(validCred.username)[0]);
+                expect(quoteData).toEqual(expect.objectContaining(validQuote));
             } catch (error) {
                 fail(`test failed with error: ${error}`);
             }
         });
         test("This test should return an empty quote history for a new user", async () => {
             try {
-                quoteHistory.get(validCred.username).pop();
+                await QuoteHistory.deleteMany({});;
                 const token = await loginMock(validCred);
                 const response = await apiClient(token).get(`/auth/quote/history/${validCred.username}`);
                 expect(response.status).toBe(200);
@@ -369,7 +461,7 @@ describe("Index file testing... ", () => {
                 const token = await loginMock(validCred);
                 const response = await apiClient(token).get(`/auth/quote/${validCred.username}/${gallons}`);
                 expect(response.status).toBe(200);
-                expect(response.data).toEqual(expect.objectContaining({ pricePerGallon: expect.any(Number) }));
+                expect(response.data).toEqual(expect.objectContaining({ pricePerGallon: expect.any(Number), totalPrice: expect.any(Number) }));
             } catch (error) {
                 fail(`Test failed with error: ${error}`);
             }
@@ -390,7 +482,8 @@ describe("Index file testing... ", () => {
                 const gallons = "badgallons";
                 const token = await loginMock(validCred);
                 const response = await apiClient(token).get(`/auth/quote/${validCred.username}/${gallons}`);
-                fail("Test was supposed to throw error, but passed")
+                console.log(response.data)
+                fail("Test was supposed to throw error, but passed");
             } catch (error) {
                 expect(error.response.status).toBe(400);
                 expect(error.response.data).toMatch("Invalid gallons");
@@ -421,9 +514,9 @@ describe("Index file testing... ", () => {
                     state: "TX",
                     zip: "12345",
                     deliveryDate: "2024-03-27",
-                    gallonsRequested: "100",
-                    suggestedPricePerGallon: "2.50",
-                    totalDue: "250"
+                    gallonsRequested: 100,
+                    suggestedPricePerGallon: 2.50,
+                    totalDue: 250
                 };
                 const response = await apiClient(token).post(`/auth/quote`, quoteObject);
                 expect(response.status).toBe(200);
@@ -443,9 +536,9 @@ describe("Index file testing... ", () => {
                     state: "TX",
                     zip: "12345",
                     deliveryDate: "2024-03-27",
-                    gallonsRequested: "100",
-                    suggestedPricePerGallon: "2.50",
-                    totalDue: "250"
+                    gallonsRequested: 100,
+                    suggestedPricePerGallon: 2.50,
+                    totalDue: 250
                 };
                 const response = await apiClient(badtoken).post(`/auth/quote`, quoteObject);
                 fail("Test was supposed to throw error, but passed")
@@ -464,7 +557,78 @@ describe("Index file testing... ", () => {
                 expect(error.response.data).toMatch("Missing required fields");
             }
         });
+        test("This should test for invalid fields in submission", async () => {
+            try {
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).post(`/auth/quote`, { ...quote, street: invalidQuote.street });
+                fail("Test was supposed to throw error, but passed")
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+                expect(error.response.data).toMatch("Invalid");
+            }
+        })
+        test("This should test for invalid fields in submission", async () => {
+            try {
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).post(`/auth/quote`, { ...quote, city: invalidQuote.city });
+                fail("Test was supposed to throw error, but passed")
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+                expect(error.response.data).toMatch("Invalid");
+            }
+        })
+        test("This should test for invalid fields in submission", async () => {
+            try {
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).post(`/auth/quote`, { ...quote, state: invalidQuote.state });
+                fail("Test was supposed to throw error, but passed")
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+                expect(error.response.data).toMatch("Invalid");
+            }
+        })
+        test("This should test for invalid fields in submission", async () => {
+            try {
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).post(`/auth/quote`, { ...quote, deliveryDate: invalidQuote.deliveryDate });
+                fail("Test was supposed to throw error, but passed")
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+                expect(error.response.data).toMatch("Invalid");
+            }
+        })
+        test("This should test for invalid fields in submission", async () => {
+            try {
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).post(`/auth/quote`, { ...quote, gallonsRequested: invalidQuote.gallonsRequested });
+                fail("Test was supposed to throw error, but passed")
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+                expect(error.response.data).toMatch("Invalid");
+            }
+        })
+        test("This should test for invalid fields in submission", async () => {
+            try {
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).post(`/auth/quote`, { ...quote, suggestedPricePerGallon: invalidQuote.suggestedPricePerGallon });
+                fail("Test was supposed to throw error, but passed")
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+                expect(error.response.data).toMatch("Invalid");
+            }
+        })
+        test("This should test for invalid fields in submission", async () => {
+            try {
+                const token = await loginMock(validCred);
+                const response = await apiClient(token).post(`/auth/quote`, { ...quote, totalDue: invalidQuote.totalDue });
+                fail("Test was supposed to throw error, but passed")
+            } catch (error) {
+                expect(error.response.status).toBe(400);
+                expect(error.response.data).toMatch("Invalid");
+            }
+        })
     })
+
 
 })
 
