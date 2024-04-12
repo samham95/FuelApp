@@ -1,11 +1,41 @@
 const AppError = require('../AppError.js');
-const { validateKeys, getQuote, submitQuote, getQuoteHistory } = require('../quoteModule.js');
+const { validateDeliveryAddr, validateInputs, validateKeys, getQuote, submitQuote, getQuoteHistory } = require('../quoteModule.js');
 const { User, QuoteHistory } = require('../db/MongoDatabase.js');
 const { connectDB, closeDB, cleanDB, } = require('../db/UtilisDB.js')
 
 // Mock pricing module
 jest.mock('../pricingModule');
 const FuelPricing = require('../pricingModule.js');
+
+describe('Testing validateDeliveryAddr', () => {
+    test('Should return false when non-address object passed', () => {
+        const int = 1;
+        expect(() => validateDeliveryAddr(int)).toBe(false);
+    });
+});
+
+describe('Testing validateInputs', () => {
+    test('Should throw error when invalid galreq passed', () => {
+        const char = 'A';
+        expect(() => validateInputs(0, 0, char, '2024-10-15', 0)).toThrow(AppError);
+    });
+    test('Should throw error when invalid total passed', () => {
+        const char = 'A';
+        expect(() => validateInputs(0, char, 0, '2024-10-15', 0)).toThrow(AppError);
+    });
+    test('Should throw error when invalid ppg passed', () => {
+        const char = 'A';
+        expect(() => validateInputs(char, 0, 0, '2024-10-15', 0)).toThrow(AppError);
+    });
+    test('Should throw error when invalid date passed', () => {
+        const char = 'A';
+        expect(() => validateInputs(0, 0, 0, char, 0)).toThrow(AppError);
+    });
+    test('Should throw error when invalid address passed', () => {
+        const char = 'A';
+        expect(() => validateInputs(0, 0, 0, '2024-10-15', char)).toThrow(AppError);
+    });
+});
 
 describe('Testing validateKeys', () => {
     test('Should not throw an error when all required fields are filled', ()=>{
