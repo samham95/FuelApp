@@ -2,7 +2,7 @@ const AppError = require('../AppError.js');
 const { getProfileData, updateProfile } = require('../profileModule.js');
 const mongoose = require('mongoose');
 const { User, Profile } = require('../db/MongoDatabase.js');
-const { connectDB, closeDB, cleanDB, initDB } = require('../db/UtilisDB.js')
+const { connectDB, closeDB, cleanDB, initDB } = require('../db/UtilsDB.js')
 
 beforeAll(async () => {
     await connectDB(); // Connect to DB before tests

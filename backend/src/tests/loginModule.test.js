@@ -1,6 +1,6 @@
 const { addUser, generateToken, validateUser, invalidateToken, isTokenInvalidated } = require("../loginModule.js");
 const { User, Profile, InvalidToken } = require("../db/MongoDatabase.js");
-const { connectDB, closeDB, cleanDB, initDB } = require("../db/UtilisDB.js");
+const { connectDB, closeDB, cleanDB, initDB } = require("../db/UtilsDB.js");
 const mongoose = require('mongoose');
 const validUser = {
     username: 'samham1',

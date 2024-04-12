@@ -1,7 +1,7 @@
 const AppError = require('../AppError.js');
 const { validateDeliveryAddr, validateInputs, validateKeys, getQuote, submitQuote, getQuoteHistory } = require('../quoteModule.js');
 const { User, QuoteHistory } = require('../db/MongoDatabase.js');
-const { connectDB, closeDB, cleanDB, } = require('../db/UtilisDB.js')
+const { connectDB, closeDB, cleanDB, } = require('../db/UtilsDB.js')
 
 // Mock pricing module
 jest.mock('../pricingModule');
