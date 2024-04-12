@@ -1,9 +1,5 @@
 const mongoose = require('mongoose');
-const AppError = require('../AppError')
 const Schema = mongoose.Schema;
-
-
-
 
 const UserSchema = new Schema(
     {
@@ -43,6 +39,7 @@ const ProfileSchema = new Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
+        unique: true,
         ref: 'User'
     },
 

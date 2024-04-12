@@ -4,7 +4,7 @@
   "description": "Node Server",
   "main": "src/server.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest -i --coverage",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js"
   },

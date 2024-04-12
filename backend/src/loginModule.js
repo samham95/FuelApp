@@ -26,7 +26,7 @@ const isTokenInvalidated = async (token) => {
             return false;
         }
     } catch (error) {
-        throw new AppError(error.status || 400, error.message || "Unable to decode token");
+        throw new AppError(error.message || "Unable to decode token", error.status || 400);
     }
 };
 
@@ -40,7 +40,7 @@ const invalidateToken = async (token) => {
         const invalidToken = new InvalidToken({ jti, expTime });
         await invalidToken.save();
     } catch (error) {
-        throw new AppError(error.status || 400, error.message || "Unable to invalidate token");
+        throw new AppError(error.message || "Unable to invalidate token", error.status || 400);
     }
 };
 
@@ -78,7 +78,7 @@ const addUser = async (username, password) => {
         await user.save();
 
     } catch (error) {
-        throw new AppError(error.status || 400, error.message || "Unable to add user");
+        throw new AppError(error.message || "Unable to add user", error.status || 400);
     }
 
 };

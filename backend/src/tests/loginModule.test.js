@@ -21,7 +21,7 @@ const invalidPassword = {
 }
 beforeAll(async () => {
     await connectDB(); // Connect to DB before tests
-    await initDB(); // Initialize DB before tests
+    //await initDB(); // Initialize DB before tests
 });
 
 afterAll(async () => {
@@ -31,10 +31,7 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-    // Clean DB before each test
-    await User.deleteMany();
-    await Profile.deleteMany();
-    await InvalidToken.deleteMany();
+    await cleanDB();
 });
 
 describe("Login Module testing...", () => {
