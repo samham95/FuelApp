@@ -1,13 +1,64 @@
 const AppError = require('../AppError.js');
-const { getQuote, submitQuote, getQuoteHistory } = require('../quoteModule.js');
-const { validateFullName, validateCity, validateZipcode } = require('../profileModule.js');
+const { validateKeys, getQuote, submitQuote, getQuoteHistory } = require('../quoteModule.js');
 const { User, QuoteHistory } = require('../db/MongoDatabase.js');
 const { connectDB, closeDB, cleanDB, } = require('../db/UtilisDB.js')
 
 // Mock pricing module
 jest.mock('../pricingModule');
 const FuelPricing = require('../pricingModule.js');
-const { identity } = require('update/lib/utils.js');
+
+describe('Testing validateKeys', () => {
+    test('Should not throw an error when all required fields are filled', ()=>{
+        const formData = {
+            username: 'testUser',
+            street: '123 BinkBonk Dr',
+            city: 'FakeCity',
+            state: 'FC',
+            zip: '12345',
+            gallonsRequested: 100,
+            deliveryDate: '2024-10-15',
+            suggestedPricePerGallon: 3.50,
+            totalDue: 350
+        };
+        expect(() => validateKeys(formData)).not.toThrow();
+    });
+
+    test('Throws an error when one or more keys are missing', () => {
+        const formDataMissingOne = {
+            username: 'testUser',
+            street: '123 BinkBonk Dr',
+            city: 'FakeCity',
+            state: 'FC',
+            // zip is missing
+            gallonsRequested: 100,
+            deliveryDate: '2024-10-15',
+            suggestedPricePerGallon: 3.50,
+            totalDue: 350
+        };
+        expect(() => validateKeys(formDataMissingOne)).toThrow(AppError);
+        expect(() => validateKeys(formDataMissingOne)).toThrow('Missing required fields: zip');
+    });
+
+    test('Throws an error when multiple keys are missing', () => {
+        const formDataMissingMultiple = {
+            username: 'testUser',
+            street: '123 BinkBonk Dr',
+            // city, state, and zip are missing
+            gallonsRequested: 100,
+            deliveryDate: '2024-10-15',
+            suggestedPricePerGallon: 3.50,
+            totalDue: 350
+        };
+        expect(() => validateKeys(formDataMissingMultiple)).toThrow(AppError);
+        expect(() => validateKeys(formDataMissingMultiple)).toThrow('Missing required fields: city, state, zip');
+    });
+
+    test('Throws an error when all keys are missing', () => {
+        const formDataEmpty = {};
+        expect(() => validateKeys(formDataEmpty)).toThrow(AppError);
+        expect(() => validateKeys(formDataEmpty)).toThrow('Missing required fields: username, street, city, state, zip, gallonsRequested, deliveryDate, suggestedPricePerGallon, totalDue');
+    });
+});
 
 describe('Testing getQuote', () => {
     beforeAll(async () => {
@@ -62,7 +113,6 @@ describe('Testing getQuote', () => {
             console.error("Error setting up test data: ", error);
         }
     });
-
     // Reset mock database after each test
     afterEach(async () => {
         await User.deleteMany();
@@ -145,7 +195,6 @@ describe('Testing submitQuote', () => {
     });
 
     test('Valid input successfully adds new quote to list of quotes', async () => {
-        // What is received from the form on the front end
         const mockQuoteObject = {
             username: 'mockUser',
             street: '11111 Spooner Street',
@@ -158,7 +207,6 @@ describe('Testing submitQuote', () => {
             totalDue: 125
         };
 
-        // What is retrieved from the database
         await submitQuote(mockQuoteObject);
         const receivedQuoteObject = await getQuoteHistory('mockUser');
 
@@ -176,6 +224,25 @@ describe('Testing submitQuote', () => {
             suggestedPricePerGallon: 2.5,
             totalDue: 125
         }));
+    });
+
+    test('Throws "User not Found" error if the user does not exist', async () => {
+        // Spy on findOne and mock its implementation only for this test
+        jest.spyOn(User, 'findOne').mockResolvedValueOnce(null);
+
+        const quoteObject = {
+            username: 'nonexistentUser',
+            street: '123 BinkBonk',
+            city: 'FakeCity',
+            state: 'FC',
+            zip: '12345',
+            deliveryDate: '2024-12-01',
+            gallonsRequested: 50,
+            suggestedPricePerGallon: 2.5,
+            totalDue: 125
+        };
+
+        await expect(submitQuote(quoteObject)).rejects.toThrow('User not found');
     });
 
 });
@@ -234,7 +301,6 @@ describe('Testing getQuoteHistory function', () => {
             console.error("Error setting up test data: ", error);
         }
     });
-
     // Reset mock database after each test
     afterEach(async () => {
         await User.deleteMany();
