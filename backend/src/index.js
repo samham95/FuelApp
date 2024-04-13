@@ -1,4 +1,3 @@
-const { User, InvalidToken } = require('./db/MongoDatabase.js')
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
@@ -99,7 +98,7 @@ unprotectedRouter.post('/register', async (req, res, next) => {
 
 protectedRouter.get('/quote/history/:username', requireAuth, async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.username;
         const quotes = await getQuoteHistory(username);
         res.status(200).json({ quotes });
     } catch (error) {
@@ -109,7 +108,7 @@ protectedRouter.get('/quote/history/:username', requireAuth, async (req, res, ne
 
 protectedRouter.get('/quote/:username/:gallons', requireAuth, async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.username;
         const gallons = req.params.gallons;
         const quote = await getQuote(username, gallons);
         res.status(200).json({ ...quote });

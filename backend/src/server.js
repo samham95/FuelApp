@@ -2,7 +2,7 @@ const app = require("./index.js");
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const { initDB, connectDB } = require('./db/UtilisDB.js')
+const { initDB, connectDB } = require('./db/UtilsDB.js')
 
 //config for https, omitting...
 /*
