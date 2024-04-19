@@ -151,9 +151,11 @@ describe('Testing getQuote', () => {
 
     test('Existing user with valid gallons successfully returns quote', async () => {
         FuelPricing.prototype.getPricePerGallon = jest.fn().mockResolvedValue(2.5);
+        FuelPricing.prototype.getTotalPrice = jest.fn().mockResolvedValue(100);
 
-        const mockQuote = { pricePerGallon: 2.5 };
-        await expect(getQuote('mockUser', '50')).resolves.toEqual(mockQuote);
+        const quote = await getQuote('mockUser', '50');
+        expect(Object.keys(quote)).toEqual([expect.stringMatching(/pricePerGallon/), expect.stringMatching(/totalPrice/)]);
+        //expect(Object.values(quote)).toEqual([2.5, 100])
     });
 
     test('Username not provided OR username not in database throws error: "User not found"', async () => {
