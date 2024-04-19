@@ -67,7 +67,7 @@ const validateInputs = (fullname, street1, street2, city, zip, state) => {
     }
 }
 const validateKeys = (newData) => {
-    const requiredKeys = ['fullname', 'street1', 'street2', 'city', 'state', 'zip'];
+    const requiredKeys = ['fullname', 'street1', 'city', 'state', 'zip'];
 
     const missingKeys = requiredKeys.filter(key => !(key in newData));
     if (missingKeys.length > 0) {
@@ -97,10 +97,12 @@ const updateProfile = async (username, newData) => {
         validateKeys(newData);
         const { fullname, street1, street2, city, state, zip } = newData;
         validateInputs(fullname, street1, street2, city, zip, state);
-
-        const profileUpdate = filterUpdates(user.profile, { fullname, street1, street2, city, state, zip });
-        Object.assign(user.profile, profileUpdate);
-        await user.profile.save();
+        let profileUpdate = { fullname, street1, street2, city, state, zip };
+        if (user.profile !== null) {
+            profileUpdate = filterUpdates(user.profile, { fullname, street1, street2, city, state, zip });
+        }
+        const profile = await Profile.findOneAndUpdate({ _id: user.profile._id }, profileUpdate, { new: true, runValidators: true });
+        await profile.save();
     }
     catch (error) {
         throw new AppError(error.message || "Unable to update profile", error.status || 400);
