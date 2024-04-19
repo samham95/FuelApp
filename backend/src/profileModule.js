@@ -98,11 +98,14 @@ const updateProfile = async (username, newData) => {
         const { fullname, street1, street2, city, state, zip } = newData;
         validateInputs(fullname, street1, street2, city, zip, state);
         let profileUpdate = { fullname, street1, street2, city, state, zip };
-        if (user.profile !== null) {
-            profileUpdate = filterUpdates(user.profile, { fullname, street1, street2, city, state, zip });
+        if (!user.profile) {
+            const profile = new Profile({ userId: user._id, ...profileUpdate });
+            await profile.save();
         }
-        const profile = await Profile.findOneAndUpdate({ _id: user.profile._id }, profileUpdate, { new: true, runValidators: true });
-        await profile.save();
+        else {
+            profileUpdate = filterUpdates(user.profile.toObject(), profileUpdate);
+            const profile = await Profile.findOneAndUpdate({ userId: user._id }, profileUpdate, { new: true, runValidators: true });
+        }
     }
     catch (error) {
         throw new AppError(error.message || "Unable to update profile", error.status || 400);

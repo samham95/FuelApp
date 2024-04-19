@@ -1,4 +1,4 @@
-const { User, InvalidToken } = require('./db/MongoDatabase.js')
+const { User, InvalidToken, Profile } = require('./db/MongoDatabase.js')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
