@@ -7,10 +7,11 @@ class FuelPricing {
     }
 
     getPricePerGallon() {
-        const rateFactor = this.quoteHistory ? 0.02 : 0.04;
+        const rateFactor = this.quoteHistory ? 0.01 : 0.00;
         const gallonsFactor = this.gallons > 1000 ? 0.02 : 0.03;
         const locationFactor = this.state === 'TX' ? 0.02 : 0.04;
-        return this.currentPPG * (rateFactor - gallonsFactor + locationFactor + 1);
+        const margin = this.currentPPG * (locationFactor - rateFactor + gallonsFactor + 0.1);
+        return margin + this.currentPPG;
     }
     getTotalPrice() {
         return this.getPricePerGallon() * this.gallons;
