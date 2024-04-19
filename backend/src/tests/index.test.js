@@ -23,7 +23,7 @@ const invalidCred = {
     password: '123'
 }
 const validRegister = {
-    username: 'samham123',
+    username: 'samham99',
     password: 'Abc12345!'
 }
 const newProfileData = {
