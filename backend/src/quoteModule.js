@@ -84,14 +84,14 @@ const getQuote = async (username, gallons) => {
         if (!username) {
             throw new AppError("Username is required", 400);
         }
-        const user = await User.findOne({ username }).populate('quotes');
+        const user = await User.findOne({ username }).populate('profile').populate('quotes');
         if (!user) {
             throw new AppError("User not found", 401);
         }
         if (!validateIntegerString(gallons)) {
             throw new AppError("Invalid gallons requested format - expected number", 400);
         }
-        const state = user.state;
+        const state = user.profile.state;
         const quoteHistory = user.quotes ? 1 : 0;
         const fuelPrice = new FuelPricing(state, gallons, quoteHistory);
         const pricePerGallon = fuelPrice.getPricePerGallon();
