@@ -184,7 +184,7 @@ const FuelQuoteForm = () => {
                     <br />
                 </form>
                 <div className="my-3 border-top border-dashed custom-border-color"></div>
-                <br />
+
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="suggestedPrice">Suggested Price / gallon</label>
