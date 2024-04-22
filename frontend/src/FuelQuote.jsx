@@ -20,6 +20,13 @@ const FuelQuoteForm = () => {
     const [profileData, setProfileData] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [disableSubmit, setDisableSubmit] = useState(true);
+    const [disableQuote, setDisableQuote] = useState(true);
+    const validateDeliveryDate = () => {
+        return deliveryDate >= today && deliveryDate <= maxDate;
+    }
+    const validateGallonsRequested = () => {
+        return Number.isFinite(Number.parseInt(gallonsRequested)) && Number.parseInt(gallonsRequested) > 0;
+    }
     const validateQuote = () => {
         return Number.isFinite(totalDue) &&
             Number.isFinite(suggestedPricePerGallon) &&
@@ -70,7 +77,9 @@ const FuelQuoteForm = () => {
     useEffect(() => {
         setDisableSubmit(!validateQuote());
     }, [suggestedPricePerGallon, totalDue]);
-
+    useEffect(() => {
+        setDisableQuote(!validateDeliveryDate() || !validateGallonsRequested());
+    }, [gallonsRequested, deliveryDate])
     const handleQuote = async (e) => {
         e.preventDefault();
         try {
@@ -171,7 +180,7 @@ const FuelQuoteForm = () => {
                             }}
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary">GENERATE QUOTE</button>
+                    <button type="submit" className="btn btn-primary" disabled={disableQuote}>GENERATE QUOTE</button>
                     <br />
                 </form>
                 <div className="my-3 border-top border-dashed custom-border-color"></div>
