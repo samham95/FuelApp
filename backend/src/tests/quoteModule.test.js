@@ -1,6 +1,6 @@
 const AppError = require('../AppError.js');
 const { validateDeliveryAddr, validateInputs, validateKeys, getQuote, submitQuote, getQuoteHistory } = require('../quoteModule.js');
-const { User, QuoteHistory } = require('../db/MongoDatabase.js');
+const { User, QuoteHistory, Profile } = require('../db/MongoDatabase.js');
 const { connectDB, closeDB, cleanDB, } = require('../db/UtilsDB.js')
 
 // Mock pricing module
@@ -104,13 +104,16 @@ describe('Testing getQuote', () => {
             const user = await User.create({
                 username: 'mockUser',
                 password: 'password',
+            });
+            await Profile.create({
+                userId: user._id,
                 fullname: 'Joe Swanson',
                 street1: '11111 Spooner Street',
                 street2: 'Apt 122',
                 city: 'Quahog',
                 state: 'RI',
                 zip: '00093'
-            });
+            })
 
             await QuoteHistory.create({
                 userId: user._id,
