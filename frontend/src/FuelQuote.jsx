@@ -19,6 +19,7 @@ const FuelQuoteForm = () => {
     const [address, setAddress] = useState("");
     const [profileData, setProfileData] = useState({});
     const [isLoading, setIsLoading] = useState(true);
+    const [disableSubmit, setDisableSubmit] = useState(true);
     const validateQuote = () => {
         return Number.isFinite(totalDue) &&
             Number.isFinite(suggestedPricePerGallon) &&
@@ -65,6 +66,10 @@ const FuelQuoteForm = () => {
 
 
     }, [profileData, navigate, isLoading]);
+
+    useEffect(() => {
+        setDisableSubmit(!validateQuote());
+    }, [suggestedPricePerGallon, totalDue]);
 
     const handleQuote = async (e) => {
         e.preventDefault();
@@ -192,7 +197,7 @@ const FuelQuoteForm = () => {
                             readOnly
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary" >SUBMIT QUOTE</button>
+                    <button type="submit" className="btn btn-primary" disabled={disableSubmit}>SUBMIT QUOTE</button>
 
                 </form>
             </div>
