@@ -191,10 +191,11 @@ h2 a:hover {
 #containers {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
-    gap: 20px;
+    justify-content: center;
+    gap: 15px;
     margin-top: 2rem;
     position: relative;
+    padding-left: 50px;
 }
 
 
