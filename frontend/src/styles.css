@@ -134,8 +134,8 @@ h2 a:hover {
 .column {
     flex: 1;
     min-width: 250px;
-    margin-bottom: 20px;
-    margin-top: 600px;
+    margin-bottom: 5px;
+    margin-top: 700px;
 }
 
 .card {
@@ -181,7 +181,7 @@ h2 a:hover {
 
 .card-art {
     display: block;
-    margin-top: 375px;
+    margin-top: 500px;
     margin-left: auto;
     margin-right: auto;
     height: 45%;
@@ -193,9 +193,9 @@ h2 a:hover {
     flex-wrap: wrap;
     justify-content: center;
     gap: 15px;
-    margin-top: 2rem;
+    margin-top: -275px;
     position: relative;
-    padding-left: 50px;
+    padding-left: 65px;
 }
 
 
