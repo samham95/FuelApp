@@ -1,13 +1,13 @@
 import './QuoteHistoryStyles.css'
 import { React, useState, useEffect } from 'react'
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { client } from './apiClient';
 
 const FuelQuoteHistory = () => {
-
     const navigate = useNavigate();
     const username = localStorage.getItem('username');
     const [quotes, SetQuotes] = useState([]);
+
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
             try {
@@ -24,11 +24,10 @@ const FuelQuoteHistory = () => {
                     alert(`Unable to get quotes: ${err.response.data}`)
                     navigate('/profile')
                 }
-
             }
         };
         checkAuthorizationAndFetchData();
-    }, []);
+    }, [username, navigate]);
 
     return (
         <>
@@ -47,25 +46,27 @@ const FuelQuoteHistory = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {
-                            quotes !== undefined && quotes.length > 0 ? (
-                                quotes.map((q, indx) => {
-                                    const address = `${q.address.street}, ${q.address.city}, ${q.address.state}, ${q.address.zip}`;
-                                    return (
-                                        <tr key={indx}>
-                                            <td>{q.gallonsRequested}</td>
-                                            <td>{address}</td>
-                                            <td>{q.deliveryDate}</td>
-                                            <td>{`$${q.suggestedPricePerGallon.toFixed(2)}`}</td>
-                                            <td>{`$${q.totalDue.toFixed(2)}`}</td>
-                                        </tr>
-                                    );
-                                })
-                            ) : (
-                                <tr><td colSpan="5">No quotes available</td></tr>
-                            )
-                        }
-
+                        {quotes !== undefined && quotes.length > 0 ? (
+                            quotes.map((q, indx) => {
+                                const address = `${q.address.street}, ${q.address.city}, ${q.address.state}, ${q.address.zip}`;
+                                return (
+                                    <tr key={indx}>
+                                        <td>{q.gallonsRequested}</td>
+                                        <td>{address}</td>
+                                        <td>{q.deliveryDate}</td>
+                                        <td>{`$${q.suggestedPricePerGallon.toFixed(2)}`}</td>
+                                        <td>{`$${q.totalDue.toFixed(2)}`}</td>
+                                    </tr>
+                                );
+                            })
+                        ) : (
+                            <tr><td colSpan="5">No quotes available</td></tr>
+                        )}
+                        <tr className="add-quote-row">
+                            <td colSpan="5" className="text-center">
+                                <Link to="/quote" className="add-quote-link">+ Add New Quote</Link>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -73,4 +74,4 @@ const FuelQuoteHistory = () => {
     );
 }
 
-export default FuelQuoteHistory; 
+export default FuelQuoteHistory;

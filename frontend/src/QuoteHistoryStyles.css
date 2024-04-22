@@ -1,60 +1,87 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
-    background-image: url('vecteezy_molecules-or-dna-medical-structure-background-vector-design_9730845.jpg');
     background-size: cover;
-    height: 100vh;
     margin: 0;
     padding: 0;
 }
 
 .quote-history-page {
-    position: relative;
-    background-image: url('vecteezy_molecules-or-dna-medical-structure-background-vector-design_9730845.jpg');
-    background-size: cover;
-    height: 100vh;
+    background-color: #f4f4f4;
+    min-height: 100vh;
+    padding-top: 50px;
 }
 
 .header1 {
-    margin: auto;
-    padding: 50px;
     text-align: center;
-    color: rgb(0, 0, 0);
+    color: #333;
+    margin-bottom: 20px;
 }
 
+/* Table Styles */
 .fuelTable {
     border-collapse: collapse;
-    display: block;
-    top: 50px;
-    width: 54%;
+    width: 60%;
     margin: auto;
-    table-layout: fixed;
-    overflow-y: auto;
-    height: 500px;
-    box-shadow: 0px 0px 7px 3px #C1C6C9;
+    box-shadow: 0 0 7px 3px #C1C6C9;
     background-color: #ffffff;
 }
 
+/* Table Header */
 thead {
-    position: sticky;
-    top: 0;
+    background-color: #1d344a;
 }
 
 th {
-    /*background-color: #b7bdeb;*/
-    background: rgb(225, 224, 237);
-    background: linear-gradient(180deg, rgba(225, 224, 237, 1) 19%, rgba(159, 159, 215, 1) 62%, rgba(127, 133, 176, 1) 100%);
-    padding: 20px;
+    padding: 15px;
+    text-align: center;
+    color: rgb(239, 241, 246);
+    /* Change text color if needed */
 }
 
 td {
+    padding: 15px;
     text-align: center;
-    padding: 32px;
 }
 
-tr {}
+/* Zebra Striping for Rows */
+tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
 
-tr:nth-child(even) {
-    background-color: #d2e3ed;
-    padding: 15px;
+tbody tr:nth-child(even) {
+    background-color: #e9e9e9;
+}
+
+/* Add Quote Row */
+.add-quote-row {
+    background-color: #e9e9e9;
+    /* To match the table striping */
+}
+
+.add-quote-link {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.25rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.add-quote-link:hover,
+.add-quote-link:focus {
+    background-color: #0056b3;
+    color: white;
+    text-decoration: none;
+    outline: none;
+}
+
+/* Responsive Table Scroll */
+@media (max-width: 768px) {
+    .fuelTable {
+        width: 95%;
+        margin-top: 20px;
+    }
 }

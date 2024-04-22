@@ -166,15 +166,16 @@ h2 a:hover {
     padding: 32px 50px;
 }
 
-/* Responsive columns */
-@media (max-width: 600px) {
-    .column {
-        width: 100%;
-        display: block;
-        margin-bottom: 20px;
+/* @media (max-width: 991px) {
+
+    .navbar-collapse.collapsing,
+    .navbar-collapse.show {
+        display: block !important;
+        height: auto !important;
+        overflow: visible !important;
     }
 }
-
+ */
 .card-icon {
     padding-bottom: 40px;
 }
@@ -200,32 +201,10 @@ h2 a:hover {
 
 
 
-/* Styling for "Remember me" checkbox */
 input[type='checkbox'] {
     margin: 10px 0;
 }
 
-/* Styling for home nav bar */
-.nav-home {
-    max-width: auto;
-    margin: auto;
-    padding: 16px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 32px;
-}
-
-.nav-logo {
-    max-width: 100px;
-}
-
-/* .nav-link {
-    list-style: none;
-    display: flex;
-    align-items: center;
-    gap: 48px;
-} */
 
 .link a {
     position: relative;
@@ -273,6 +252,28 @@ input[type='checkbox'] {
     background-color: transparent;
 }
 
+/* Hover effect for all navbar elements */
+.navbar-dark .navbar-nav .nav-link {
+    transition: color 0.2s ease-in-out;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+}
+
+.navbar-dark .ml-auto .btn {
+    transition: color 0.2s ease-in-out;
+}
+
+.navbar-dark .ml-auto .btn:hover,
+.navbar-dark .ml-auto .btn:focus {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    background-color: transparent;
+}
+
 .flash-message {
     color: green;
     background-color: #ebffeb;
@@ -283,16 +284,8 @@ input[type='checkbox'] {
     text-align: center;
 }
 
-/* .my-navbar-dark {
-    background-color: #000000 !important;
-}
-
-.navbar.bg-dark {
-    background-color: #000000 !important;
-}
- */
 .header {
-    background-color: #808080;
+    background-color: #4a4a4f;
     color: #f5f5f5;
     padding: 15px;
     border-radius: 5px;
@@ -311,4 +304,26 @@ input[type='checkbox'] {
 .border-dashed.custom-border-color {
     border-top-color: #333333 !important;
     border-top-style: dashed !important;
+}
+
+.back-to-profile {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.back-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    font-size: large;
+}
+
+.back-link:hover {
+    text-decoration: none;
+    color: #0056b3;
+    text-size-adjust: 200%;
+
 }

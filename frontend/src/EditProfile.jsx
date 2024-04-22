@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { client } from './apiClient';
+import './styles.css'
 
 
 const EditProfile = () => {
@@ -95,9 +96,15 @@ const EditProfile = () => {
                 </div>
             )}
             <br />
+            <Link to="/profile" className="back-link">
+                ← Back to Profile
+            </Link>
             <center>
                 <h1>Edit Profile</h1>
             </center>
+            <div className="back-to-profile">
+
+            </div>
             <div className='container'>
                 <form onSubmit={handleSubmit}>
                     <label htmlFor='fullname'>Full Name:</label>
