@@ -9,6 +9,8 @@ const EditProfile = () => {
     const location = useLocation();
     const username = localStorage.getItem('username');
     const [errorMessage, setErrorMessage] = useState("");
+    const [showOverlay, setShowOverlay] = useState(false);
+
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
             try {
@@ -77,9 +79,9 @@ const EditProfile = () => {
         }
         try {
             await client.post(`auth/profile/${username}/edit`, profileData);
-            localStorage.setItem('profileData', JSON.stringify(profileData));
-            alert('Profile updated successfully!');
-            navigate('/profile');
+            setShowOverlay(true);
+            setTimeout(() => { setShowOverlay(false); navigate('/profile'); }, 1500);
+
         } catch (err) {
             if (err.response.status === 401 || err.response.status === 403) {
                 alert(`Unable to edit profile: ${err.response.data}`)
@@ -94,6 +96,15 @@ const EditProfile = () => {
 
     return (
         <>
+            {
+                showOverlay && (
+                    <div className="overlay">
+                        <div className="message-box">
+                            Profile updated successfully!
+                        </div>
+                    </div>
+                )
+            }
             {needToCompleteProfile && (
                 <div className="flash-message">
                     Please complete your profile information.

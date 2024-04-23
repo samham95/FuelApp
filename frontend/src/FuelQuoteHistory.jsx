@@ -1,5 +1,5 @@
 import './QuoteHistoryStyles.css'
-import { React, useState, useEffect } from 'react'
+import { React, useState, useEffect, useMemo } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import { client } from './apiClient';
 
@@ -7,6 +7,7 @@ const FuelQuoteHistory = () => {
     const navigate = useNavigate();
     const username = localStorage.getItem('username');
     const [quotes, SetQuotes] = useState([]);
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
 
     useEffect(() => {
         const checkAuthorizationAndFetchData = async () => {
@@ -29,6 +30,28 @@ const FuelQuoteHistory = () => {
         checkAuthorizationAndFetchData();
     }, [username, navigate]);
 
+    const sortedQuotes = useMemo(() => {
+        if (!quotes) return [];
+        return [...quotes].sort((a, b) => {
+            if (a[sortConfig.key] < b[sortConfig.key]) {
+                return sortConfig.direction === 'ascending' ? -1 : 1;
+            }
+            if (a[sortConfig.key] > b[sortConfig.key]) {
+                return sortConfig.direction === 'ascending' ? 1 : -1;
+            }
+            return 0;
+        });
+    }, [quotes, sortConfig]);
+
+    const requestSort = (key) => {
+        let direction = 'ascending';
+        if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+            direction = 'descending';
+        }
+        setSortConfig({ key, direction });
+    };
+
+
     return (
         <>
             <Link to="/profile" className="back-link">
@@ -41,21 +64,33 @@ const FuelQuoteHistory = () => {
                 <table className="fuelTable">
                     <thead>
                         <tr>
-                            <th className="text-center">Gallons Requested</th>
                             <th className="text-center">Delivery Address</th>
-                            <th className="text-center">Delivery Date (YYYY-MM-DD)</th>
-                            <th className="text-center">Suggested Price (per gallon)</th>
-                            <th className="text-center">Total Due</th>
+                            <th className="text-center" onClick={() => requestSort('gallonsRequested')}>
+                                Gallons Requested
+                                <span className={`sort-icon ${sortConfig.key === 'gallonsRequested' && sortConfig.direction === 'descending' ? 'descending' : ''}`}>&nbsp;{"\u003E"}</span>
+                            </th>
+                            <th className="text-center" onClick={() => requestSort('deliveryDate')}>
+                                Delivery Date (YYYY-MM-DD)
+                                <span className={`sort-icon ${sortConfig.key === 'deliveryDate' && sortConfig.direction === 'descending' ? 'descending' : ''}`}>&nbsp;{"\u003E"}</span>
+                            </th>
+                            <th className="text-center" onClick={() => requestSort('suggestedPricePerGallon')}>
+                                Suggested Price (per gallon)
+                                <span className={`sort-icon ${sortConfig.key === 'suggestedPricePerGallon' && sortConfig.direction === 'descending' ? 'descending' : ''}`}>&nbsp;{"\u003E"}</span>
+                            </th>
+                            <th className="text-center" onClick={() => requestSort('totalDue')}>
+                                Total Due
+                                <span className={`sort-icon ${sortConfig.key === 'totalDue' && sortConfig.direction === 'descending' ? 'descending' : ''}`}>&nbsp;{"\u003E"}</span>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {quotes !== undefined && quotes.length > 0 ? (
-                            quotes.map((q, indx) => {
+                        {sortedQuotes !== undefined && sortedQuotes.length > 0 ? (
+                            sortedQuotes.map((q, indx) => {
                                 const address = `${q.address.street}, ${q.address.city}, ${q.address.state}, ${q.address.zip}`;
                                 return (
                                     <tr key={indx}>
-                                        <td>{q.gallonsRequested}</td>
                                         <td>{address}</td>
+                                        <td>{q.gallonsRequested}</td>
                                         <td>{q.deliveryDate}</td>
                                         <td>{`$${q.suggestedPricePerGallon.toFixed(2)}`}</td>
                                         <td>{`$${q.totalDue.toFixed(2)}`}</td>

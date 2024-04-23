@@ -85,3 +85,14 @@ tbody tr:nth-child(even) {
         margin-top: 20px;
     }
 }
+
+.sort-icon {
+    display: inline-block;
+    margin-left: 5px;
+    transform: rotate(90deg);
+    transition: transform 0.2s ease-in-out;
+}
+
+.sort-icon.descending {
+    transform: rotate(-90deg);
+}

@@ -21,6 +21,8 @@ const FuelQuoteForm = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [disableSubmit, setDisableSubmit] = useState(true);
     const [disableQuote, setDisableQuote] = useState(true);
+    const [showOverlay, setShowOverlay] = useState(false);
+
     const validateDeliveryDate = () => {
         return deliveryDate >= today && deliveryDate <= maxDate;
     }
@@ -111,14 +113,23 @@ const FuelQuoteForm = () => {
                 suggestedPricePerGallon,
                 totalDue
             });
-            alert("Successfully saved your new quote!")
-            navigate('/quote/history')
+            setShowOverlay(true);
+            setTimeout(() => { setShowOverlay(false); navigate('/quote/history'); }, 1500);
         } catch (err) {
             alert("Unable to save quote. Please try again later");
         }
     }
     return (
         <>
+            {
+                showOverlay && (
+                    <div className="overlay">
+                        <div className="message-box">
+                            Quote saved successfully!
+                        </div>
+                    </div>
+                )
+            }
             <Link to="/profile" className="back-link">
                 <i className="fas fa-arrow-left"></i>  Back to Profile
             </Link>
@@ -130,7 +141,7 @@ const FuelQuoteForm = () => {
                 <Link to="/quote/history" className="icon-btn mx-2">
                     <i className="fas fa-history"></i> Quote History
                 </Link>
-                <Link to="profile/edit" className="icon-btn mx-2">
+                <Link to="/profile/edit" className="icon-btn mx-2">
                     <i className="fas fa-edit"></i> Edit Delivery Address
                 </Link>
 
