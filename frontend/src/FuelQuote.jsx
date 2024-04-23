@@ -125,6 +125,13 @@ const FuelQuoteForm = () => {
             <center>
                 <h1>Fuel Quote Form</h1>
             </center>
+            <br />
+            <div className="d-flex justify-content-center mb-4">
+                <Link to="/quote/history" className="icon-btn mx-2">
+                    <i className="fas fa-history"></i> Quote History
+                </Link>
+
+            </div>
             <div className="container mt-3">
                 <form onSubmit={handleQuote}>
                     <div className="form-group">
