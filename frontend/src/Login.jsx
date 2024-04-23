@@ -77,7 +77,7 @@ const Login = () => {
                             required
                         />
                         <br />
-                        <label className='label' htmlFor='password'>
+                        <label className='label mt-2' htmlFor='password'>
                             Password:
                         </label>
                         <input

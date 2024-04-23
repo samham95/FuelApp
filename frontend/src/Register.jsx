@@ -55,6 +55,7 @@ const Register = () => {
     return (
         <>
             <br />
+            <br />
             <center>
                 <h1>Register Here</h1>
                 <br />
@@ -84,7 +85,7 @@ const Register = () => {
                             maxlength='50'
                         />
                         <br />
-                        <label className='label' htmlFor='password'>
+                        <label className='label mt-2' htmlFor='password'>
                             Password:
                         </label>
                         <input
@@ -110,7 +111,7 @@ const Register = () => {
                             maxlength='32'
                         />
                         <br />
-                        <label className='label' htmlFor='confirmPassword'>
+                        <label className='label mt-2' htmlFor='confirmPassword'>
                             Confirm Password:
                         </label>
                         <input

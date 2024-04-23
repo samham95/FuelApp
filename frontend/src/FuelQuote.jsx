@@ -146,7 +146,7 @@ const FuelQuoteForm = () => {
                 </Link>
 
             </div>
-            <div className="container mt-3">
+            <div className="container mt-3 mb-5">
                 <form onSubmit={handleQuote}>
                     <div className="form-group">
                         <label htmlFor="clientName">Client Name</label>

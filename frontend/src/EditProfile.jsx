@@ -80,7 +80,7 @@ const EditProfile = () => {
         try {
             await client.post(`auth/profile/${username}/edit`, profileData);
             setShowOverlay(true);
-            setTimeout(() => { setShowOverlay(false); navigate('/profile'); }, 1500);
+            setTimeout(() => { setShowOverlay(false); navigate('/profile'); }, 1000);
 
         } catch (err) {
             if (err.response.status === 401 || err.response.status === 403) {
@@ -115,9 +115,9 @@ const EditProfile = () => {
             </Link>
 
             <center>
-                <h1>Edit Profile</h1>
+                <h1>Edit Your Profile</h1>
             </center>
-            <div className="container mt-5">
+            <div className="container mt-4 mb-5">
                 <form onSubmit={handleSubmit} className="mt-4">
                     <div className='form-group mb-3'>
                         <label htmlFor='fullname'>Full Name:</label>

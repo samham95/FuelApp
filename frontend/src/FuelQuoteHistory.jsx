@@ -3,6 +3,7 @@ import { React, useState, useEffect, useMemo } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import { client } from './apiClient';
 
+
 const FuelQuoteHistory = () => {
     const navigate = useNavigate();
     const username = localStorage.getItem('username');
@@ -61,26 +62,35 @@ const FuelQuoteHistory = () => {
                 <div className="pageTitle">
                     <h1 className="header1">Fuel Quote History</h1>
                 </div>
-                <table className="fuelTable">
+                <table className="fuelTable mt-3">
                     <thead>
                         <tr>
                             <th className="text-center">Delivery Address</th>
                             <th className="text-center" onClick={() => requestSort('gallonsRequested')}>
-                                Gallons Requested
-                                <span className={`sort-icon ${sortConfig.key === 'gallonsRequested' && sortConfig.direction === 'descending' ? 'descending' : ''}`}>&nbsp;{"\u003E"}</span>
+                                <span className='header-text'> Gallons Requested</span>
+                                {sortConfig.key === 'gallonsRequested' ? (
+                                    <i className={`sort-icon fas ${sortConfig.direction === 'descending' ? 'fa-arrow-down' : 'fa-arrow-up'} ms-2`}></i>
+                                ) : null}
                             </th>
                             <th className="text-center" onClick={() => requestSort('deliveryDate')}>
                                 Delivery Date (YYYY-MM-DD)
-                                <span className={`sort-icon ${sortConfig.key === 'deliveryDate' && sortConfig.direction === 'descending' ? 'descending' : ''}`}>&nbsp;{"\u003E"}</span>
+                                {sortConfig.key === 'deliveryDate' ? (
+                                    <i className={`sort-icon fas ${sortConfig.direction === 'descending' ? 'fa-arrow-down' : 'fa-arrow-up'} ms-2`}></i>
+                                ) : null}
                             </th>
                             <th className="text-center" onClick={() => requestSort('suggestedPricePerGallon')}>
                                 Suggested Price (per gallon)
-                                <span className={`sort-icon ${sortConfig.key === 'suggestedPricePerGallon' && sortConfig.direction === 'descending' ? 'descending' : ''}`}>&nbsp;{"\u003E"}</span>
+                                {sortConfig.key === 'suggestedPricePerGallon' ? (
+                                    <i className={`sort-icon fas ${sortConfig.direction === 'descending' ? 'fa-arrow-down' : 'fa-arrow-up'} ms-2`}></i>
+                                ) : null}
                             </th>
                             <th className="text-center" onClick={() => requestSort('totalDue')}>
                                 Total Due
-                                <span className={`sort-icon ${sortConfig.key === 'totalDue' && sortConfig.direction === 'descending' ? 'descending' : ''}`}>&nbsp;{"\u003E"}</span>
+                                {sortConfig.key === 'totalDue' ? (
+                                    <i className={`sort-icon fas ${sortConfig.direction === 'descending' ? 'fa-arrow-down' : 'fa-arrow-up'} ms-5`}></i>
+                                ) : null}
                             </th>
+
                         </tr>
                     </thead>
                     <tbody>
