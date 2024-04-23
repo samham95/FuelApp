@@ -120,6 +120,9 @@ const FuelQuoteForm = () => {
     return (
         <>
             <br />
+            <Link to="/profile" className="back-link">
+                <i className="fas fa-arrow-left"></i>  Back to Profile
+            </Link>
             <center>
                 <h1>Fuel Quote Form</h1>
             </center>

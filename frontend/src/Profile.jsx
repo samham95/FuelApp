@@ -51,6 +51,10 @@ const ProfileData = () => {
     return (
         <>
             <br />
+            <div className="text-center fs-3">
+                <h1>Welcome, {profileData.fullname}</h1>
+            </div>
+            <br />
             <div className="d-flex justify-content-center mb-4">
                 <Link to="/quote/history" className="icon-btn mx-2">
                     <i className="fas fa-history"></i> Quote History
@@ -60,9 +64,7 @@ const ProfileData = () => {
                 </Link>
             </div>
 
-            <div className="text-center fs-3">
-                <h1>Welcome, {profileData.fullname}</h1>
-            </div>
+
             <div className="container mt-5">
 
                 <div className='form-group'>
