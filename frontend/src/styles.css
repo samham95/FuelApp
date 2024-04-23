@@ -95,7 +95,7 @@ h2 a:hover {
 
 /* Styling for Landing Page title*/
 .heading {
-    padding-top: 350px;
+    padding-top: 300px;
     padding-left: 25px;
 }
 
@@ -130,24 +130,19 @@ h2 a:hover {
     font-weight: bold;
 }
 
-/* Styling for landing about section */
 .column {
-    flex: 1;
+    flex: 0.95;
     min-width: 250px;
-    margin-bottom: 5px;
-    margin-top: 700px;
+    max-width: 350px;
+    margin-bottom: 50px;
 }
 
 .card {
     height: 325px;
-    width: 325px;
+    width: 95%;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
     border-radius: 10px;
-    position: absolute;
-    margin-left: 30px;
-    bottom: 100px;
-
 }
 
 .card h2 {
@@ -155,50 +150,37 @@ h2 a:hover {
     color: #0400ff;
 }
 
-/* On mouse-over, add a deeper shadow */
 .card:hover {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
-/* Add some padding inside the card container */
 .card-container {
     text-align: center;
     padding: 32px 50px;
 }
 
-/* @media (max-width: 991px) {
-
-    .navbar-collapse.collapsing,
-    .navbar-collapse.show {
-        display: block !important;
-        height: auto !important;
-        overflow: visible !important;
-    }
-}
- */
 .card-icon {
     padding-bottom: 40px;
-}
-
-.card-art {
-    display: block;
-    margin-top: 500px;
-    margin-left: auto;
-    margin-right: auto;
-    height: 45%;
-    width: 45%;
 }
 
 #containers {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 15px;
-    margin-top: -275px;
-    position: relative;
-    padding-left: 65px;
+    gap: 20px;
+    max-width: 98%;
+    margin: auto;
+    padding: 0;
 }
 
+
+.card-art {
+    display: block;
+    margin: auto;
+    margin-top: 200px;
+    height: 45%;
+    width: 45%;
+}
 
 
 input[type='checkbox'] {

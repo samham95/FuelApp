@@ -13,7 +13,11 @@ const EditProfile = () => {
         const checkAuthorizationAndFetchData = async () => {
             try {
                 const response = await client.get(`auth/profile/${username}`);
-                setProfileData(response.data);
+                setProfileData(prevState => ({
+                    ...prevState,
+                    ...response.data,
+                    street2: response.data.street2 || '',
+                }));
             } catch (err) {
                 console.error("Authorization failed or failed to fetch profile data:", err);
                 localStorage.clear();
@@ -102,9 +106,6 @@ const EditProfile = () => {
             <center>
                 <h1>Edit Profile</h1>
             </center>
-            <div className="back-to-profile">
-
-            </div>
             <div className="container mt-5">
                 <form onSubmit={handleSubmit} className="mt-4">
                     <div className='form-group mb-3'>
@@ -183,8 +184,8 @@ const EditProfile = () => {
                         </div>
                     </div>
                     <div className='form-group mb-3'>
-                        <label htmlFor='zipcode'>Zip Code:</label>
-                        <input name='zipcode' type='text' className="form-control" value={profileData.zip} onChange={handleChange} required minLength={5} maxLength={10} />
+                        <label htmlFor='zip'>Zip Code:</label>
+                        <input name='zip' type='text' className="form-control" value={profileData.zip} onChange={handleChange} required minLength={5} maxLength={10} />
                     </div>
                     {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
                     <div className="text-center">

@@ -4,7 +4,6 @@ const Index = () => {
     return (
         <>
             <div className="heading">
-                <br /> <br />
                 <h1 className="v">
                     <h1 className="hA">
                         Fuel Your Journey with

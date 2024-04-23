@@ -8,7 +8,7 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-
+    const [errorMessage, setErrorMessage] = useState("");
     const { registrationSuccess } = location.state || { registrationSuccess: false };
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -46,7 +46,7 @@ const Login = () => {
             .catch((err) => {
                 const status = err.response.status
                 if (status === 401) {
-                    alert('Login failed - incorrect credentials!')
+                    setErrorMessage('Login failed - incorrect credentials!')
                 }
             })
     }
@@ -72,7 +72,7 @@ const Login = () => {
                             id='user'
                             name='user'
                             placeholder='Username'
-                            onChange={(e) => setUsername(e.target.value)}
+                            onChange={(e) => { setUsername(e.target.value); setErrorMessage('') }}
                             required
                         />
                         <br />
@@ -84,7 +84,7 @@ const Login = () => {
                             id='password'
                             name='password'
                             placeholder='Password'
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => { setPassword(e.target.value); setErrorMessage('') }}
                             required
                         />
 
@@ -97,9 +97,12 @@ const Login = () => {
                         Remember me
                         <br />
                         <br />
+                        {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+
                         <button type='submit' onSubmit={submitLogin}>
                             LOGIN
                         </button>
+
                         <br />
                         <h4>
                             Need to Register? <Link to='/register'> Click Here </Link>
