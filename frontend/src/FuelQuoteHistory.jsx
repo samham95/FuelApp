@@ -31,6 +31,9 @@ const FuelQuoteHistory = () => {
 
     return (
         <>
+            <Link to="/profile" className="back-link">
+                <i className="fas fa-arrow-left"></i>  Back to Profile
+            </Link>
             <div className="quote-history-page">
                 <div className="pageTitle">
                     <h1 className="header1">Fuel Quote History</h1>

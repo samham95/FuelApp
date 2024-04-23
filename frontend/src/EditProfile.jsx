@@ -95,7 +95,6 @@ const EditProfile = () => {
                     Please complete your profile information.
                 </div>
             )}
-            <br />
             <Link to="/profile" className="back-link">
                 <i className="fas fa-arrow-left"></i>  Back to Profile
             </Link>
