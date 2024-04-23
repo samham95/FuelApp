@@ -97,8 +97,9 @@ const EditProfile = () => {
             )}
             <br />
             <Link to="/profile" className="back-link">
-                ← Back to Profile
+                <i className="fas fa-arrow-left"></i>  Back to Profile
             </Link>
+
             <center>
                 <h1>Edit Profile</h1>
             </center>

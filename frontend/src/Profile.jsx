@@ -51,10 +51,19 @@ const ProfileData = () => {
     return (
         <>
             <br />
-            <h1 className='header'>Welcome, {profileData.fullname}</h1>
+            <div className="d-flex justify-content-center mb-4">
+                <Link to="/quote/history" className="icon-btn mx-2">
+                    <i className="fas fa-history"></i> Quote History
+                </Link>
+                <Link to="/quote" className="icon-btn mx-2">
+                    <i className="fas fa-plus-square"></i> Add New Quote
+                </Link>
+            </div>
 
+            <div className="text-center fs-3">
+                <h1>Welcome, {profileData.fullname}</h1>
+            </div>
             <div className="container mt-5">
-                {/*<h1 className='header text-center mb-4'>Profile Data </h1>*/}
 
                 <div className='form-group'>
                     <label htmlFor='fullname'>Full Name:</label>
