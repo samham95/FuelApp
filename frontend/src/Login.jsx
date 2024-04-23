@@ -62,6 +62,7 @@ const Login = () => {
             <br />
             <center>
                 <h1 > Login Here</h1>
+                <br />
                 <form onSubmit={submitLogin}>
                     <div className='container'>
                         <label className='label' htmlFor='user'>

@@ -57,6 +57,7 @@ const Register = () => {
             <br />
             <center>
                 <h1>Register Here</h1>
+                <br />
                 <form onSubmit={submitRegister}>
                     <div className='container'>
                         <label className='label' htmlFor='user'>
