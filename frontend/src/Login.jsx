@@ -95,7 +95,7 @@ const Login = () => {
                             id='checked'
                             onChange={(e) => setIsChecked(e.target.value)}
                         />
-                        Remember me
+                        &nbsp;Remember me
                         <br />
                         <br />
                         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
