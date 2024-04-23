@@ -130,6 +130,9 @@ const FuelQuoteForm = () => {
                 <Link to="/quote/history" className="icon-btn mx-2">
                     <i className="fas fa-history"></i> Quote History
                 </Link>
+                <Link to="profile/edit" className="icon-btn mx-2">
+                    <i className="fas fa-edit"></i> Edit Delivery Address
+                </Link>
 
             </div>
             <div className="container mt-3">
