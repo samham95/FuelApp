@@ -19,7 +19,7 @@ const Register = () => {
     };
 
     const validateUsername = (username) => {
-        const regex = /^[a-zA-Z][a-zA-Z0-9]{5,15}$/;
+        const regex = /^[a-zA-Z][a-zA-Z0-9]{4,14}$/;
         return regex.test(username);
     }
 
@@ -82,7 +82,8 @@ const Register = () => {
                                 }
                             }}
                             required
-                            maxlength='50'
+                            minLength={5}
+                            maxlength={15}
                         />
                         <br />
                         <label className='label mt-2' htmlFor='password'>
@@ -107,8 +108,8 @@ const Register = () => {
                                     }
                                 }}
                             required
-                            minlength='8'
-                            maxlength='32'
+                            minlength={8}
+                            maxlength={15}
                         />
                         <br />
                         <label className='label mt-2' htmlFor='confirmPassword'>
@@ -121,8 +122,8 @@ const Register = () => {
                             placeholder='Confirm Password'
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             required
-                            minlength='8'
-                            maxlength='32'
+                            minlength={8}
+                            maxlength={15}
                         />
                         <br />
                         <br />

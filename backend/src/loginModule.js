@@ -47,7 +47,7 @@ const invalidateToken = async (token) => {
 
 const validateUsername = (username) => {
     //alphanumeric, starts with letter, length 5 to 15
-    const regex = /^[a-zA-Z][a-zA-Z0-9]{5,15}$/;
+    const regex = /^[a-zA-Z][a-zA-Z0-9]{4,14}$/;
     return regex.test(username);
 }
 

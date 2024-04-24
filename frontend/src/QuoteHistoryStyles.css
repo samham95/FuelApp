@@ -27,12 +27,18 @@ body {
     margin-bottom: 50px;
     box-shadow: 0 0 7px 3px #C1C6C9;
     background-color: #ffffff;
+    table-layout: fixed;
+    border-collapse: collapse;
+
 }
 
 thead {
     background-color: #1d344a;
     align-items: center;
     align-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 th {

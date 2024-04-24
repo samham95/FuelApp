@@ -134,7 +134,7 @@ const FuelQuoteForm = () => {
                 <i className="fas fa-arrow-left"></i>  Back to Profile
             </Link>
             <center>
-                <h1>Fuel Quote Form</h1>
+                <h1>New Fuel Quote</h1>
             </center>
             <br />
             <div className="d-flex justify-content-center mb-4">

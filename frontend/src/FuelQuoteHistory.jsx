@@ -65,7 +65,11 @@ const FuelQuoteHistory = () => {
                 <table className="fuelTable mt-3">
                     <thead>
                         <tr>
-                            <th className="text-center">Delivery Address</th>
+                            <th className="text-center">Delivery Address{/*sortConfig.key === null ? (
+                                <i className='sort-icon fas  fa-arrow-down ms-2'></i>
+                            ) : null*/}
+
+                            </th>
                             <th className="text-center" onClick={() => requestSort('gallonsRequested')}>
                                 <span className='header-text'> Gallons Requested</span>
                                 {sortConfig.key === 'gallonsRequested' ? (

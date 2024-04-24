@@ -106,7 +106,7 @@ const EditProfile = () => {
                 )
             }
             {needToCompleteProfile && (
-                <div className="flash-message">
+                <div className="alert alert-danger text-center">
                     Please complete your profile information.
                 </div>
             )}
