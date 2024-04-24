@@ -51,6 +51,18 @@ const Login = () => {
             })
     }
 
+    const TogglePassword = async (e) => {
+        var x = document.getElementById("password");
+        if (x.type === "password")
+        {
+            x.type = "text";
+        }
+        else
+        {
+            x.type = "password";
+        }
+    }
+
     return (
         <>
             {registrationSuccess && (
@@ -90,6 +102,12 @@ const Login = () => {
                         />
 
                         <br />
+                        <input
+                            type = 'checkbox'
+                            id='toggle'
+                            onChange={(e) => TogglePassword()}
+                        />
+                       &nbsp;Show password&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <input
                             type='checkbox'
                             id='checked'

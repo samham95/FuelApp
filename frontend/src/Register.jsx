@@ -23,6 +23,18 @@ const Register = () => {
         return regex.test(username);
     }
 
+    const TogglePassword = async (e) => {
+        var x = document.getElementById("password");
+        if (x.type === "password")
+        {
+            x.type = "text";
+        }
+        else
+        {
+            x.type = "password";
+        }
+    }
+
     const submitRegister = async (e) => {
         e.preventDefault();
 
@@ -111,6 +123,7 @@ const Register = () => {
                             minlength={8}
                             maxlength={15}
                         />
+                        
                         <br />
                         <label className='label mt-2' htmlFor='confirmPassword'>
                             Confirm Password:
@@ -125,7 +138,13 @@ const Register = () => {
                             minlength={8}
                             maxlength={15}
                         />
-                        <br />
+                        <input
+                            type = 'checkbox'
+                            id='toggle'
+                            onChange={(e) => TogglePassword()}
+                        />
+                       &nbsp;Show password
+
                         <br />
                         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
