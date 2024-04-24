@@ -18,7 +18,6 @@ const ProfileData = () => {
             } catch (err) {
                 if (err.response.status === 403 || err.response.status == 401) {
                     localStorage.clear();
-                    alert(`Unable to fetch profile data: ${err.response.data}`);
                     navigate('/login')
                 }
                 else {

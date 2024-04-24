@@ -18,7 +18,6 @@ const FuelQuoteHistory = () => {
                 SetQuotes(quoteHistory);
             } catch (err) {
                 if (err.response.status === 401 || err.response.status === 403) {
-                    alert(`Unable to get quotes: ${err.response.data}`)
                     localStorage.clear();
                     navigate('/login');
                 }

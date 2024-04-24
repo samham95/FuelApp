@@ -84,7 +84,6 @@ const EditProfile = () => {
 
         } catch (err) {
             if (err.response.status === 401 || err.response.status === 403) {
-                alert(`Unable to edit profile: ${err.response.data}`)
                 localStorage.clear();
                 navigate('/login');
             }
