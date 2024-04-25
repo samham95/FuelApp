@@ -25,13 +25,14 @@ const Register = () => {
 
     const TogglePassword = async (e) => {
         var x = document.getElementById("password");
-        if (x.type === "password")
-        {
+        let y = document.getElementById("confirmPassword");
+        if (x.type === "password" && y.type === "password") {
             x.type = "text";
+            y.type = "text";
         }
-        else
-        {
+        else {
             x.type = "password";
+            y.type = "password";
         }
     }
 
@@ -123,7 +124,7 @@ const Register = () => {
                             minlength={8}
                             maxlength={15}
                         />
-                        
+
                         <br />
                         <label className='label mt-2' htmlFor='confirmPassword'>
                             Confirm Password:
@@ -139,11 +140,11 @@ const Register = () => {
                             maxlength={15}
                         />
                         <input
-                            type = 'checkbox'
+                            type='checkbox'
                             id='toggle'
                             onChange={(e) => TogglePassword()}
                         />
-                       &nbsp;Show password
+                        &nbsp;Show password
 
                         <br />
                         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
