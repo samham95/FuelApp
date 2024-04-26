@@ -1,5 +1,5 @@
 const AppError = require('../AppError.js');
-const { validateDeliveryAddr, validateInputs, validateKeys, getQuote, submitQuote, getQuoteHistory } = require('../quoteModule.js');
+const { validateDeliveryAddr, validateIntegerString, validateInputs, validateKeys, getQuote, submitQuote, getQuoteHistory } = require('../quoteModule.js');
 const { User, QuoteHistory, Profile } = require('../db/MongoDatabase.js');
 const { connectDB, closeDB, cleanDB, } = require('../db/UtilsDB.js')
 
@@ -15,25 +15,45 @@ describe('Testing validateDeliveryAddr', () => {
 });
 
 describe('Testing validateInputs', () => {
-    test('Should throw error when invalid galreq passed', () => {
-        const char = 'A';
-        expect(() => validateInputs(0, 0, char, '2024-10-15', 0)).toThrow(AppError);
+    const mockData = {
+        ppg: 2.50,
+        total: 50,
+        galReq: 20,
+        date: '2024-04-25',
+        address: {
+            street: '123 BinkBonk Dr',
+            city: 'FakeCity',
+            state: 'FC',
+            zip: '12345'
+        }
+    };
+
+    test('Should not throw an error when all inputs are valid', () => {
+        expect(() => validateInputs(mockData.ppg, mockData.total, mockData.galReq, mockData.date, mockData.address)).not.toThrow();
     });
-    test('Should throw error when invalid total passed', () => {
-        const char = 'A';
-        expect(() => validateInputs(0, char, 0, '2024-10-15', 0)).toThrow(AppError);
+
+    test('Throws an error if gallons requested is not a valid number', () => {
+        expect(() => validateInputs(mockData.ppg, mockData.total, 'two-zero', mockData.date, mockData.address)).toThrow(new AppError('Invalid gallons requested format - expected number, input: two-zero', 400));
     });
-    test('Should throw error when invalid ppg passed', () => {
-        const char = 'A';
-        expect(() => validateInputs(char, 0, 0, '2024-10-15', 0)).toThrow(AppError);
+
+    test('Throws an error if total due is not a valid number', () => {
+        expect(() => validateInputs(mockData.ppg, 'five-zero', mockData.galReq, mockData.date, mockData.address))
+            .toThrow(new AppError('Invalid total due format - expected number, input: five-zero', 400));
     });
-    test('Should throw error when invalid date passed', () => {
-        const char = 'A';
-        expect(() => validateInputs(0, 0, 0, char, 0)).toThrow(AppError);
+
+    test('Throws an error if price per gallon is not a valid number', () => {
+        expect(() => validateInputs('two-fifty', mockData.total, mockData.galReq, mockData.date, mockData.address))
+            .toThrow(new AppError('Invalid price per gallon format - expected number, input: two-fifty', 400));
     });
-    test('Should throw error when invalid address passed', () => {
-        const char = 'A';
-        expect(() => validateInputs(0, 0, 0, '2024-10-15', char)).toThrow(AppError);
+
+    test('Throws an error if the delivery date is invalid', () => {
+        expect(() => validateInputs(mockData.ppg, mockData.total, mockData.galReq, '', mockData.address))
+            .toThrow(new AppError('Invalid date format - expected input:', 400));
+    });
+
+    test('Throws an error if the delivery address is invalid', () => {
+        expect(() => validateInputs(mockData.ppg, mockData.total, mockData.galReq, mockData.date, ''))
+            .toThrow(new AppError('Invalid Delivery Address', 400));
     });
 });
 
@@ -159,6 +179,12 @@ describe('Testing getQuote', () => {
         const quote = await getQuote('mockUser', '50');
         expect(Object.keys(quote)).toEqual([expect.stringMatching(/pricePerGallon/), expect.stringMatching(/totalPrice/)]);
         //expect(Object.values(quote)).toEqual([2.5, 100])
+    });
+
+    test('Throws an error for invalid gallons requested format', async() => {
+        jest.spyOn(require('../quoteModule'), 'validateIntegerString').mockReturnValue(false);
+
+        await expect(getQuote('mockUser', 'five-zero')).rejects.toThrow(new AppError("Invalid gallons requested format - expected number", 400));
     });
 
     test('Username not provided OR username not in database throws error: "User not found"', async () => {

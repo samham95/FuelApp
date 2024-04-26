@@ -162,4 +162,4 @@ const getQuoteHistory = async (username) => {
         throw new AppError(error.message || "Error retrieving quote history", error.status || 400);
     }
 }
-module.exports = { validateDeliveryAddr, validateInputs, validateKeys, getQuote, submitQuote, getQuoteHistory };
+module.exports = { validateDeliveryAddr, validateIntegerString, validateInputs, validateKeys, getQuote, submitQuote, getQuoteHistory };
